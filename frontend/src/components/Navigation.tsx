@@ -1,5 +1,3 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 import {
@@ -23,13 +21,6 @@ import ReportPage from './pages/Report';
 import RequestAidPage from './pages/RequestAid';
 import ResourcesPage from './pages/Resources';
 
-const navbarSpacing = {
-  padding: '0 0 0 0',
-  marginRight: 'auto',
-  marginLeft: 'auto',
-  marginTop: 0,
-  marginBttom: 0,
-}
 
 
 export const TmaNavbar: React.FC = () => {
@@ -43,7 +34,7 @@ export const TmaNavbar: React.FC = () => {
   variant="outline-danger"
   href="/Donate"
 >
-  Donate
+  <b>Donate</b>
 </Nav.Link>;
 
 const collapser = <Navbar.Collapse id="basic-navbar-nav">

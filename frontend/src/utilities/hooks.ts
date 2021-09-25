@@ -39,6 +39,6 @@ export const useMediaQuery = (): MediaQuery => {
     }
     window.addEventListener('resize', updater);
     return () => window.removeEventListener('resize', updater);
-  }, []);
+  });
   return state;
 }

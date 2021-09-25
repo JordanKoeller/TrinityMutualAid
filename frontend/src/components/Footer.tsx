@@ -33,9 +33,9 @@ export const Footer: React.FC = () => {
     </Row>
     <Row style={{paddingTop: '1em', paddingBottom: '2em'}}>
       <div className="footer-credits">
-        Created by Jordan Koeller.
+      &copy; <em id="date"></em>{new Date().getFullYear()} | Trinity Mutual Aid
         <br />
-        Source code released under MIT License.
+        {/* Source code released under MIT License. */}
       </div>
     </Row>
     <Row></Row>

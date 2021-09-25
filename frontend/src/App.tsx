@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
 import { Footer } from './components/Footer';
-import { TmaNavbar, TmaRouter } from './components/Routing';
+import { TmaNavbar, TmaRouter } from './components/Navigation';
 
 function App() {
   return (

@@ -9,12 +9,12 @@ function App() {
   return (
     <div className="App">
         <TmaNavbar />
-      <body className="App-header">
+      <div className="App-header">
         <TmaRouter />
-      </body>
-      <footer>
+      </div>
+      <div>
         <Footer />
-      </footer>
+      </div>
     </div>
   );
 }

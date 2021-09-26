@@ -34,8 +34,6 @@ export const Footer: React.FC = () => {
     <Row style={{paddingTop: '1em', paddingBottom: '2em'}}>
       <div className="footer-credits">
       &copy; <em id="date"></em>{new Date().getFullYear()} | Trinity Mutual Aid
-        <br />
-        {/* Source code released under MIT License. */}
       </div>
     </Row>
     <Row></Row>

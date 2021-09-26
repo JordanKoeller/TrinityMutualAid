@@ -28,10 +28,10 @@ export const TmaNavbar: React.FC = () => {
   const mq = useMediaQuery();
 
   const link = <Nav.Link
-  as={Button}
+  // as={Button}
   id="donate-button"
   style={{ borderRadius: 0, border: '0px solid #f00'}}
-  variant="outline-danger"
+  // variant="outline-danger"
   href="/Donate"
 >
   <b>Donate</b>

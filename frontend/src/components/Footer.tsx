@@ -21,12 +21,12 @@ export const Footer: React.FC = () => {
         </span>
         <span>
         <a href="https://twitter.com/trinmutualaid" target="_blank" rel="noreferrer">
-          <FontAwesomeIcon icon={faFacebook} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
+          <FontAwesomeIcon icon={faTwitter} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
         </a>
         </span>
         <span>
         <a href="https://www.facebook.com/trinity.mutualaid" target="_blank" rel="noreferrer">
-          <FontAwesomeIcon icon={faTwitter} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
+          <FontAwesomeIcon icon={faFacebook} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
         </a>
         </span>
       </div>

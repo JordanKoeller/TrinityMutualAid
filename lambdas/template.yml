@@ -12,6 +12,47 @@ Description: >-
 Transform:
 - AWS::Serverless-2016-10-31
 
+Parameters:
+  pStage:
+    Description: Environment stage
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+      - test
+  pGoogleClientSecret:
+    Description: Google OpenID client secret
+    Type: String
+    NoEcho: true
+
+Mappings:
+  StageValueMap:
+    dev:
+      mobileCallbackUrls:
+        - http://localhost:3000/home
+        - https://dev.mysmoothie.ai/home
+      webLogoutUrls:
+        - http://localhost:3000
+        - https://dev.mysmoothie.ai
+      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
+      s3DataBucket: dev-TMA-run-data
+    test:
+      mobileCallbackUrls:
+        - http://localhost:3000/home
+        - https://dev.mysmoothie.ai/home
+      webLogoutUrls:
+        - http://localhost:3000
+        - https://dev.mysmoothie.ai
+      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
+      s3DataBucket: dev-TMA-run-data
+    prod:
+      mobileCallbackUrls:
+        - https://www.mysmoothie.ai/home
+      webLogoutUrls:
+        - https://www.mysmoothie.ai
+      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
+      s3DataBucket: TMA-run-data
+
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -44,50 +85,178 @@ Resources:
           Properties:
             Path: /{id}
             Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      CodeUri: app/
-      Handler: dist/src/handlers/post.handler
-      Runtime: nodejs12.x
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
-  # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
+  # The following provisions a dynamodb table for user data tracking.
 
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  SampleTable:
+  UserData:
     Type: AWS::Serverless::SimpleTable
     Properties:
+      TableName: !Sub Editors
       PrimaryKey:
-        Name: id
+        Name: CognitoUsername
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  # The following defines infrastructure for the user pool. This should not be modified unless you know exactly what you're doing.
+  # Some actions could potentially delete accounts.
+
+  # Defining an API Gateway with cognito auth
+  TMAApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowCredentials: true
+        AllowMethods: "'GET,HEAD,OPTIONS,POST'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'https://www.mysmoothie.ai'"
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        DefaultAuthorizer: CognitoAuth
+        Authorizers:
+          CognitoAuth:
+            UserPoolArn: !GetAtt TMAUserPool.Arn
+
+  TMAUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub TMAUserPool-${pStage}
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+  TMAMobileWebClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref TMAUserPool
+      ClientName: !Sub TMAMobileWebClient-${pStage}
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+
+  TMAIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      IdentityPoolName: !Sub TMAIdentityPool-${pStage}
+      AllowClassicFlow: true
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders:
+        - ClientId: !Ref TMAMobileWebClient
+          ProviderName: !GetAtt TMAUserPool.ProviderName
+
+  # Defining an API Gateway with cognito auth
+  TMAApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Sub ${pStage}
+      Auth:
+        DefaultAuthorizer: CognitoAuth
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          CognitoAuth:
+            UserPoolArn: !GetAtt TMAUserPool.Arn
+      
+     # Cors:
+      #  AllowCredentials: false
+      #  AllowMethods: "'GET,HEAD,OPTIONS,POST'"
+      #  AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      #  AllowOrigin: "'*'"
+
+  CognitoUnAuthorizedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref TMAIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": unauthenticated
+      Policies:
+        - PolicyName: !Sub CognitoUnauthorizedPolicy-${pStage}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "mobileanalytics:PutEvents"
+                  - "cognito-sync:*"
+                Resource: "*"
+
+  # Create a role for authorized acces to AWS resources. Control what your user can access. This example only allows Lambda invokation
+  # Only allows users in the previously created Identity Pool
+  CognitoAuthorizedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref TMAIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
+      Policies:
+        - PolicyName: !Sub CognitoAuthorizedPolicy-${pStage}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "mobileanalytics:PutEvents"
+                  - "cognito-sync:*"
+                  - "cognito-identity:*"
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: "*"
+
+  # Assigns the roles to the Identity Pool
+  IdentityPoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId: !Ref TMAIdentityPool
+      Roles:
+        authenticated: !GetAtt CognitoAuthorizedRole.Arn
+        unauthenticated: !GetAtt CognitoUnAuthorizedRole.Arn
 
 Outputs:
+  # TMAApi:
+  #   Description: "API Gateway endpoint URL for Prod stage TMA functions"
+  #   Value: !Sub "https://${TMAApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  # IdentityPoolId:
+  #   Description:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${TMAApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  TMAUserPoolId:
+    Value: !Ref TMAUserPool
+    Export:
+      Name: !Sub "TMAUserPool-${pStage}::Id"
+  TMAMobileWebClientId:
+    Value: !Ref TMAMobileWebClient
+    Export:
+      Name: !Sub "TMAMobileWebClient-${pStage}::Id"
+  TMAIdentityPoolId:
+    Value: !Ref TMAIdentityPool
+    Export:
+      Name: !Sub "TMAIdentityPool-${pStage}::Id"

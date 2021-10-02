@@ -82,6 +82,25 @@ h2 {
 }
 
 #tma-logo {
+    justify-content: space-around;
+  }
+
+  .tma-card-group {
+    display: flex;
+    row-gap: 3em;
+    flex-wrap: wrap;
+    // column-gap: 6em;
+    justify-content: space-around;
+  }
+
+  .tma-card {
+    min-width: 20%;
+    max-width: 12em;
+    background-color: map-get($map: $theme-colors, $key: "secondary");
+    justify-content: space-around;
+  }
+  
+  #tma-logo {
     padding: 0 0 0 0;
     margin-left: auto;
     margin-right: auto;

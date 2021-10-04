@@ -8,6 +8,7 @@ import {
     NavDropdown,
 } from 'react-bootstrap';
 
+
 import {
     BrowserRouter as Router,
     Route,
@@ -26,6 +27,13 @@ import HomePage from '../pages/Home';
 import FAQsPage from '../pages/Faqs';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGE_MAP } from '../i18n';
+
+import { withAuthenticator } from '@aws-amplify/ui-react';
+
+const AuthPage = withAuthenticator(() => {
+  console.log("At the auth page");
+  return <HomePage />
+});
 
 
 const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) => void, }> = ({ i18n, setOpen, t }) => {
@@ -104,6 +112,9 @@ export const TmaRouter: React.FC = () => {
                     </Route>
                     <Route path="/Contact">
                         <ContactPage />
+                    </Route>
+                    <Route path="/Admin">
+                        <AuthPage />
                     </Route>
                     <Route path="">
                         <HomePage />

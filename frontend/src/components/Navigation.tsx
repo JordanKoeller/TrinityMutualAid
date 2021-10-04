@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-bootstrap';
 
+
 import {
   BrowserRouter as Router,
   Route,
@@ -22,6 +23,13 @@ import RequestAidPage from '../pages/RequestAid';
 import ResourcesPage from '../pages/Resources';
 import HomePage from '../pages/Home';
 
+import { withAuthenticator } from '@aws-amplify/ui-react';
+
+const AuthPage = withAuthenticator(() => {
+  console.log("At the auth page");
+  return <HomePage />
+});
+
 
 
 export const TmaNavbar: React.FC = () => {
@@ -29,39 +37,39 @@ export const TmaNavbar: React.FC = () => {
   const mq = useMediaQuery();
 
   const link = <Nav.Link
-  id="donate-button"
-  style={{ borderRadius: 0, border: '0px solid #f00'}}
-  href="/Donate">
-  <b>Donate</b>
-</Nav.Link>;
+    id="donate-button"
+    style={{ borderRadius: 0, border: '0px solid #f00' }}
+    href="/Donate">
+    <b>Donate</b>
+  </Nav.Link>;
 
-const collapser = <Navbar.Collapse>
-<Nav style={{margin: 'auto'}}>
-  <Nav.Link href="/About">About</Nav.Link>
-  <Nav.Link href="/RequestAid">Request Aid</Nav.Link>
-  <Nav.Link href="/News">News</Nav.Link>
-  <Nav.Link href="/Report">Annual Report</Nav.Link>
-  <Nav.Link href="/Resources">Resources</Nav.Link>
-  <Nav.Link href="/Contact">Contact</Nav.Link>
-</Nav>
-</Navbar.Collapse>;
+  const collapser = <Navbar.Collapse>
+    <Nav style={{ margin: 'auto' }}>
+      <Nav.Link href="/About">About</Nav.Link>
+      <Nav.Link href="/RequestAid">Request Aid</Nav.Link>
+      <Nav.Link href="/News">News</Nav.Link>
+      <Nav.Link href="/Report">Annual Report</Nav.Link>
+      <Nav.Link href="/Resources">Resources</Nav.Link>
+      <Nav.Link href="/Contact">Contact</Nav.Link>
+    </Nav>
+  </Navbar.Collapse>;
 
   return <Navbar collapseOnSelect bg="navbar" expand="lg" sticky="top">
-    <Container fluid="md"> 
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Brand as={() => <a href="/Home">
-      <Image src="/tma-logo-banner.png" alt="" id="tma-logo" />
+    <Container fluid="md">
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Brand as={() => <a href="/Home">
+        <Image src="/tma-logo-banner.png" alt="" id="tma-logo" />
       </a>}>
-    </Navbar.Brand>
-    {mq <= MediaQuery.MD ? <> {link} {collapser}</> : <>{collapser} {link}</>}
-  </Container>
+      </Navbar.Brand>
+      {mq <= MediaQuery.MD ? <> {link} {collapser}</> : <>{collapser} {link}</>}
+    </Container>
   </Navbar>
 }
 
 export const TmaRouter: React.FC = () => {
   return <Router>
     <Switch>
-    <Route path="/About">
+      <Route path="/About">
         <AboutPage />
       </Route>
       <Route path="/RequestAid">
@@ -81,6 +89,9 @@ export const TmaRouter: React.FC = () => {
       </Route>
       <Route path="/Contact">
         <ContactPage />
+      </Route>
+      <Route path="/Admin">
+        <AuthPage />
       </Route>
       <Route path="">
         <HomePage />

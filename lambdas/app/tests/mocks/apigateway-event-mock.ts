@@ -1,4 +1,4 @@
-import { ApiGatewayEvent } from '../../src/common/apigateway/apigateway-event';
+import { ApiGatewayEvent } from '../../src/common/types';
 
 export class ApiGatewayEventMock implements ApiGatewayEvent {
         body = '{ "id": "1", "title":"test", "isComplete": "false"}';
@@ -19,6 +19,20 @@ export class ApiGatewayEventMock implements ApiGatewayEvent {
             path: '/',
             resourcePath: '/',
             httpMethod: 'post',
-            apiId: 'abcdefg'
+            apiId: 'abcdefg',
+            identity: {
+              cognitoIdentityPoolId: 'cognitoIdentityPoolId',
+              accountId: 'accountId',
+              cognitoIdentityId: 'cognitoIdentityId',
+              caller: 'caller',
+              accessKey: 'accessKey',
+              sourceIp: 'sourceIp',
+              cognitoAuthenticationType: 'cognitoAuthenticationType',
+              cognitoAuthenticationProvider: 'cognitoAuthenticationProvider',
+              userArn: 'userArn',
+              userAgent: 'userAgent',
+              user: 'user',
+            }
+            
         };
 }

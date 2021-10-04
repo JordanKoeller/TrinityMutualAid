@@ -1,14 +1,6 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   tma
-
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform:
 - AWS::Serverless-2016-10-31
 
@@ -19,90 +11,14 @@ Parameters:
     AllowedValues:
       - dev
       - prod
-      - test
-  pGoogleClientSecret:
-    Description: Google OpenID client secret
-    Type: String
-    NoEcho: true
 
 Mappings:
   StageValueMap:
     dev:
-      mobileCallbackUrls:
-        - http://localhost:3000/home
-        - https://dev.mysmoothie.ai/home
-      webLogoutUrls:
-        - http://localhost:3000
-        - https://dev.mysmoothie.ai
-      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
-      s3DataBucket: dev-TMA-run-data
-    test:
-      mobileCallbackUrls:
-        - http://localhost:3000/home
-        - https://dev.mysmoothie.ai/home
-      webLogoutUrls:
-        - http://localhost:3000
-        - https://dev.mysmoothie.ai
-      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
-      s3DataBucket: dev-TMA-run-data
+      s3ResourcesBucket: dev-tma-files
     prod:
-      mobileCallbackUrls:
-        - https://www.mysmoothie.ai/home
-      webLogoutUrls:
-        - https://www.mysmoothie.ai
-      googleClientId: 485208879054-8ut7n3rtlvjl5a9aff4r9uqdhl9nvnet.apps.googleusercontent.com
-      s3DataBucket: TMA-run-data
-
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+      s3ResourcesBucket: prod-tma-files
 Resources:
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      CodeUri: app/
-      Handler: dist/src/handlers/get-by-id.handler
-      Runtime: nodejs12.x
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /{id}
-            Method: GET
-
-  # The following provisions a dynamodb table for user data tracking.
-
-  UserData:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      TableName: !Sub Editors
-      PrimaryKey:
-        Name: CognitoUsername
-        Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-
-  # The following defines infrastructure for the user pool. This should not be modified unless you know exactly what you're doing.
-  # Some actions could potentially delete accounts.
-
-  # Defining an API Gateway with cognito auth
   TMAApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -111,14 +27,86 @@ Resources:
         AllowCredentials: true
         AllowMethods: "'GET,HEAD,OPTIONS,POST'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: "'https://www.mysmoothie.ai'"
+        AllowOrigin: "'http://localhost:3000'"
       Auth:
         AddDefaultAuthorizerToCorsPreflight: false
         DefaultAuthorizer: CognitoAuth
         Authorizers:
           CognitoAuth:
             UserPoolArn: !GetAtt TMAUserPool.Arn
-
+  ArticlesCrudFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      CodeUri: app/
+      Handler: dist/src/handlers/articles.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 3
+      Description: Lambda for CRUD operations on articles.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Editors
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Articles
+        - S3CrudPolicy:
+            BucketName: !Ref S3ResourcesBucket
+      Environment:
+        Variables:
+          EDITORS_TABLE: !Ref Editors
+          ARTICLES_TABLE: !Ref Articles
+          RESOURCES_BUCKET: !Ref S3ResourcesBucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /hello
+            Method: GET
+  Editors:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Sub tma-editors-${pStage}
+      PrimaryKey:
+        Name: CognitoUsername
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  Articles:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Sub tma-articles-${pStage}
+      PrimaryKey:
+        Name: id
+        Type: Number
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  S3ResourcesBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !FindInMap [StageValueMap, !Ref pStage, s3ResourcesBucket]
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: ['GET', 'PUT']
+            AllowedOrigins:
+              - !Sub 'http://trinitymutualaid.com'
+              - !Sub 'http://www.trinitymutualaid.com'
+            MaxAge: 3000
+  BucketReadPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3ResourcesBucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${S3ResourcesBucket}/*'
+            Principal: '*'
   TMAUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -140,7 +128,6 @@ Resources:
       GenerateSecret: false
       SupportedIdentityProviders:
         - COGNITO
-
   TMAIdentityPool:
     Type: AWS::Cognito::IdentityPool
     Properties:
@@ -150,25 +137,6 @@ Resources:
       CognitoIdentityProviders:
         - ClientId: !Ref TMAMobileWebClient
           ProviderName: !GetAtt TMAUserPool.ProviderName
-
-  # Defining an API Gateway with cognito auth
-  TMAApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: !Sub ${pStage}
-      Auth:
-        DefaultAuthorizer: CognitoAuth
-        AddDefaultAuthorizerToCorsPreflight: false
-        Authorizers:
-          CognitoAuth:
-            UserPoolArn: !GetAtt TMAUserPool.Arn
-      
-     # Cors:
-      #  AllowCredentials: false
-      #  AllowMethods: "'GET,HEAD,OPTIONS,POST'"
-      #  AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-      #  AllowOrigin: "'*'"
-
   CognitoUnAuthorizedRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -192,12 +160,9 @@ Resources:
             Statement:
               - Effect: "Allow"
                 Action:
-                  - "mobileanalytics:PutEvents"
+                  # - "mobileanalytics:PutEvents"
                   - "cognito-sync:*"
                 Resource: "*"
-
-  # Create a role for authorized acces to AWS resources. Control what your user can access. This example only allows Lambda invokation
-  # Only allows users in the previously created Identity Pool
   CognitoAuthorizedRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -230,7 +195,6 @@ Resources:
                   - "lambda:InvokeFunction"
                 Resource: "*"
 
-  # Assigns the roles to the Identity Pool
   IdentityPoolRoleMapping:
     Type: "AWS::Cognito::IdentityPoolRoleAttachment"
     Properties:
@@ -240,11 +204,6 @@ Resources:
         unauthenticated: !GetAtt CognitoUnAuthorizedRole.Arn
 
 Outputs:
-  # TMAApi:
-  #   Description: "API Gateway endpoint URL for Prod stage TMA functions"
-  #   Value: !Sub "https://${TMAApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
-  # IdentityPoolId:
-  #   Description:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
     Value: !Sub "https://${TMAApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
@@ -252,11 +211,11 @@ Outputs:
     Value: !Ref TMAUserPool
     Export:
       Name: !Sub "TMAUserPool-${pStage}::Id"
-  TMAMobileWebClientId:
-    Value: !Ref TMAMobileWebClient
-    Export:
-      Name: !Sub "TMAMobileWebClient-${pStage}::Id"
   TMAIdentityPoolId:
     Value: !Ref TMAIdentityPool
     Export:
       Name: !Sub "TMAIdentityPool-${pStage}::Id"
+  TMAMobileWebClientId:
+    Value: !Ref TMAMobileWebClient
+    Export:
+      Name: !Sub "TMAMobileWebClient-${pStage}::Id"

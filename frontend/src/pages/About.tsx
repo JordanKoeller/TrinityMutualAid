@@ -1,6 +1,5 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
-import { Jumbotron, JumboVariant } from '../components/Jumbotron';
+import { Jumbotron } from '../components/Jumbotron';
 
 const AboutPage: React.FC = () => {
   return <div>

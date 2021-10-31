@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useContext } from 'react';
 
 import {
     Navbar,
@@ -28,10 +28,10 @@ import FAQsPage from '../pages/Faqs';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGE_MAP } from '../i18n';
 
-import { withAuthenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { EditorClientContext } from '../context/context';
 
 const AuthPage = withAuthenticator(() => {
-  console.log("At the auth page");
   return <HomePage />
 });
 
@@ -56,6 +56,7 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
 }
 
 export const TmaNavbar: React.FC = () => {
+  const ctx = useContext(EditorClientContext);
 
 
     const mq = useMediaQuery();

@@ -33,6 +33,7 @@ export interface ApiGatewayEvent {
   headers: Record<string, string>;
   requestContext: AuthenticatedRequestContext;
   pathParameters?: Record<string, string>;
+  multiValueQueryStringParameters?: Record<string, string[]>;
 }
 
 export interface ApiGatewayResponse {

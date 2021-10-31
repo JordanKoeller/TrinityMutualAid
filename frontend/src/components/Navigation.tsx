@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import {
   Navbar,
@@ -23,16 +23,17 @@ import RequestAidPage from '../pages/RequestAid';
 import ResourcesPage from '../pages/Resources';
 import HomePage from '../pages/Home';
 
-import { withAuthenticator } from '@aws-amplify/ui-react';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { EditorClientContext } from '../context/context';
 
 const AuthPage = withAuthenticator(() => {
-  console.log("At the auth page");
   return <HomePage />
 });
 
 
 
 export const TmaNavbar: React.FC = () => {
+  const ctx = useContext(EditorClientContext);
 
   const mq = useMediaQuery();
 
@@ -51,6 +52,9 @@ export const TmaNavbar: React.FC = () => {
       <Nav.Link href="/Report">Annual Report</Nav.Link>
       <Nav.Link href="/Resources">Resources</Nav.Link>
       <Nav.Link href="/Contact">Contact</Nav.Link>
+      {ctx?.loggedIn() ? 
+      <Nav.Link as={AmplifySignOut} >Sign out</Nav.Link> : null
+      }
     </Nav>
   </Navbar.Collapse>;
 

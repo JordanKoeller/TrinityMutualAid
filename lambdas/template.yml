@@ -43,7 +43,7 @@ Resources:
       Handler: dist/src/handlers/articles.handler
       Runtime: nodejs12.x
       MemorySize: 128
-      Timeout: 3
+      Timeout: 100
       Description: Lambda for CRUD operations on articles.
       Policies:
         - DynamoDBCrudPolicy:
@@ -58,11 +58,17 @@ Resources:
           ARTICLES_TABLE: !Ref Articles
           RESOURCES_BUCKET: !Ref S3ResourcesBucket
       Events:
-        Api:
+        Hello:
           Type: Api
           Properties:
             RestApiId: !Ref TMAApi
             Path: /hello
+            Method: GET
+        S3UploadUrl:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /file-upload
             Method: GET
   Editors:
     Type: AWS::Serverless::SimpleTable
@@ -92,10 +98,11 @@ Resources:
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders: ['*']
-            AllowedMethods: ['GET', 'PUT']
+            AllowedMethods: ['GET', 'PUT', 'HEAD']
             AllowedOrigins:
-              - !Sub 'http://trinitymutualaid.com'
-              - !Sub 'http://www.trinitymutualaid.com'
+              # - !Sub 'http://trinitymutualaid.com'
+              # - !Sub 'http://www.trinitymutualaid.com'
+              - 'http://localhost:3000'
             MaxAge: 3000
   BucketReadPolicy:
     Type: 'AWS::S3::BucketPolicy'
@@ -219,3 +226,6 @@ Outputs:
     Value: !Ref TMAMobileWebClient
     Export:
       Name: !Sub "TMAMobileWebClient-${pStage}::Id"
+  S3UploadBucketName:
+    Description: "S3 bucket for application uploads"
+    Value: !Ref S3ResourcesBucket

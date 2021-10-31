@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import './tma-styles.scss';
 import { Footer } from './components/Footer';
 import { TmaNavbar, TmaRouter } from './components/Navigation';
-import EditorClient from './context/client';
+import EditorClient, { useEditorClient } from './context/client';
 import { EditorClientContext } from './context/context';
 
 
@@ -19,11 +19,7 @@ Amplify.configure(config);
 
 function App() {
 
-  const [client, setClient] = useState<EditorClient | null>(null);
-
-  useEffect(() => {
-    setClient(new EditorClient(process.env.REACT_APP_REST_API as string));
-  }, [setClient])
+  const client = useEditorClient();
 
   return (
     <EditorClientContext.Provider value={client}>
@@ -39,5 +35,6 @@ function App() {
     </EditorClientContext.Provider>
   );
 }
+
 
 export default App;

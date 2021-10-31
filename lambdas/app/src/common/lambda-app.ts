@@ -45,7 +45,10 @@ export class LambdaApp {
     }
     return {
       statusCode: 500,
-      body: JSON.stringify({message: `No handler set up for ${event.httpMethod} ${event.path}`})
+      body: JSON.stringify({
+        message: `No handler set up for ${event.httpMethod} ${event.path}`,
+        routes: this.handlers.map(handle => handle.method),
+      }),
     };
   }
 

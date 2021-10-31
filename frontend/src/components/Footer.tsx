@@ -13,27 +13,34 @@ export const Footer: React.FC = () => {
 
   const mq = useMediaQuery();
   return <Container fluid bsPrefix="footer" >
-      <div id="socials-bar">
-        <span>
+    <div id="socials-bar">
+      <span>
         <a href="https://www.instagram.com/trinitymutualaid" target="_blank" rel="noreferrer">
           <FontAwesomeIcon icon={faInstagram} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
         </a>
-        </span>
-        <span>
+      </span>
+      <span>
         <a href="https://twitter.com/trinmutualaid" target="_blank" rel="noreferrer">
-          <FontAwesomeIcon icon={faFacebook} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
+          <FontAwesomeIcon icon={faFacebook} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
         </a>
-        </span>
-        <span>
+      </span>
+      <span>
         <a href="https://www.facebook.com/trinity.mutualaid" target="_blank" rel="noreferrer">
-          <FontAwesomeIcon icon={faTwitter} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link"/>
+          <FontAwesomeIcon icon={faTwitter} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
         </a>
-        </span>
-      </div>
-      <div>
+      </span>
+    </div>
+    <div>
       &copy; <em id="date"></em>{new Date().getFullYear()} | Trinity Mutual Aid
       <br />
-       Trinity Mutual Aid is unaffiliated with Trinity University
-      </div>
+      Trinity Mutual Aid is unaffiliated with Trinity University
+      <br />
+      Fiscally Sponsored by Community Housing Resource Partners
+    </div>
+    <div>
+      <a href="https://www.chrpartners.org/" target="_blank" rel="noreferrer">
+        <img src="/chr-logo.png" alt="" id="chr-logo" height="70" style={{ backgroundColor: '#fff' }} />
+      </a>
+    </div>
   </Container>;
 }

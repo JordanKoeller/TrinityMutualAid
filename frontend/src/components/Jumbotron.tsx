@@ -4,7 +4,18 @@ import {
   Container,
 } from 'react-bootstrap';
 
-const Jumbotron = () => {
-  return <Container fluid="lg">
+export type JumboVariant = 'light' | 'dark';
+export type JumboJustify = 'left' | 'center' | 'right';
+
+export const Jumbotron: React.FC<{
+  variant?: JumboVariant,
+  title?: string,
+  justify?: JumboJustify
+}> = ({children, variant='light', title, justify='center'}) => {
+  return <Container fluid bsPrefix={`jumbotron-${variant}`} style={{textAlign: justify}}>
+    <Container fluid="lg">
+      {title ? <h1 className="jumbotron-title">{title}</h1> : null}
+    {children}
+    </Container>
   </Container>
 }

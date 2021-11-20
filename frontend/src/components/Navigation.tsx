@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import {
   Navbar,
@@ -30,6 +30,8 @@ export const TmaNavbar: React.FC = () => {
 
   const mq = useMediaQuery();
 
+  const [open, setOpen] = useState(false);
+
   const link = useMemo(() => <Link
     className="donate-button"
     style={{ borderRadius: 0, border: '0px solid #f00' }}
@@ -40,19 +42,19 @@ export const TmaNavbar: React.FC = () => {
 
   const collapser = useMemo(() => <Navbar.Collapse>
     <Nav style={{ margin: 'auto' }}>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/About">About</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/RequestAid">Request Aid</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/News">News</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/Report">Annual Report</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/Resources">Resources</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/FAQs">FAQs</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/Contact">Contact</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/About" onClick={() => setOpen(false)} >About</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/RequestAid" onClick={() => setOpen(false)}>Request Aid</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={() => setOpen(false)}>News</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/Report" onClick={() => setOpen(false)}>Annual Report</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={() => setOpen(false)}>Resources</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={() => setOpen(false)}>FAQs</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/Contact" onClick={() => setOpen(false)}>Contact</Link>
     </Nav>
-  </Navbar.Collapse>, []);
+  </Navbar.Collapse>, [setOpen]);
 
-  return <Navbar collapseOnSelect bg="navbar" expand="lg" sticky="top">
+  return <Navbar bg="navbar" expand="lg" sticky="top" expanded={open}>
     <Container fluid="md">
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={()=> setOpen(!open)} />
       <Navbar.Brand as={() => <a href="/Home">
         <Image src="/tma-logo-banner.png" alt="" id="tma-logo" />
       </a>}>

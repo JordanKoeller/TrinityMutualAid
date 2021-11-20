@@ -3,6 +3,7 @@
 $theme-colors: (
   "primary": rgb(75, 111, 86),
   "secondary": rgb(253, 167, 124),
+  "secondary-dark": #e24e03,
   "primary-dark": #3e5b47,
   "secondary-1": rgb(53, 55, 59),
   "secondary-2": rgb(60, 47, 82),
@@ -23,6 +24,11 @@ a {
 a:hover {
   color: map-get($map: $theme-colors, $key: "secondary");
   text-decoration: underline;
+}
+
+p {
+  font-size:calc(14px + 0.4vw);
+
 }
 
 .App-header {
@@ -122,6 +128,7 @@ a:hover {
 .jumbotron-title {
   color: map-get($map: $theme-colors, $key: "secondary");
 }
+
 
 @media only screen and (max-width: 1200px) {
   #tma-logo {

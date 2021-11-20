@@ -45,7 +45,7 @@ export const TmaNavbar: React.FC = () => {
       <Link className="nav-link" activeClassName="nav-link-active" to="/About" onClick={() => setOpen(false)} >About</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/RequestAid" onClick={() => setOpen(false)}>Request Aid</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={() => setOpen(false)}>News</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/Report" onClick={() => setOpen(false)}>Annual Report</Link>
+      {/* <Link className="nav-link" activeClassName="nav-link-active" to="/Report" onClick={() => setOpen(false)}>Annual Report</Link> */}
       <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={() => setOpen(false)}>Resources</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={() => setOpen(false)}>FAQs</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/Contact" onClick={() => setOpen(false)}>Contact</Link>

@@ -1,45 +1,45 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Jumbotron } from '../components/Jumbotron';
 
 const FAQsPage: React.FC = () => {
-  return <div>
-    <Jumbotron title="What kind of aid do you provide?" justify="left">
-      <p>
-        We provide financial assistance to help cover medical expenses, housing and
-        utility expenses, and food expenses. These are distributed in the form of
-        reimbursements that can be obtained through
-        our <Link to="/RequestAid" > request for aid process.</Link>
-      </p>
-    </Jumbotron>
-    <br />
-    <Jumbotron title="How can I help support TMA?" variant="dark" justify="left">
-      <p>
-        TMA relies on donors in order to provide assistance, so donating via
-        our <Link to="/Donate" >donation form</Link> is
-        a great way to support our efforts. You can also follow us on instagram
-        and share our content to get the word out about our organization!
-      </p>
-    </Jumbotron>
-    <br />
-    <Jumbotron title="How do I request aid from TMA?" variant="light" justify="left">
-      <p>
-        Glad you asked! Please see
-        our <Link to="/RequestAid">requesting aid</Link> form
-        for more details.
-      </p>
-    </Jumbotron>
-    <br />
-    <Jumbotron title="How many times/how often may I request aid from TMA?" variant="dark" justify="left">
-      ???
-    </Jumbotron>
-    <br />
-    <Jumbotron title="When is the next TMA event/fundraiser?" variant="light" justify="left">
-      <p>
-        Please refer to our <Link to="/Events" >events page</Link>!
-      </p>
-    </Jumbotron>
-  </div>
+    const { t } = useTranslation(undefined, { useSuspense: false });
+    return <div>
+        <Jumbotron title={t('pages.FAQs.0.title')} justify="left">
+            <p>
+                {(t('pages.FAQs.0.body1'))}
+                <Link to="/RequestAid" >{(t('pages.FAQs.0.link'))}</Link>
+            </p>
+        </Jumbotron>
+        <br />
+        <Jumbotron title={t('pages.FAQs.1.title')} variant="dark" justify="left">
+            <p>
+                {t('pages.FAQs.1.body1')}
+                <Link to="/Donate" >{t('pages.FAQs.1.link')}</Link> is
+                {t('pages.FAQs.1.body2')}
+            </p>
+        </Jumbotron>
+        <br />
+        <Jumbotron title={t('pages.FAQs.2.title')} variant="light" justify="left">
+            <p>
+                {t('pages.FAQs.2.body1')}
+                <Link to="/Donate" >{t('pages.FAQs.2.link')}</Link> is
+                {t('pages.FAQs.2.body2')}
+            </p>
+        </Jumbotron>
+        <br />
+        <Jumbotron title={t('pages.FAQs.3.title')} variant="dark" justify="left">
+            {t('pages.FAQs.3.body')}
+        </Jumbotron>
+        <br />
+        <Jumbotron title={t('pages.FAQs.4.title')} variant="light" justify="left">
+            <p>
+                {t('pages.FAQs.4.body1')}
+                <Link to="/Events" >{t('pages.FAQs.2.link')}</Link>!
+            </p>
+        </Jumbotron>
+    </div>
 }
 
 export default FAQsPage;

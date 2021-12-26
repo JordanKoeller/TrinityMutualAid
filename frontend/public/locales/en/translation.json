@@ -1,0 +1,70 @@
+{
+    "navbar": {
+        "About": "About",
+        "Request Aid": "Request Aid",
+        "News": "News",
+        "FAQs": "FAQs",
+        "Resources": "Resources",
+        "Contact": "Contact",
+        "Donate": "Donate"
+    },
+    "pages": {
+        "Home": {
+            "Title": "Redistributing Wealth in the San Anotnio Community"
+        },
+        "About": {
+            "0": {
+                "title": "Redistributing Wealth",
+                "body": "Trinity Mutual Aid is a student-run organization (unaffiliated with Trinity University) that focuses on redistributing wealth within the San Antonio community. Our organization provides aid to those in need of financial assistance with medical expenses, housing expenses, and food insecurity. We do so in hopes of strengthening community connections so we can fulfill collective needs together."
+            },
+            "1": {
+                "title": "How we Started",
+                "body": "TMA was created in the fall of 2020 with a primary focus of combating food insecurity. Pantry runs were our primary form of outreach. Our focus expanded in February of 2021, when the winter storm that hit Texas created a huge need for aid. We provided aid to folks in need of assistance with utility bills, medical bills, and more, as well as distributing essential cold-weather items to houseless folks."
+            },
+            "2": {
+                "title": "A Wider Network of Aid",
+                "body": "We have affiliated with local non-profit Community Housing Resource Partners, an organization that focuses on developing affordable housing to promote “self-sufficiency, education, health and wellness, and stable communities.” This partnership ensures long-term sustainability in our organization so that we can continue to provide aid within the community."
+            }
+        },
+        "Donate": {
+            "0": {
+                "title": "Donate!",
+                "body": "Make a financial contribution to Trinity Mutual Aid to continue supporting the San Antonio community! Help keep food pantries and fridges stocked and provide assistance for folks who need funds with medical expenses, housing, and utility expenses. Keep up with our news page to check out how contributions have helped us redistribute aid throughout the area! We are able to process donations through online platforms. Make a one-time contribution or become a recurring donor!"
+            }
+        },
+        "FAQs": {
+            "0": {
+                "title": "What kind of aid do you provide?",
+                "body1": "We provide financial assistance to help cover medical expenses, housing and utility expenses, and food expenses. These are distributed in the form of reimbursements that can be obtained through our ",
+                "link": "request for aid process."
+            },
+            "1": {
+                "title": "How can I help support TMA?",
+                "body1": "TMA relies on donors in order to provide assistance, so donating via our ",
+                "link": "donation form",
+                "body2": "a great way to support our efforts. You can also follow us on instagram and share our content to get the word out about our organization!"
+            },
+            "2": {
+                "title": "How do I request aid from TMA?",
+                "body1": "Glad you asked! Please see our ",
+                "link": "requesting aid",
+                "body2": "form for more details."
+
+            },
+            "3": {
+                "title": "How many times/how often may I request aid from TMA?",
+                "body": "???"
+            },
+            "4": {
+                "title": "What is the next TMA event/fundraiser?",
+                "body1": "Please refer to our ",
+                "link": "events page"
+            }
+        }
+    },
+    "footer": {
+        "affiliation": "Trinity Mutual Aid is unaffiliated with Trinity University",
+        "sponsor": "Fiscally Sponsored by Community Housing Resource Partners",
+        "mutualhub": "Additional Mutual Aid Resources"
+    }
+}

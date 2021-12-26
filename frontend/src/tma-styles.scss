@@ -1,162 +1,175 @@
 @import "../node_modules/bootstrap/scss/bootstrap";
 
 $theme-colors: (
-  "primary": rgb(75, 111, 86),
-  "secondary": rgb(253, 167, 124),
-  "secondary-dark": #e24e03,
-  "primary-dark": #3e5b47,
-  "secondary-1": rgb(53, 55, 59),
-  "secondary-2": rgb(60, 47, 82),
-  "secondary-3": rgb(175, 162, 197),
-  "secondary-4": rgb(228, 231, 232),
-  "tertiary": #ce4b6c,
+    "primary": rgb(75, 111, 86),
+    "secondary": rgb(253, 167, 124),
+    "secondary-dark": #e24e03,
+    "primary-dark": #3e5b47,
+    "secondary-1": rgb(53, 55, 59),
+    "secondary-2": rgb(60, 47, 82),
+    "secondary-3": rgb(175, 162, 197),
+    "secondary-4": rgb(228, 231, 232),
+    "tertiary": #ce4b6c,
 );
 
 .App {
-  text-align: center;
-  background-color: map-get($map: $theme-colors, $key: "primary");
+    text-align: center;
+    background-color: map-get($map: $theme-colors, $key: "primary");
 }
 
 a {
-  color: map-get($map: $theme-colors, $key: "secondary");
-  text-decoration: none;
+    color: map-get($map: $theme-colors, $key: "secondary");
+    text-decoration: none;
 }
 a:hover {
-  color: map-get($map: $theme-colors, $key: "secondary");
-  text-decoration: underline;
+    color: map-get($map: $theme-colors, $key: "secondary");
+    text-decoration: underline;
 }
 
 p {
-  font-size:calc(14px + 0.4vw);
+    font-size: calc(14px + 0.4vw);
 }
 
 h2 {
-  font-size:calc(14px + 0.8vw);
+    font-size: calc(14px + 0.8vw);
 }
 
 .App-header {
-  background-color: map-get($map: $theme-colors, $key: "primary");
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(4px + 2vmin);
-  color: map-get($map: $theme-colors, $key: "secondary-4");
+    background-color: map-get($map: $theme-colors, $key: "primary");
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(4px + 2vmin);
+    color: map-get($map: $theme-colors, $key: "secondary-4");
 }
 
 .bg-navbar {
-  background-color: map-get($map: $theme-colors, $key: "primary-dark");
-  padding: 0px;
-  color: map-get($map: $theme-colors, $key: "secondary-4");
+    background-color: map-get($map: $theme-colors, $key: "primary-dark");
+    padding: 0px;
+    color: map-get($map: $theme-colors, $key: "secondary-4");
 }
 
 .donate-button {
-  color: map-get($map: $theme-colors, $key: "secondary");
-  font-size: larger;
-  text-decoration: none;
+    color: map-get($map: $theme-colors, $key: "secondary");
+    font-size: larger;
+    text-decoration: none;
 }
 
 .donate-button-active:hover {
-  color: map-get($map: $theme-colors, $key: "tertiary");
-  font-size: larger;
-  text-decoration: none;
+    color: map-get($map: $theme-colors, $key: "tertiary");
+    font-size: larger;
+    text-decoration: none;
 }
 
 .donate-button-active {
-  color: map-get($map: $theme-colors, $key: "tertiary");
-  font-size: larger;
-  // text-decoration: none;
+    color: map-get($map: $theme-colors, $key: "tertiary");
+    font-size: larger;
+    // text-decoration: none;
 }
 
 .footer-fluid {
-  background-color: map-get($map: $theme-colors, $key: "primary-dark");
-  font-size: large;
-  // width: 100%;
-  height: 20em;
-  min-height: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  color: map-get($map: $theme-colors, $key: "secondary-4");
+    background-color: map-get($map: $theme-colors, $key: "primary-dark");
+    font-size: large;
+    // width: 100%;
+    height: 20em;
+    min-height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    color: map-get($map: $theme-colors, $key: "secondary-4");
 }
 
 #tma-logo {
-  padding: 0 0 0 0;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 48px;
+    padding: 0 0 0 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 48px;
 }
 
 #socials-bar {
-  display: flex;
-  justify-content: space-around;
-  width: 20em;
-  margin-left: auto;
-  margin-right: auto;
+    display: flex;
+    justify-content: space-around;
+    width: 20em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.language-dropdown {
+    color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+#language-dropdown {
+    color: map-get($map: $theme-colors, $key: "secondary");
 }
 
 .socials-link {
-  color: map-get($map: $theme-colors, $key: "secondary");
+    color: map-get($map: $theme-colors, $key: "secondary");
 }
 
 .navbar-light .navbar-nav .nav-link {
-  color: map-get($map: $theme-colors, $key: "secondary-4");
-  font-size: larger;
+    color: map-get($map: $theme-colors, $key: "secondary-4");
+    font-size: larger;
 }
 .navbar-light .navbar-nav .nav-link:hover {
-  color: map-get($map: $theme-colors, $key: "secondary-2");
-  font-size: larger;
-  text-decoration: none;
+    color: map-get($map: $theme-colors, $key: "secondary");
+    font-size: larger;
+    text-decoration: none;
+}
+
+.navbar-light .navbar-nav .nav-link:focus {
+    color: map-get($map: $theme-colors, $key: "secondary");
+    font-size: larger;
+    text-decoration: none;
 }
 
 .navbar-light .navbar-nav .nav-link-active {
-  color: map-get($map: $theme-colors, $key: "secondary-1");
-  font-size: larger;
+    color: map-get($map: $theme-colors, $key: "tertiary");
+    font-size: larger;
 }
 
 .jumbotron-dark-fluid {
-  background-color: map-get($map: $theme-colors, $key: "primary-dark");
-  padding-top: 1.5em;
-  padding-bottom: 1.5em;
+    background-color: map-get($map: $theme-colors, $key: "primary-dark");
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
 }
 
 .jumbotron-light-fluid {
-  background-color: map-get($map: $theme-colors, $key: "primary-light");
-  width: 100vw;
+    background-color: map-get($map: $theme-colors, $key: "primary-light");
+    width: 100vw;
 }
 
 .jumbotron-title {
-  color: map-get($map: $theme-colors, $key: "secondary");
+    color: map-get($map: $theme-colors, $key: "secondary");
 }
 
-
 @media only screen and (max-width: 1200px) {
-  #tma-logo {
-    height: 36px;
-  }
+    #tma-logo {
+        height: 36px;
+    }
 }
 
 @media only screen and (max-width: 576px) {
-  #tma-logo {
-    height: 24px;
-  }
+    #tma-logo {
+        height: 24px;
+    }
 }
 
 @media only screen and (max-width: 398px) {
-  #tma-logo {
-    height: 15px;
-  }
+    #tma-logo {
+        height: 15px;
+    }
 }
 
 body {
-  margin: 0;
-  font-family: "Libre Franklin", Lora, Georgia, "Times New Roman", Times;
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: "Libre Franklin", Lora, Georgia, "Times New Roman", Times;
+    /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', */
-  /* sans-serif; */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* sans-serif; */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

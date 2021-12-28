@@ -1,11 +1,15 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
-import { Wyswyg } from '../components/WyswigEditor';
+import { TextJumbotron } from '../components/Jumbotron';
+import { TopSpacer } from '../components/TopSpacer';
 
 const AboutPage: React.FC = () => {
-  return <Container fluid="md">
-    <Wyswyg />
-  </Container>
+
+    return <div>
+        <TopSpacer />
+        <TextJumbotron variant="light" i18nKey="pages.About.0" />
+        <TextJumbotron variant="dark" i18nKey="pages.About.1" />
+        <TextJumbotron variant="light" i18nKey="pages.About.2" />
+    </div>
 }
 
 export default AboutPage;

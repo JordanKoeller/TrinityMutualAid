@@ -9,9 +9,9 @@ import EditorClient, { useEditorClient } from './context/client';
 import { EditorClientContext } from './context/context';
 
 
-import Amplify, {Auth} from 'aws-amplify';
+import Amplify, { Auth } from 'aws-amplify';
 
-import {config} from './aws-config';
+import { config } from './aws-config';
 
 
 Auth.configure(config);
@@ -19,21 +19,18 @@ Amplify.configure(config);
 
 function App() {
 
-  const client = useEditorClient();
+    const client = useEditorClient();
 
-  return (
-    <EditorClientContext.Provider value={client}>
-      <div className="App">
-          <TmaNavbar />
-        <div id="App-body">
-          <TmaRouter />
-        </div>
-        <div>
-          <Footer />
-        </div>
-      </div>
-    </EditorClientContext.Provider>
-  );
+    return (
+        <EditorClientContext.Provider value={client}>
+            <div className="App">
+                <TmaRouter />
+                <div>
+                    <Footer />
+                </div>
+            </div>
+        </EditorClientContext.Provider>
+    );
 }
 
 

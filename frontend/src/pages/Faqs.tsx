@@ -2,10 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Jumbotron } from '../components/Jumbotron';
+import { TopSpacer } from '../components/TopSpacer';
 
 const FAQsPage: React.FC = () => {
     const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
+        <TopSpacer />
+        <h1 className="jumbotron-title">{t('navbar.FAQs')}</h1>
         <Jumbotron title={t('pages.FAQs.0.title')} justify="left">
             <p>
                 {(t('pages.FAQs.0.body1'))}
@@ -37,6 +40,21 @@ const FAQsPage: React.FC = () => {
             <p>
                 {t('pages.FAQs.4.body1')}
                 <Link to="/Events" >{t('pages.FAQs.2.link')}</Link>!
+            </p>
+        </Jumbotron>
+        <Jumbotron title={t('pages.FAQs.5.title')} variant="dark" justify="left">
+            <p>
+                {t('pages.FAQs.5.body')}
+            </p>
+        </Jumbotron>
+        <Jumbotron title={t('pages.FAQs.6.title')} variant="light" justify="left">
+            <p>
+                <b> {t('pages.FAQs.6.body1')}
+                    <br />
+                    - Dean Spade
+                </b>
+                < br />
+                {t('pages.FAQs.6.body2')}
             </p>
         </Jumbotron>
     </div>

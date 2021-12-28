@@ -1,9 +1,11 @@
 import React from 'react';
 import { CardDeck, InfoCard } from '../components/InfoCard';
 import { TextJumbotron } from '../components/Jumbotron';
+import { TopSpacer } from '../components/TopSpacer';
 
 const DonatePage: React.FC = () => {
     return <div>
+        <TopSpacer />
         <TextJumbotron variant="light" i18nKey="pages.Donate.0" />
         <br />
         <CardDeck>

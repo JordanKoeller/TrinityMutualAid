@@ -59,9 +59,19 @@
                 "title": "What is the next TMA event/fundraiser?",
                 "body1": "Please refer to our ",
                 "link": "events page"
+            },
+            "5": {
+                "title": "What is a pantry run?",
+                "body": "Pantry runs consist of volunteers individually purchasing groceries and other necessities (batteries, diapers, menstrual products, etc) to stock up local food pantries and fridges. These pantries and fridges operate independently throughout San Antonio and serve their neighbors on a ‘take what you need, give what you can’ basis. Once volunteers purchase their groceries, TMA is able to reimburse them for the total amount with proof of receipt. If you’re interested in more information regarding pantry runs or would like to be reimbursed for one, please contact us via our contact page!"
+            },
+            "6": {
+                "title": "What is Mutual Aid?",
+                "body1": "\"When people band together to meet immediate survival needs, usually because of a shared understanding that the systems in place aren't coming to meet them, or certainly not fast enough.\"",
+                "body2": "An important note is that non-profit work and mutual aid work ARE DIFFERENT."
             }
         }
     },
+    "tmaInNews": "TMA in the News",
     "footer": {
         "affiliation": "Trinity Mutual Aid is unaffiliated with Trinity University",
         "sponsor": "Fiscally Sponsored by Community Housing Resource Partners",

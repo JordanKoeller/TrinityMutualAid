@@ -1,9 +1,11 @@
 import React from 'react';
 import { CardDeck, InfoCard } from '../components/InfoCard';
+import { TopSpacer } from '../components/TopSpacer';
 
 const NewsPage: React.FC = () => {
 
     return <>
+    <TopSpacer />
         <h1 className="jumbotron-title">TMA in the News</h1>
         <CardDeck fluid={true}>
             <InfoCard title="Trinity Mutual Aid raises $3000 at community market" href="https://trinitonian.com/2021/09/23/trinity-mutual-aid-raises-3000-at-community-market/#">

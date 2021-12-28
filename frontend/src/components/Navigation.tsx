@@ -29,11 +29,9 @@ import { LANGUAGE_MAP } from '../i18n';
 
 
 const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) => void, }> = ({ i18n, setOpen, t }) => {
-
     const closeAll = () => {
         setOpen(false);
     }
-
     return <Navbar.Collapse>
         <Nav style={{ margin: 'auto' }}>
             <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={closeAll}>{t('navbar.News')}</Link>

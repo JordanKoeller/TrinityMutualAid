@@ -102,46 +102,87 @@ h2 {
     color: map-get($map: $theme-colors, $key: "secondary");
 }
 
-  .wyswyg-wrapper-class {
-    padding: 1rem;
-    border: 1px solid map-get($map: $theme-colors, $key: "primary-dark");
-    background-color:map-get($map: $theme-colors, $key: "primary-dark");
-  }
-  .wyswyg-editor-class {
-    background-color:map-get($map: $theme-colors, $key: "primary-dark");
-    padding: 1rem;
-    border: 1px solid map-get($map: $theme-colors, $key: "primary-dark");
-  }
-  .wyswyg-toolbar-class {
-    color: black;
-    border: 1px solid map-get($map: $theme-colors, $key: "primary-dark");
-    background-color:map-get($map: $theme-colors, $key: "primary-dark");
-  }
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+.editor {
+    box-sizing: border-box;
+    border: 1px solid map-get($map: $theme-colors, $key: "primary");
+    cursor: text;
+    padding: 16px;
+    border-radius: 2px;
+    margin-bottom: 2em;
+    box-shadow: inset 0px 1px 8px -3px #ababab;
+    background: map-get($map: $theme-colors, $key: "primary");
+}
 
-  
-  @media only screen and (max-width: 1200px) {
+.editor :global(.public-DraftEditor-content) {
+    min-height: 140px;
+}
+.input {
+    height: 34px;
+    width: 220px;
+    padding: 0 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background-color: transparent;
+    border: none;
+    color: #ddd;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.input::placeholder {
+    color: #aaa;
+}
+
+.inputInvalid {
+    color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+.link {
+    color: map-get($map: $theme-colors, $key: "secondary");
+    text-decoration: none;
+}
+
+.options {
+    margin-bottom: 20px;
+}
+
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+
+@media only screen and (max-width: 1200px) {
     #tma-logo {
-      height: 36px;
+        height: 36px;
     }
-  }
-  
-  @media only screen and (max-width: 576px) {
+}
+
+@media only screen and (max-width: 576px) {
     #tma-logo {
-      height: 24px;
+        height: 24px;
     }
     .tma-card {
-      width: 100%;
-      max-width: 100%;
+        width: 100%;
+        max-width: 100%;
     }
-  }
-  
-  
-  @media only screen and (max-width: 398px) {
+}
+
+@media only screen and (max-width: 398px) {
     #tma-logo {
-      height: 15px;
+        height: 15px;
     }
-  }
-  
+}
+
 #language-dropdown {
     color: map-get($map: $theme-colors, $key: "secondary");
 }
@@ -214,4 +255,3 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: map-get($map: $theme-colors, $key: "primary");
 }
-

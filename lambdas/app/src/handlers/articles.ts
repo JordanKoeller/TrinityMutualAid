@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import { Handler, LambdaApp } from '../common/lambda-app';
 import {
-  ApiGatewayEvent, AuthenticatedRequestContext, ApiGatewayResponse
+  ApiGatewayEvent, ApiGatewayResponse
 } from '../common/types';
 
 AWS.config.update({region: process.env.AWS_REGION});
@@ -14,7 +14,7 @@ export class HelloHandler extends Handler {
     super({endpoint: '/hello', method: 'GET'});
   }
 
-  async handle(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
+  async handle(event: ApiGatewayEvent): Promise<ApiGatewayResponse> {
     return {
       statusCode: 200,
       body: JSON.stringify({"message": "This worked!", cognito: event.requestContext.identity}),
@@ -29,7 +29,7 @@ export class FileUploadHandler extends Handler {
     super({endpoint: '/file-upload', method: 'GET'});
   }
   
-  async handle(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
+  async handle(event: ApiGatewayEvent): Promise<ApiGatewayResponse> {
     const s3 = new AWS.S3();
     const URL_EXPIRATION_SECONDS = 300
     const randomID = Math.random() * 10000000;

@@ -1,2 +1,7 @@
 node_modules
 **/node_modules
+
+.env
+**/.env
+**/.aws-sam
+.aws-sam

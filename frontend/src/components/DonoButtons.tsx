@@ -41,7 +41,7 @@ export const SquareSingleDonoButton: React.FC = () => {
         });
     })
     return (
-        <div style={{margin: 'auto'}}>
+        <div style={{ margin: 'auto' }}>
             <div >
                 <div id="renderedCheckoutButtonHTML" >
                     <div style={{ padding: '20px' }}>
@@ -116,7 +116,7 @@ export const SquareRecurringDonoButton: React.FC = () => {
         });
     });
     return (
-        <div style={{margin: 'auto'}}>
+        <div style={{ margin: 'auto' }}>
             <div ><div id="renderedCheckoutButtonHTML">
                 <div style={{ padding: '20px' }}>
                     <p style={{ fontSize: '18px', lineHeight: '20px' }}>

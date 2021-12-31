@@ -33,7 +33,7 @@ export const InfoCard: React.FC<{
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
-                        justifyContent: 'space-evenly', 
+                        justifyContent: 'space-evenly',
                         alignItems: 'baseline',
                         alignContent: 'space-evenly',
                         flexWrap: 'wrap',

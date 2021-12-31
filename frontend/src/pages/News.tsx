@@ -4,9 +4,9 @@ import { CardDeck, InfoCard } from '../components/InfoCard';
 import { TopSpacer } from '../components/TopSpacer';
 
 const NewsPage: React.FC = () => {
-    const { t } = useTranslation(undefined, {useSuspense: false});
+    const { t } = useTranslation(undefined, { useSuspense: false });
     return <>
-    <TopSpacer />
+        <TopSpacer />
         <h1 className="jumbotron-title">TMA in the News</h1>
         <CardDeck fluid={true}>
             <InfoCard title={t('pages.News.0')} href="https://trinitonian.com/2021/09/23/trinity-mutual-aid-raises-3000-at-community-market/#">

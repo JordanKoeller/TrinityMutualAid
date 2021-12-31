@@ -1,18 +1,25 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { CardDeck, InfoCard } from '../components/InfoCard';
-import { TextJumbotron } from '../components/Jumbotron';
+import { SplitPanel } from '../components/SplitPanel';
+import { TextBox } from '../components/Text';
 import { TopSpacer } from '../components/TopSpacer';
 const Home: React.FC = () => {
-    const { t } = useTranslation(undefined, {useSuspense: false});
+    const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
         <TopSpacer />
-        <TextJumbotron variant="light" i18nKey="pages.About.0" />
-        <TextJumbotron variant="dark" i18nKey="pages.About.1" />
-        <TextJumbotron variant="light" i18nKey="pages.About.2" />
+        <SplitPanel src="table.jpg" imageFraction={0.4} imageFirst variant="dark">
+            <TextBox i18nKey="pages.About.0" />
+        </SplitPanel>
+        <SplitPanel src="sign.JPEG" imageFraction={0.4} variant="light">
+            <TextBox i18nKey="pages.About.1" />
+        </SplitPanel>
+        <SplitPanel src="thumbs.JPG" imageFraction={0.4} imageFirst variant="dark">
+            <TextBox i18nKey="pages.About.2" />
+        </SplitPanel>
         <h1 className="jumbotron-title">{t('tmaInNews')}</h1>
         <CardDeck fluid={true}>
-        <InfoCard title={t('pages.News.0')} href="https://trinitonian.com/2021/09/23/trinity-mutual-aid-raises-3000-at-community-market/#">
+            <InfoCard title={t('pages.News.0')} href="https://trinitonian.com/2021/09/23/trinity-mutual-aid-raises-3000-at-community-market/#">
                 <img alt="" src="https://trinitonian.com/wp-content/uploads/2021/09/eS3vaotZqzCpmJKpblhGgJhrQeJlkHqR44IRpRfF-900x600.jpeg" width="100%" />
                 <p>
                     If you walked into What’s Brewing Roastery and Cafe on Saturday, Sept. 11, you would have imme...
@@ -31,9 +38,7 @@ const Home: React.FC = () => {
                     With huge gaps in the state and local response to the winter crisis, volunteers are stepping up...
                 </p>
             </InfoCard>
-        </CardDeck>
-        <CardDeck fluid={true}>
-        <InfoCard title={t('pages.News.3')} href="https://www.trinity.edu/trinity-magazine/spring-2021/through-storms-and-beyond">
+            <InfoCard title={t('pages.News.3')} href="https://www.trinity.edu/trinity-magazine/spring-2021/through-storms-and-beyond">
                 <img alt="" width="100%" src="https://www.trinity.edu/sites/default/files/styles/media_970x520/public/acquiadam/2021-04/mutual-aid.jpeg?itok=CsTYpFrw" />
                 <p>
                     Trinity Mutual Aid raises more than $110,000 for San Antonio community members in need during winter storm...

@@ -10,7 +10,7 @@
     },
     "pages": {
         "Home": {
-            "Title": "Redistributing Wealth in the San Anotnio Community"
+            "Title": "Redistributing Wealth in the San Antonio Community"
         },
         "About": {
             "0": {
@@ -53,7 +53,7 @@
             },
             "3": {
                 "title": "How many times/how often may I request aid from TMA?",
-                "body": "???"
+                "body": "We operate on one application per ‘cycle’ in times of high demand. Each ‘cycle’ will be dependent on the amount of requests received and funds we have available. New cycle periods will be updated regularly on our request aid page."
             },
             "4": {
                 "title": "What is the next TMA event/fundraiser?",
@@ -69,6 +69,14 @@
                 "body1": "\"When people band together to meet immediate survival needs, usually because of a shared understanding that the systems in place aren't coming to meet them, or certainly not fast enough.\"",
                 "body2": "An important note is that non-profit work and mutual aid work ARE DIFFERENT."
             }
+        },
+        "News": {
+            "0": "Trinity Mutual Aid raises $3000 at community market",
+            "1": "Teen Vogue: Texas Storm and COVID Are Dual Traumas for the State, Young People Say",
+            "2": "The Guardian: Texans Rally to Help Neighbors amid Big Freeze as Officials are Caught Cold",
+            "3": "Through the Storms and Beyond",
+            "4": "Trinity Mutual Aid raises over $100,000 in four days",
+            "5": "Rolling Stone: Where to Donate to Help People in Need During Texas' Blackout Crisis "
         }
     },
     "tmaInNews": "TMA in the News",

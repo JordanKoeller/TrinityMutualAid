@@ -214,13 +214,14 @@ h2 {
 
 .jumbotron-dark-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-dark");
-    padding-top: 1.5em;
-    padding-bottom: 1.5em;
+    padding-top: 3em;
+    padding-bottom: 3em;
 }
 
 .jumbotron-light-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-light");
-    width: 100vw;
+    padding-top: 3em;
+    padding-bottom: 3em;
 }
 
 .jumbotron-title {

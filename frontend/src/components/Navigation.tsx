@@ -79,7 +79,7 @@ export const TmaNavbar: React.FC = () => {
         <Container fluid="xl">
             <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setOpen(!open)} />
             <Navbar.Brand as={() => <a href="/Home">
-                <Image src="/tma-logo-banner.png" alt="" id="tma-logo" />
+                <Image src="tma-logo-banner.png" alt="" id="tma-logo" />
             </a>}>
             </Navbar.Brand>
             {mq <= MediaQuery.MD ? <> {link} <CollapsingNavigation i18n={i18n} t={t} setOpen={setOpen} /></> : <><CollapsingNavigation i18n={i18n} t={t} setOpen={setOpen} /> {link}</>}

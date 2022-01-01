@@ -1,7 +1,7 @@
 {
     "navbar": {
         "About": "Nosotros",
-        "Request Aid": "Solicitar ayuda",
+        "Request Aid": "Obtener Ayuda",
         "News": "Noticias",
         "FAQs": "Preguntas frecuentes",
         "Resources": "Recursos",
@@ -14,29 +14,75 @@
         },
         "About": {
             "0": {
-                "title": "Redistributing Wealth",
-                "body": "Trinity Mutual Aid is a student-run organization (unaffiliated with Trinity University) that focuses on redistributing wealth within the San Antonio community. Our organization provides aid to those in need of financial assistance with medical expenses, housing expenses, and food insecurity. We do so in hopes of strengthening community connections so we can fulfill collective needs together."
+                "title": "Redistribuyendo la riqueza",
+                "body": "Trinity Mutual Aid (Ayuda Mútua Trinity) es una organización que se maneja por estudiantes (no está afiliada con la Universidad de Trinity) que se enfoca en la redistribución de la riqueza dentro de la comunidad de San Antonio. Nuestra organización provee ayuda a las personas que necesitan ayuda financiera con gastos médicos, gastos de alojamiento y con la inseguridad de la comida. Hacemos esto con la esperanza de fortalecer las conexiones con la comunidad para que juntos podamos cumplir con las necesidades colectivas. "
             },
             "1": {
-                "title": "How we Started",
-                "body": "TMA was created in the fall of 2020 with a primary focus of combating food insecurity. Pantry runs were our primary form of outreach. Our focus expanded in February of 2021, when the winter storm that hit Texas created a huge need for aid. We provided aid to folks in need of assistance with utility bills, medical bills, and more, as well as distributing essential cold-weather items to houseless folks."
+                "title": "Cómo iniciamos la organización",
+                "body": "TMA se creó en el otoño de 2020 con el fin principal de combatir la inseguridad de la comida usando pantry runs (despensas) donde los voluntarios individualmente compraban comida y otras necesidades para llenar las despensas y los refrigeradores que sirven a las comunidades en forma de “toma lo que necesitas, dona lo que puedas.” TMA les pagaba a los voluntarios por sus compras. Nuestro enfoque se expandió en febrero de 2021 cuando la helada en Texas creó una gran necesidad por nuestra ayuda. Proporcionamos ayuda financiera aproximadamente a 200 personas para que pudieran pagar sus cuentas de luz y gas, cuentas médicas, su comida y más y distribuimos lo equivalente a $7,0000 de artículos para la protección del frío y también para comida para las personas sin hogar. "
             },
             "2": {
-                "title": "A Wider Network of Aid",
-                "body": "We have affiliated with local non-profit Community Housing Resource Partners, an organization that focuses on developing affordable housing to promote “self-sufficiency, education, health and wellness, and stable communities.” This partnership ensures long-term sustainability in our organization so that we can continue to provide aid within the community."
+                "title": "Una red más amplia de ayuda",
+                "body": "Actualmente, estamos afiliados con la organización local sin fines de lucro Community Housing Resource Partners, una organización con el enfoque de desarrollar viviendas accesibles para promover “la independencia, la salud y el bienestar y comunidades estables”. Esta asociación asegura un mantenimiento de largo plazo en nuestra organización para que podamos continuar ofreciendo ayuda dentro de nuestra comunidad. "
             }
         },
         "Donate": {
             "0": {
                 "title": "Donar!",
-                "body": "Make a financial contribution to Trinity Mutual Aid to continue supporting the San Antonio community! Help keep food pantries and fridges stocked and provide assistance for folks who need funds with medical expenses, housing, and utility expenses. Keep up with our news page to check out how contributions have helped us redistribute aid throughout the area! We are able to process donations through online platforms. Make a one-time contribution or become a recurring donor!"
+                "body": "Haga una contribución financiera a Trinity Mutual Aid para continuar apoyando a la comunidad de San Antonio! Ayude para mantener las despensas de comida y los refrigeradores y proveer ayuda a las personas que necesitan fondos para gastos médicos, la vivienda, y los gastos de luz y gas. Esté al corriente con nuestra página de noticias para ver cómo las contribuciones han ayudado a redistribuir ayuda por toda el área! Podemos procesar donaciones por medio de nuestras plataformas en línea, cheques y giros postales. Haga una contribución única o hágase un donante recurrente!"
             }
+        },
+        "FAQs": {
+            "0": {
+                "title": "¿Qué tipo de ayuda ofrecen?",
+                "body1": "Ofrecemos ayuda financiera para cubrir los gastos médicos, la vivienda, la luz, el gas y la comida. Esto se distribuye en forma de reembolso que se puede obtener por medio de nuestra petición por el procesamiento de ayuda. También dependemos de voluntarios que nos ayudan con las despensas: peticiones para voluntarios adicionales se publicarán en nuestra página de eventos.",
+                "link": ""
+            },
+            "1": {
+                "title": "¿Cómo puedo apoyar a TMA?",
+                "body1": "TMA cuenta con donantes para proveer ayuda, así que ",
+                "link": "donar",
+                "body2": "por medio de nuestra forma de donación es una gran manera de apoyar nuestros esfuerzos. Con estas donaciones, podemos reembolsar a nuestros voluntarios por lo que pagaron por la comida y abastecimientos que llenan las despensas que sirven a las personas necesitadas. Puede seguirnos en Instagram (@trinitymutualaid) y compartir nuestro contenido para correr la voz sobre nuestra organización. Ahí también ponemos al corriente las peticiones de los voluntarios."
+            },
+            "2": {
+                "title": "¿Cómo pido ayuda de TMA?",
+                "body1": "Nos alegramos de que haya preguntado! Favor de ver nuestra ",
+                "link": "forma",
+                "body2": " de pedir ayuda para más información."
+
+            },
+            "3": {
+                "title": "¿Cuántas veces/con qué frecuencia puedo pedir ayuda?",
+                "body": "Funcionamos a base de una solicitud por “ciclo” en tiempos de alta necesidad. Cada “ciclo” depende de la cantidad de peticiones que recibimos y los fondos que tenemos disponibles. Los periodos de los ciclos nuevos se pondrán al corriente en nuestra página de peticiones."
+            },
+            "4": {
+                "title": "¿Cuándo es el próximo evento/la próxima recaudación de fondos?",
+                "body1": "Favor de consultar nuestra ",
+                "link": "página de eventos."
+            },
+            "5": {
+                "title": " ¿Qué es un pantry run? ",
+                "body": "Pantry runs consisten en voluntarios que individualmente compran comida y otras necesidades (pilas, pañales, productos menstruales, etc. ) para llenar las despensas y los refrigeradores. Estos despensas y refrigeradores funcionan independientemente por San Antonio y sirven a sus vecinos en forma de “toma lo que necesitas y dona lo que puedas”. Cuando los voluntarios compran la comida, TMA les reembolsa el total de lo que pagaron con tal que tengan el recibo. Si Ud. tiene interés en más información en cuanto a pantry runs, o si necesita que se le reembolse por lo que compró, favor de comunicarse con nosotros por medio de nuestra página."
+            },
+            "6": {
+                "title": "What is Mutual Aid?",
+                "body1": "\"When people band together to meet immediate survival needs, usually because of a shared understanding that the systems in place aren't coming to meet them, or certainly not fast enough.\"",
+                "body2": "An important note is that non-profit work and mutual aid work ARE DIFFERENT."
+            }
+        },
+        "News": {
+            "0": "Trinitonian: Trinity Mutual Aid recauda $3000 en el mercado comunitario",
+            "1": "Teen Vogue: La tormenta de Texas y el COVID son traumas duales para el estado, dicen los jóvenes",
+            "2": "The Guardian: Tejanos se manifiestan para ayudar a los vecinos en medio de una gran congelación mientras los funcionarios no estén preparados",
+            "3": "Trinity Magazine: A través de las tormentas",
+            "4": "Trinitonian: Trinity Mutual Aid recauda más de $100,000 en cuatro días",
+            "5": "Rolling Stone: Dónde donar para ayudar a las personas necesitadas durante la crisis del apagón en Texas"
         }
     },
     "tmaInNews": "TMA en las noticias",
     "footer": {
-        "affiliation": "Trinity Mutual Aid is unaffiliated with Trinity University",
-        "sponsor": "Fiscally Sponsored by Community Housing Resource Partners",
-        "mutualhub": "Additional Mutual Aid Resources"
+        "affiliation": "No está afiliada con la Universidad de Trinity",
+        "sponsor": "Patrocinado fiscalmente por Community Housing Resource Partners",
+        "mutualhub": "Recursos adicionales de ayuda mutua"
     }
 }

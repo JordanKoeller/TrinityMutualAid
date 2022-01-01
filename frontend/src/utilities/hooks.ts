@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 
 export enum MediaQuery {
@@ -85,4 +86,9 @@ export const useWindowBreakpoint = (initialBreakpoint: number | null): [Breakpoi
         return () => window.removeEventListener('resize', listener);
     }, [breakpoint, setBreakState]);
     return [breakState, setBreakpoint];
+}
+
+export const useCurrentLanguage = (): string => {
+    const {i18n} = useTranslation(undefined, {useSuspense: false});
+    return i18n.language ? i18n.language.slice(0, 2) : 'en';
 }

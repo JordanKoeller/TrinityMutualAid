@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import axios, { AxiosRequestConfig, AxiosInstance} from 'axios';
-import { StringMappingType } from 'typescript';
 
 const handleError = (e: any) => console.error(JSON.stringify(e, null, 2));
 

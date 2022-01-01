@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import './tma-styles.scss';
 import { Footer } from './components/Footer';
-import { TmaNavbar, TmaRouter } from './components/Navigation';
-import EditorClient, { useEditorClient } from './context/client';
+import { TmaRouter } from './components/Navigation';
+import { useEditorClient } from './context/client';
 import { EditorClientContext } from './context/context';
 
 

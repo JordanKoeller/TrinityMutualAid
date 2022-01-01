@@ -8,13 +8,13 @@ const Home: React.FC = () => {
     const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
         <TopSpacer />
-        <SplitPanel src="table.jpg" imageFraction={0.4} imageFirst variant="dark">
+        <SplitPanel src="content/resize-table.jpg" imageFraction={0.4} imageFirst variant="dark">
             <TextBox i18nKey="pages.About.0" />
         </SplitPanel>
-        <SplitPanel src="sign.JPEG" imageFraction={0.4} variant="light">
+        <SplitPanel src="content/resize-sign.JPEG" imageFraction={0.4} variant="light">
             <TextBox i18nKey="pages.About.1" />
         </SplitPanel>
-        <SplitPanel src="thumbs.JPG" imageFraction={0.4} imageFirst variant="dark">
+        <SplitPanel src="content/resize-thumbs.JPEG" imageFraction={0.4} imageFirst variant="dark">
             <TextBox i18nKey="pages.About.2" />
         </SplitPanel>
         <h1 className="jumbotron-title">{t('tmaInNews')}</h1>
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
                 </p>
             </InfoCard>
             <InfoCard title={t('pages.News.1')} href="https://www.teenvogue.com/story/texas-winter-storm-young-people">
-                <img alt="" src="Sophie-Ryland.png" width="100%" />
+                <img alt="" src="content/resize-Sophie-Ryland.png" width="100%" />
                 <p>
                     Sophie Ryland is sad - about the pandemic, about the unprecedented winter stor...
                 </p>

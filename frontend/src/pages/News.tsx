@@ -16,7 +16,7 @@ const NewsPage: React.FC = () => {
                 </p>
             </InfoCard>
             <InfoCard title={t('pages.News.1')} href="https://www.teenvogue.com/story/texas-winter-storm-young-people">
-                <img alt="" src="Sophie-Ryland.png" width="100%" />
+                <img alt="" src="content/resize-Sophie-Ryland.png" width="100%" />
                 <p>
                     Sophie Ryland is sad - about the pandemic, about the unprecedented winter stor...
                 </p>

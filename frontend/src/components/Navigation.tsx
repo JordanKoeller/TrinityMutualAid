@@ -128,6 +128,6 @@ const LanguageButton: React.FC<{ i18n: any, onSelect: () => void }> = ({ i18n, o
         className="language-dropdown"
     >
         <NavDropdown.Item onClick={() => changeLanguage('en')}>English</NavDropdown.Item>
-        <NavDropdown.Item onClick={() => changeLanguage('es')}>Espanol</NavDropdown.Item>
+        <NavDropdown.Item onClick={() => changeLanguage('es')}>Español</NavDropdown.Item>
     </NavDropdown>
 }

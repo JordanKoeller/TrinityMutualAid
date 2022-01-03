@@ -3,11 +3,12 @@
 import React, {
     ReactElement,
     useContext,
+    useEffect,
     useMemo,
     useRef,
     useState,
 } from 'react';
-import { EditorState } from 'draft-js';
+import { convertToRaw, convertFromRaw, EditorState, RawDraftContentState } from 'draft-js';
 import Editor, { createEditorStateWithText, composeDecorators } from '@draft-js-plugins/editor';
 
 import {
@@ -16,6 +17,8 @@ import {
     UnderlineButton,
     HeadlineOneButton,
     HeadlineTwoButton,
+    OrderedListButton,
+    UnorderedListButton
 } from '@draft-js-plugins/buttons';
 
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar';
@@ -33,17 +36,13 @@ import '@draft-js-plugins/anchor/lib/plugin.css';
 import '@draft-js-plugins/image/lib/plugin.css';
 import '@draft-js-plugins/focus/lib/plugin.css';
 import '@draft-js-plugins/alignment/lib/plugin.css';
-import { EditorClientContext } from '../../context/context';
-import { dataUrlToFile } from '../../utilities/funcs';
-import EditorClient from '../../context/client';
-import { WyswigLanguageSelector } from './WyswigLanguageSelector';
-
-const handleUpload = (data: any, success: any, failed: any, progress: any) => {
-    // console.log(data, success, failed, progress);
-}
+import { WyswigControlButtons } from './WyswigLanguageSelector';
+import { Language } from '../../i18n';
+import { useBilingual } from '../../utilities/hooks';
 
 
-const useEditorTools = (context: EditorClient) => {
+
+const useEditorTools = () => {
     return useMemo(() => {
         const focusPlugin = createFocusPlugin();
         const resizeablePlugin = createResizeablePlugin();
@@ -51,13 +50,11 @@ const useEditorTools = (context: EditorClient) => {
         const alignmentPlugin = createAlignmentPlugin();
         const sidebarPlugin = createSidebarToolPlugin();
         const handleAddImage = (editorState: EditorState, placeholderSrc: string | ArrayBuffer | null) => {
-            const uploadedFile = dataUrlToFile(placeholderSrc as string, "file-upload");
-            context.uploadImage(uploadedFile);
             return (imagePlugin as any).addImage(editorState, placeholderSrc) as EditorState
         }
 
         const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
-            handleUpload: handleUpload as () => void,
+            handleUpload: () => {},
             addImage: handleAddImage,
         });
         const decorator = composeDecorators(
@@ -93,23 +90,52 @@ const useEditorTools = (context: EditorClient) => {
 
 
 
-type WyswigProps = {};
-export const WyswigEditor: React.FC<WyswigProps> = (): ReactElement => {
+type WyswigProps = {
+    defaultLanguage: Language,
+    onSave?: (draft: RawDraftContentState, title: string, language: Language) => Promise<boolean>,
+    readonly?: boolean,
+    content?: RawDraftContentState
+
+};
+export const WyswigEditor: React.FC<WyswigProps> = ({ readonly = false, defaultLanguage, onSave, content }): ReactElement => {
 
 
-    const context = useContext(EditorClientContext);
-    const { pluginsObj, pluginsArray } = useEditorTools(context);
+    const { pluginsObj, pluginsArray } = useEditorTools();
 
-    // Initialize editor statefulness
-    const enText = 'In this editor a toolbar shows up once you select part of the text …';
-    const esText = 'En este editor, aparece una barra de herramientas una vez que selecciona parte del texto ...';
-    const englishState = useState(createEditorStateWithText(enText));
-    const spanishState = useState(createEditorStateWithText(esText));
-    const [language, setLanguage] = useState('en');
+    const initializeState = (lang: Language): EditorState => {
+        // Initialize editor statefulness
+        const defaultStates = {
+            [Language.English]: 'Enter text here',
+            [Language.Spanish]: 'Introducir texto aquí',
+        };
+        if (lang === defaultLanguage && content) {
+            const contentObj = convertFromRaw(content);
+            return EditorState.createWithContent(contentObj);
+        }
+        return createEditorStateWithText(defaultStates[defaultLanguage]);
+    }
+    const [editorState, language, setEditorState, setLanguage, refreshState] = useBilingual(
+        defaultLanguage, {[Language.English]: initializeState(Language.English), [Language.Spanish]: initializeState(Language.Spanish)});
 
-    const [editorState, setEditorState] = language === 'en' ? englishState : spanishState;
+    const changeLanguage = (lang: Language) => {
+        setLanguage(lang);
+    };
 
+    // useEffect(() => {
+    //     if (content) {
+    //         const contentObj = convertFromRaw(content);
+    //         const state = EditorState.createWithContent(contentObj);
+    //         refreshState(defaultLanguage, state);
+    //     } else {
+    //         const defaultStates = {
+    //             [Language.English]: 'Enter text here',
+    //             [Language.Spanish]: 'Introducir texto aquí',
+    //         };
+    //         const state = createEditorStateWithText(defaultStates[defaultLanguage]);
 
+    //         refreshState(defaultLanguage, state)
+    //     }
+    // }, [defaultLanguage, content, refreshState]);
 
     // useEffect(() => {
     //     // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306
@@ -118,17 +144,35 @@ export const WyswigEditor: React.FC<WyswigProps> = (): ReactElement => {
 
     const editor = useRef<Editor | null>(null);
 
-
-
     const focus = (): void => {
         editor.current?.focus();
     };
 
+    const handleSave = () => {
+        const contents = editorState.getCurrentContent();
+        const rawContents = convertToRaw(contents);
+        const title = "TODO";
+        if (onSave) {
+            onSave(rawContents, title, language);
+        }
+    }
+
+    const handleCancelInput = () => {
+        setEditorState(initializeState(language));
+    }
+
     return (
         <div>
-            <WyswigLanguageSelector onLanguageChange={setLanguage} style={{marginLeft: 'auto', marginRight: '0'}}/>
-            <div className="editor" onClick={focus}>
+            {readonly ? null : <WyswigControlButtons
+                onLanguageChange={changeLanguage}
+                defaultLanguage={defaultLanguage}
+                style={{ marginLeft: 'auto', marginRight: '0' }}
+                onSave={handleSave}
+                onCancel={handleCancelInput}
+            />}
+            <div className={`editor-${readonly ? 'readonly' : 'active'}`} onClick={focus}>
                 <Editor
+                    readOnly={readonly}
                     editorKey="SimpleInlineToolbarEditor"
                     editorState={editorState}
                     onChange={setEditorState}
@@ -139,19 +183,19 @@ export const WyswigEditor: React.FC<WyswigProps> = (): ReactElement => {
                 />
                 <pluginsObj.alignmentPlugin.AlignmentTool />
                 <pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                    {(externalProps) => (
-                        <>
-                            <HeadlineOneButton {...externalProps} />
-                            <HeadlineTwoButton {...externalProps} />
-                            <BoldButton {...externalProps} />
-                            <ItalicButton {...externalProps} />
-                            <UnderlineButton {...externalProps} />
-                            <pluginsObj.linkPlugin.LinkButton {...externalProps} />
-
-                        </>
-                    )}
+                    {(externalProps) => <>
+                        <HeadlineOneButton {...externalProps} />
+                        <HeadlineTwoButton {...externalProps} />
+                        <BoldButton {...externalProps} />
+                        <ItalicButton {...externalProps} />
+                        <UnderlineButton {...externalProps} />
+                        <OrderedListButton {...externalProps} />
+                        <UnorderedListButton {...externalProps} />
+                        <pluginsObj.linkPlugin.LinkButton {...externalProps} />
+                    </>
+                    }
                 </pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                <pluginsObj.sidebarPlugin.SideToolbar />
+                {readonly ? null : <pluginsObj.sidebarPlugin.SideToolbar />}
             </div>
         </div>
     );

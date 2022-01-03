@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { stat } from "fs";
+import { useEffect, useState, useCallback, useReducer } from "react";
 import { useTranslation } from "react-i18next";
+import { Language } from "../i18n";
 
 
 export enum MediaQuery {
@@ -91,4 +93,67 @@ export const useWindowBreakpoint = (initialBreakpoint: number | null): [Breakpoi
 export const useCurrentLanguage = (): string => {
     const {i18n} = useTranslation(undefined, {useSuspense: false});
     return i18n.language ? i18n.language.slice(0, 2) : 'en';
+}
+
+
+
+type BilingualOutput<T> = [
+    T,
+    Language,
+    (value: T) => void,
+    (lang: Language) => void,
+    (lang: Language, value: T) => void,
+];
+
+type BilingualState<T> = {selectedLanguage: Language, values: Record<Language, T>};
+type ReducerAction<T> = {
+    type: 'Language' | 'State' | 'LangAndState',
+    payload: Language | T | {language: Language, value: T}
+}
+type ReducerType<T> = (state: BilingualState<T>, action: ReducerAction<T>) => BilingualState<T>;
+const bilingualReducer = <T>(state: BilingualState<T>, action: ReducerAction<T>): BilingualState<T> => {
+    switch (action.type) {
+        case 'Language': return {
+            selectedLanguage: action.payload as Language,
+            values: {
+                ...state.values,
+            }
+        };
+        case 'State': return {
+            selectedLanguage: state.selectedLanguage,
+            values: {
+                ...state.values,
+                [state.selectedLanguage]: action.payload as T
+            }
+        }
+        case 'LangAndState': return {
+            selectedLanguage: (action.payload as {language: Language, value: T}).language,
+            values: {
+                ...state.values,
+                [(action.payload as {language: Language, value: T}).language]: (action.payload as {language: Language, value: T}).value
+            }
+        }
+        default: return state;
+    }
+}
+
+/**
+ * 
+ * @param initialLanguage - Initial language to use for rendering.
+ * @param defaults - Default value
+ * @returns 
+ */
+export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Language, T>): BilingualOutput<T> => {
+    const initialState: BilingualState<T> = {
+        selectedLanguage: initialLanguage,
+        values: defaults,
+    }
+    const [state, dispatch] = useReducer(bilingualReducer as ReducerType<T>, initialState);
+
+    const setLanguage = useCallback((lang: Language) => dispatch({type: 'Language', payload: lang}), [dispatch]);
+    const setValue = useCallback((value: T) => dispatch({type: 'State', payload: value}), [dispatch]);
+    const setBoth = useCallback((lang: Language, value: T) => dispatch({type: 'LangAndState', payload: value}), [dispatch]);
+
+    return [state.values[state.selectedLanguage], state.selectedLanguage, setValue, setLanguage, setBoth];
+
 }

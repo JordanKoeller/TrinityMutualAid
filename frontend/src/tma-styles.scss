@@ -108,7 +108,18 @@ h2 {
 /* WYSWIG EDITOR STYLES */
 /* WYSWIG EDITOR STYLES */
 /* WYSWIG EDITOR STYLES */
-.editor {
+.editor-active {
+    box-sizing: border-box;
+    border: 1px solid map-get($map: $theme-colors, $key: "primary");
+    cursor: text;
+    padding: 16px;
+    border-radius: 2px;
+    margin-bottom: 2em;
+    box-shadow: inset 0px 1px 8px -3px #ababab;
+    background: map-get($map: $theme-colors, $key: "primary");
+}
+
+.editor-readonly {
     box-sizing: border-box;
     border: 1px solid map-get($map: $theme-colors, $key: "primary");
     cursor: text;

@@ -32,13 +32,13 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { EditorClientContext } from '../context/context';
 
 const AuthPage = withAuthenticator(() => {
-  return <HomePage />
+    return <HomePage />
 });
 
 
 const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) => void, }> = ({ i18n, setOpen, t }) => {
-  const ctx = useContext(EditorClientContext);
-  const closeAll = () => {
+    const ctx = useContext(EditorClientContext);
+    const closeAll = () => {
         setOpen(false);
     }
     return <Navbar.Collapse>
@@ -51,9 +51,9 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={closeAll}>{t('navbar.FAQs')}</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/Contact" onClick={closeAll}>{t('navbar.Contact')}</Link></NavDropdown.Item>
             </NavDropdown>
-            {ctx?.loggedIn() ? 
-      <Nav.Link as={AmplifySignOut} >Sign out</Nav.Link> : null
-      }
+            {ctx?.loggedIn() ?
+                <Nav.Link as={AmplifySignOut} >Sign out</Nav.Link> : null
+            }
         </Nav>
         <LanguageButton i18n={i18n} onSelect={closeAll} />
     </Navbar.Collapse>
@@ -118,8 +118,8 @@ export const TmaRouter: React.FC = () => {
                         <ContactPage />
                     </Route>
                     <Route path="/Admin">
-        <AuthPage />
-      </Route>
+                        <AuthPage />
+                    </Route>
                     <Route path="">
                         <HomePage />
                     </Route>

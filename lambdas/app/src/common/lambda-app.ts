@@ -22,7 +22,7 @@ export abstract class Handler {
   abstract handle(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse>;
 
   isHandler(event: ApiGatewayEvent): boolean {
-    return event.path === this.method.endpoint && event.httpMethod == this.method.method;
+    return event.resource === this.method.endpoint && event.httpMethod == this.method.method;
   }
 
   async getResponse(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {

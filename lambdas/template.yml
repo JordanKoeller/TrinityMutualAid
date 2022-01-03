@@ -25,7 +25,7 @@ Resources:
       StageName: Prod
       Cors:
         AllowCredentials: true
-        AllowMethods: "'GET,HEAD,OPTIONS,POST'"
+        AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT,PATCH'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'http://localhost:3000'"
       Auth:
@@ -40,7 +40,7 @@ Resources:
       BuildMethod: makefile
     Properties:
       CodeUri: app/
-      Handler: dist/src/handlers/articles.handler
+      Handler: dist/src/handlers/handlers.handler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 100
@@ -70,6 +70,20 @@ Resources:
             RestApiId: !Ref TMAApi
             Path: /file-upload
             Method: GET
+        PutArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /article
+            Method: PUT
+        GetArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /{language}/article/{articleId}
+            Auth:
+              Authorizer: NONE
+            Method: GET
   Editors:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -81,15 +95,32 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
   Articles:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub tma-articles-${pStage}
-      PrimaryKey:
-        Name: id
-        Type: Number
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: N
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        WriteCapacityUnits: 2
+  # Articles:
+  #   Type: AWS::Serverless::SimpleTable
+  #   Properties:
+  #     TableName: !Sub tma-articles-${pStage}
+  #     PrimaryKey:
+  #       Name: id
+  #       Type: Number
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 5
+  #       WriteCapacityUnits: 5
   S3ResourcesBucket:
     Type: 'AWS::S3::Bucket'
     Properties:

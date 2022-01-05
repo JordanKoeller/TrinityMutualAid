@@ -35,7 +35,7 @@ const NewsPage: React.FC = () => {
                 </p>
             </InfoCard>
             <InfoCard title={t('pages.News.4')} href="https://trinitonian.com/2021/03/10/trinity-mutual-aid-raises-over-100000-in-four-days/">
-                <img alt="" width="100%" src="https://trinitonian.com/wp-content/uploads/2021/03/TzZJLeE5AVhSmuP6KdWaG9iCXE5cvmE8QdcwAZko-900x600.jpeg" />
+                <img alt="" width="100%" src="content/table2.jpg" />
                 <p>
                     The COVID-19 pandemic, coupled with the devastating winter storm, has left some of the Trinity com...
                 </p>

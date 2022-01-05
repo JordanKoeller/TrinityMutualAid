@@ -1,4 +1,3 @@
-import { S3 } from 'aws-sdk';
 import { Handler } from '../common/lambda-app';
 import {
     ApiGatewayEvent, ApiGatewayResponse

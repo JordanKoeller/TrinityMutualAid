@@ -112,9 +112,9 @@ h2 {
     box-sizing: border-box;
     border: 1px solid map-get($map: $theme-colors, $key: "primary");
     cursor: text;
-    padding: 16px;
-    border-radius: 2px;
-    margin-bottom: 2em;
+    // padding: 16px;
+    // border-radius: 2px;
+    // margin-bottom: 2em;
     box-shadow: inset 0px 1px 8px -3px #ababab;
     background: map-get($map: $theme-colors, $key: "primary");
 }
@@ -122,10 +122,10 @@ h2 {
 .editor-readonly {
     box-sizing: border-box;
     border: 1px solid map-get($map: $theme-colors, $key: "primary");
-    cursor: text;
-    padding: 16px;
+    // cursor: text;
+    // padding: 16px;
     border-radius: 2px;
-    margin-bottom: 2em;
+    // margin-bottom: 2em;
     box-shadow: inset 0px 1px 8px -3px #ababab;
     background: map-get($map: $theme-colors, $key: "primary");
 }
@@ -225,17 +225,22 @@ h2 {
 
 .jumbotron-dark-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-dark");
+    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
 }
 
 .jumbotron-light-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-light");
+    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
 }
 
 .jumbotron-title {
+    color: map-get($map: $theme-colors, $key: "secondary");
+}
+.jumbotron-subtitle {
     color: map-get($map: $theme-colors, $key: "secondary");
 }
 

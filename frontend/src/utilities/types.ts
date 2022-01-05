@@ -1,12 +1,15 @@
-import { RawDraftContentState } from "draft-js";
+import { EditorState } from "draft-js";
 import { Language } from "../i18n";
 
+export interface EditorBlock {
+    editorState: EditorState,
+}
 
 export interface ArticleDescription {
-    title: string,
-    articleId: number,
+    blocks: EditorBlock[],
     language: Language,
-    content: RawDraftContentState,
-    author: string,
-    publicationDate: Date,
+    articleId?: number,
+    publicationDate?: Date,
+    author?: string,
+
 }

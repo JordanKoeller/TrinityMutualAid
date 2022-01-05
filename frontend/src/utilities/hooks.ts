@@ -1,7 +1,8 @@
-import { stat } from "fs";
+import { convertFromRaw, EditorState, RawDraftContentState } from "draft-js";
 import { useEffect, useState, useCallback, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { Language } from "../i18n";
+import { ArticleDescription, EditorBlock } from "./types";
 
 
 export enum MediaQuery {
@@ -155,5 +156,25 @@ export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Lang
     const setBoth = useCallback((lang: Language, value: T) => dispatch({type: 'LangAndState', payload: value}), [dispatch]);
 
     return [state.values[state.selectedLanguage], state.selectedLanguage, setValue, setLanguage, setBoth];
+}
 
+const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
+     const domain = process.env.REACT_APP_REST_API as string
+     const req = await fetch(`${domain}/${language}/article/${articleId}`, {method: 'GET'});
+     const response = await req.json();
+     const { url, author, timestamp }: { title: string, url: string, author: string, timestamp: number } = response;
+     const s3Fetch = await fetch(url, {method: 'GET'});
+     const content: RawDraftContentState[] = await s3Fetch.json();
+     const editorBlocks = content.map(block => ({editorState: EditorState.createWithContent(convertFromRaw(block))}));
+     return { blocks: editorBlocks, language, articleId, author, publicationDate: new Date(timestamp) }
+ }
+export const useArticleState = (articleId: number, language: Language): ArticleDescription | null => {
+
+    const [state, setState] = useState<ArticleDescription | null>(null);
+
+    useEffect(() => {
+        fetchArticle(articleId, language).then(description => setState(description));
+    }, [articleId, language]);
+
+    return state;
 }

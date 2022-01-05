@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import axios, { AxiosRequestConfig, AxiosInstance} from 'axios';
-import { EditorState, convertToRaw, RawDraftContentState } from 'draft-js';
-import { dataUrlToFile, getImageDataFromRawEditorState } from '../utilities/funcs';
+import { convertToRaw, RawDraftContentState } from 'draft-js';
+import { dataUrlToFile } from '../utilities/funcs';
 import { Language } from '../i18n';
 import { ArticleDescription } from '../utilities/types';
 
@@ -67,15 +67,15 @@ export default class EditorClient {
     return {data: {link: 'image'}};
   }
 
-  async uploadArticle(pageName: string, editorState: RawDraftContentState, language: Language) {
-    await this.extractAndUploadImages(editorState);
+  async uploadArticle(editorState: ArticleDescription) {
+      const rawElements = editorState.blocks.map(block => convertToRaw(block.editorState.getCurrentContent()));
+      await Promise.all(rawElements.map(elem => this.extractAndUploadImages(elem)));
     const body = {
-        content: editorState,
-        title: pageName,
+        content: rawElements,
+        title: "My cool new page",
         articleType: "news",
-        language,
+        language: editorState.language,
     };
-    console.log("Sending", JSON.stringify(body));
     const response = await this.client.put(
         `${this.domain}/article`,
         body
@@ -84,16 +84,6 @@ export default class EditorClient {
         alert(`Upload Failed!\n${response.data}`);
     }
   }
-
-  async getArticle(articleId: number, language: Language): Promise<ArticleDescription> {
-      const req = await fetch(`${this.domain}/${language}/article/${articleId}`, {method: 'GET'});
-      const response = await req.json();
-      const { title, url, author, timestamp }: { title: string, url: string, author: string, timestamp: number } = response;
-      const s3Fetch = await fetch(url, {method: 'GET'});
-      const content: RawDraftContentState = await s3Fetch.json();
-      return { title, content, language, articleId, author, publicationDate: new Date(timestamp) }
-  }
-
 
   private async extractAndUploadImages(state: RawDraftContentState): Promise<void> {
       state.entityMap = Object.fromEntries(await Promise.all(

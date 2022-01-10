@@ -6,7 +6,7 @@ const RequestAidPage: React.FC = () => {
         <h1>
             This is the Request aid page.
         </h1>
-        <ArticleViewerOrEditor articleId={84206117} />
+        <ArticleViewerOrEditor defaultArticleId={84206117} />
     </>
 }
 

@@ -22,7 +22,7 @@ enum EditorActionType {
 interface EditorProps {
     language?: Language,
     articleId?: number,
-    onSave: (articleId: number) => void,
+    onSave?: (articleId: number) => void,
 
 }
 
@@ -34,10 +34,10 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
     const requestSave = async () => {
         if (articleId) {
             await client.uploadArticle(getDescriptions(), articleId as number);
-            onSave(articleId as number);
+            if (onSave) onSave(articleId as number);
         } else {
             const aid = await client.uploadArticle(getDescriptions());
-            onSave(aid);
+            if (onSave) onSave(aid);
         }
     }
 

@@ -1,44 +1,50 @@
 <mxfile host="65bd71144e">
     <diagram id="wVsHaVX-7PHN6zivDN5-" name="Page-1">
-        <mxGraphModel dx="1582" dy="826" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="2220" dy="826" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="2" value="Client" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="2" value="Client" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="220" y="80" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="S3" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+                <mxCell id="3" value="S3" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
                     <mxGeometry x="460" y="480" width="130" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="Dynamo DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+                <mxCell id="4" value="Dynamo DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
                     <mxGeometry x="70" y="470" width="110" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="2">
+                <mxCell id="13" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="5" target="2" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" style="edgeStyle=none;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="5" target="4">
+                <mxCell id="14" style="edgeStyle=none;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" style="edgeStyle=none;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="5" target="3">
+                <mxCell id="15" style="edgeStyle=none;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="Lambda" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="5" value="Lambda" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="220" y="190" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="&lt;h1&gt;API:&lt;/h1&gt;&lt;div&gt;1. Upload pictures (getTempToken and submitImage)&lt;/div&gt;&lt;div&gt;2. PUT article?name&amp;amp;contents&amp;amp;language&lt;/div&gt;&lt;div&gt;3. GET article/{id} (CDN?)&lt;/div&gt;&lt;div&gt;4. GET image/{id} (CDN?)&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="7" value="&lt;h1&gt;API:&lt;/h1&gt;&lt;div&gt;1. Upload pictures (getTempToken and submitImage)&lt;/div&gt;&lt;div&gt;2. PUT article?name&amp;amp;contents&amp;amp;language&lt;/div&gt;&lt;div&gt;3. GET article/{id} (CDN?)&lt;/div&gt;&lt;div&gt;4. GET image/{id} (CDN?)&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="500" y="70" width="350" height="160" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="&lt;h1&gt;S3 Storage:&lt;/h1&gt;&lt;div&gt;Bucket 1: Images&lt;/div&gt;&lt;div&gt;Bucket 2: Text/Content&lt;/div&gt;&lt;div&gt;Bucket 3: React staticfiles.&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="8" value="&lt;h1&gt;S3 Storage:&lt;/h1&gt;&lt;div&gt;Bucket 1: Images&lt;/div&gt;&lt;div&gt;Bucket 2: Text/Content&lt;/div&gt;&lt;div&gt;Bucket 3: React staticfiles.&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="610" y="430" width="190" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="&lt;h1&gt;DynamoDB Storage&lt;/h1&gt;&lt;div&gt;Query patterns:&lt;/div&gt;&lt;div&gt;1. We need to be able to see the most recent articles.&lt;/div&gt;&lt;div&gt;2. We need to be able look up a page by a permalink&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="9" value="&lt;h1&gt;DynamoDB Storage&lt;/h1&gt;&lt;div&gt;Query patterns:&lt;/div&gt;&lt;div&gt;1. We need to be able to see the most recent articles.&lt;/div&gt;&lt;div&gt;2. We need to be able look up a page by a permalink&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="200" y="430" width="190" height="220" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="&lt;h1&gt;Where do we need to be able to make &quot;articles&quot;?&lt;/h1&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;1. News articles (Need to be able to add articles and eventually paginate/virtualize)&lt;/div&gt;&lt;div&gt;2. Events Page (Need to be able to add&amp;nbsp; events/paginate/virtualize)&lt;/div&gt;&lt;div&gt;3. Annual reports need to be uploadable.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Separately, need to be able to inline-edit the other pages.&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="10" value="&lt;h1&gt;Where do we need to be able to make &quot;articles&quot;?&lt;/h1&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;1. News articles (Need to be able to add articles and eventually paginate/virtualize)&lt;/div&gt;&lt;div&gt;2. Events Page (Need to be able to add&amp;nbsp; events/paginate/virtualize)&lt;/div&gt;&lt;div&gt;3. Annual reports need to be uploadable.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Separately, need to be able to inline-edit the other pages.&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="341" y="660" width="580" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="&lt;h1&gt;Uploading Page Pipeline:&lt;/h1&gt;&lt;div&gt;1. Generate a unique ID for that page.&lt;/div&gt;&lt;div&gt;2. Add an entry to DynamoDB for that page&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp;{timestamp, type, uuid, language, imageIDs, author}&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="12" value="&lt;h1&gt;Uploading Page Pipeline:&lt;/h1&gt;&lt;div&gt;1. Generate a unique ID for that page.&lt;/div&gt;&lt;div&gt;2. Add an entry to DynamoDB for that page&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp;{timestamp, type, uuid, language, imageIDs, author}&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="1010" y="110" width="350" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="&lt;h1&gt;Updating Articles&lt;/h1&gt;&lt;div&gt;To update an article, the frontend sends the exact same payload as before to the backend, but to the PATCH /article/{articleId} endpoint.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;The backend looks at the upload, compares to the prior record, and uploads the new version as a revision, as well as uploading the new document in S3.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Optimizations:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;1. I don't want to upload redundant images. The best way to confirm is store each image's checksum in the db. That way identical images can be safely ignored.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;2. I store a checksum of the json documents in s3 as well, so I know if the user actually submitted a different document.&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="1110" y="390" width="380" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="&lt;h1&gt;Getting an article by ID&lt;/h1&gt;&lt;div&gt;To keep fetching data super fast, I don't want to invoke a lambda on GET requests. So I will use a similar optimization to Docker, where I store a version that's tagged as `latest` in addition to a versioned number file. This has the slight tradeoff of the most recent version of each document is uploaded twice, but that is very small overhead.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;This way, fetching a document by ID is as simple as a fetch request out to our CDN.&lt;/div&gt;" style="text;html=1;strokeColor=#3A5431;fillColor=#6d8764;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontColor=#ffffff;" vertex="1" parent="1">
+                    <mxGeometry x="-360" y="80" width="330" height="190" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

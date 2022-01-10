@@ -28,6 +28,19 @@ export abstract class Handler {
   async getResponse(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
     return await this.handle(event, context);
   }
+
+  protected err(message: string): ApiGatewayResponse {
+      return {
+          statusCode: 500,
+          body: JSON.stringify({message}),
+      }
+  } 
+  protected success(message: Record<string, unknown>): ApiGatewayResponse {
+    return {
+        statusCode: 200,
+        body: JSON.stringify(message),
+    }
+} 
 }
 
 export class LambdaApp {

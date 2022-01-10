@@ -5,6 +5,8 @@ export interface EditorBlock {
     editorState: EditorState,
 }
 
+
+
 export interface ArticleDescription {
     blocks: EditorBlock[],
     language: Language,

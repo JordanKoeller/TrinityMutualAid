@@ -1,11 +1,12 @@
 import { createEditorStateWithText } from '@draft-js-plugins/editor';
 import { EditorState } from 'draft-js';
-import React, { useReducer, useCallback, useContext } from 'react';
-import { Container, ListGroup, Button } from 'react-bootstrap';
+import React, { useReducer, useCallback, useContext, useState, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import { EditorClientContext } from '../../context/context';
 import { Language } from '../../i18n';
-import { ArticleDescription } from '../../utilities/types';
-import { WyswigArticle, WyswigBlockEditor } from './WyswigBlockEditorComponent';
+import { fetchArticle } from '../../utilities/hooks';
+import { ArticleDescription, EditorBlock } from '../../utilities/types';
+import { WyswigArticle, } from './WyswigBlockEditorComponent';
 import { WyswigControlButtons } from './WyswigLanguageSelector';
 
 
@@ -15,42 +16,48 @@ enum EditorActionType {
     RemoveBlock,
     ChangeLanguage,
     ClearState,
-
+    InjectArticle,
 }
 
 interface EditorProps {
-    readOnly?: boolean,
-    language?: Language
+    language?: Language,
+    articleId?: number,
+    onSave: (articleId: number) => void,
+
 }
 
-export const WyswigEditorComponent: React.FC<EditorProps> = ({ readOnly = false, language = Language.English }) => {
-    const [editorState, blockChangeDispatch, dispatch] = useEditorComponentState(language);
+export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Language.English, articleId, onSave }) => {
     const client = useContext(EditorClientContext);
+    const [editorState, blockChangeDispatch, dispatch, getDescriptions] = useEditorComponentState(language, articleId);
+    const [isPreview, setIsPreview] = useState(false);
 
     const requestSave = async () => {
-        await client.uploadArticle(editorState);
+        if (articleId) {
+            await client.uploadArticle(getDescriptions(), articleId as number);
+            onSave(articleId as number);
+        } else {
+            const aid = await client.uploadArticle(getDescriptions());
+            onSave(aid);
+        }
     }
 
-    return <Container fluid>
-        {
-            readOnly ? null :
-                <WyswigControlButtons
-                    defaultLanguage={language}
-                    onLanguageChange={(lang) => dispatch({ type: EditorActionType.ChangeLanguage, payload: lang })}
-                    onSave={requestSave}
-                    onCancel={() => dispatch({ type: EditorActionType.ClearState })}
-                />
-        }
+    return <>
+        <WyswigControlButtons
+            onTogglePreview={setIsPreview}
+            defaultLanguage={language}
+            onLanguageChange={(lang) => dispatch({ type: EditorActionType.ChangeLanguage, payload: lang })}
+            onSave={requestSave}
+            onCancel={() => dispatch({ type: EditorActionType.ClearState })}
+        />
         <WyswigArticle
             state={editorState}
-            readOnly={readOnly}
+            readOnly={isPreview}
             onChange={blockChangeDispatch}
-            Suffix={readOnly ? undefined :
-                <Button variant="primary" size="lg" onClick={() => dispatch({ type: EditorActionType.AddBlock })}>
-                    Add Block
-                </Button>}
+            Suffix={<Button variant="primary" size="lg" onClick={() => dispatch({ type: EditorActionType.AddBlock })}>
+                Add Block
+            </Button>}
         />
-    </Container>
+    </>
 }
 
 
@@ -69,56 +76,107 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ readOnly = false,
 interface EditorComponentAction {
     type: EditorActionType,
     payload?: any,
-
 }
 
-const useEditorComponentState = (language: Language): [ArticleDescription, (state: EditorState, index: number) => void, React.Dispatch<EditorComponentAction>] => {
+interface EditorReducerState {
+    chosenLanguage: Language,
+    editorStates: Record<Language, EditorBlock[]>,
+}
+
+type EditorStateReturnType =
+[ArticleDescription, (state: EditorState, index: number) => void, React.Dispatch<EditorComponentAction>, () => ArticleDescription[]];
+
+const useEditorComponentState = (language: Language, articleId?: number): EditorStateReturnType => {
     const [state, dispatch] = useReducer(editorComponentStateReducer, initialState(language));
     const blockChangeDispatch = useCallback((state: EditorState, index: number) =>
         dispatch({ type: EditorActionType.MutateEditorState, payload: { index, editorState: state } }),
-        [dispatch]
-    );
-    return [state, blockChangeDispatch, dispatch];
+        [dispatch]);
+
+    useEffect(() => {
+        if (articleId) {
+            Promise.all([
+                fetchArticle(articleId, Language.English),
+                fetchArticle(articleId, Language.Spanish),
+            ]).then(descriptors => {
+                dispatch({
+                    type: EditorActionType.InjectArticle,
+                    payload: descriptors
+                });
+            });
+            // fetchArticle(articleId, language).then(description => {
+            //     dispatch({
+            //         type: EditorActionType.InjectArticle,
+            //         payload: description
+            //     });
+            // });
+        }
+    }, [articleId, language]);
+
+    const currentDescription: ArticleDescription = {
+        blocks: state.editorStates[state.chosenLanguage],
+        language: state.chosenLanguage,
+    }
+    const getDescriptions = (): ArticleDescription[] => Object.keys(state.editorStates)
+        .map(lang => ({
+            language: lang as Language,
+            blocks: state.editorStates[lang as Language]
+        }));
+    return [currentDescription, blockChangeDispatch, dispatch, getDescriptions];
 }
 
 
-const editorComponentStateReducer = (state: ArticleDescription, action: EditorComponentAction): ArticleDescription => {
+const editorComponentStateReducer = (state: EditorReducerState, action: EditorComponentAction): EditorReducerState => {
     switch (action.type) {
         case EditorActionType.AddBlock: return {
             ...state,
-            blocks: [
-                ...state.blocks,
-                { editorState: initializeNewEditorState(state.language) },
-            ]
+            editorStates: {
+                ...state.editorStates,
+                [state.chosenLanguage]: [
+                    ...state.editorStates[state.chosenLanguage],
+                    initializeNewEditorState(state.chosenLanguage),
+                ]
+            }
         }
         case EditorActionType.MutateEditorState: {
             const nextState = {
                 ...state,
-                blocks: [...state.blocks],
             }
-            nextState.blocks[action.payload.index].editorState = action.payload.editorState;
+            nextState.editorStates[state.chosenLanguage][action.payload.index].editorState = action.payload.editorState;
             return nextState;
+        }
+        case EditorActionType.ChangeLanguage: return {
+            ...state,
+            chosenLanguage: action.payload,
+        };
+        case EditorActionType.InjectArticle: {
+            const payload = action.payload as ArticleDescription[];
+            return {
+                ...state,
+                editorStates: Object.fromEntries(payload.map(descriptor => [
+                    descriptor.language,
+                    descriptor.blocks
+                ])) as Record<Language, EditorBlock[]>
+            }
         }
         default:
             return state;
     }
 }
 
-const initializeNewEditorState = (lang: Language): EditorState => {
+const initializeNewEditorState = (lang: Language): EditorBlock => {
     const defaultStates = {
         [Language.English]: 'Enter text here',
         [Language.Spanish]: 'Introducir texto aquí',
     };
-    return createEditorStateWithText(defaultStates[lang]);
+    return { editorState: createEditorStateWithText(defaultStates[lang]) };
 }
 
-const initialState = (language: Language): ArticleDescription => {
+const initialState = (language: Language): EditorReducerState => {
     return {
-        language,
-        blocks: [
-            {
-                editorState: initializeNewEditorState(language)
-            }
-        ]
-    };
+        chosenLanguage: language,
+        editorStates: {
+            [Language.English]: [initializeNewEditorState(Language.English)],
+            [Language.Spanish]: [initializeNewEditorState(Language.Spanish)],
+        }
+    }
 }

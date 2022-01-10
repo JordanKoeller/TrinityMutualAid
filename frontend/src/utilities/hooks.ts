@@ -91,9 +91,9 @@ export const useWindowBreakpoint = (initialBreakpoint: number | null): [Breakpoi
     return [breakState, setBreakpoint];
 }
 
-export const useCurrentLanguage = (): string => {
+export const useCurrentLanguage = (): Language => {
     const {i18n} = useTranslation(undefined, {useSuspense: false});
-    return i18n.language ? i18n.language.slice(0, 2) : 'en';
+    return (i18n.language ? i18n.language.slice(0, 2) : 'en') as Language;
 }
 
 
@@ -158,15 +158,13 @@ export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Lang
     return [state.values[state.selectedLanguage], state.selectedLanguage, setValue, setLanguage, setBoth];
 }
 
-const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
-     const domain = process.env.REACT_APP_REST_API as string
-     const req = await fetch(`${domain}/${language}/article/${articleId}`, {method: 'GET'});
-     const response = await req.json();
-     const { url, author, timestamp }: { title: string, url: string, author: string, timestamp: number } = response;
+export const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
+     const domain = process.env.REACT_APP_S3_BUCKET as string
+     const url = `${domain}/${articleId}-${language}-latest.json`
      const s3Fetch = await fetch(url, {method: 'GET'});
      const content: RawDraftContentState[] = await s3Fetch.json();
      const editorBlocks = content.map(block => ({editorState: EditorState.createWithContent(convertFromRaw(block))}));
-     return { blocks: editorBlocks, language, articleId, author, publicationDate: new Date(timestamp) }
+     return { blocks: editorBlocks, language, articleId, author: '', publicationDate: new Date()} // TODO: 
  }
 export const useArticleState = (articleId: number, language: Language): ArticleDescription | null => {
 

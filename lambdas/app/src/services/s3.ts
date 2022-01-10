@@ -19,12 +19,29 @@ export class S3Bucket {
                 Key: filename, // File name you want to save as in S3
                 Body: data
             };
-            console.log("Uploading to s3", params)
+            console.log("Uploading to s3", params.Key)
             s3?.upload(params, undefined, (err, data) => {
                 if (err) {
                     reject(err);
                 } else {
                     resolve(data.Location);
+                }
+            });
+        });
+    }
+
+    download(filename: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const params = {
+                Bucket: this.bucket,
+                Key: filename,
+            }
+            s3?.getObject(params, (err, data) => {
+                if (err) reject(err);
+                else {
+                    const dataString = data.Body?.toString();
+                    if (dataString) resolve(dataString);
+                    else reject("s3.getObject returned an empty Body");
                 }
             });
         });

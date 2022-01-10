@@ -128,24 +128,28 @@ h2 {
 /* WYSWIG EDITOR STYLES */
 /* WYSWIG EDITOR STYLES */
 .editor-active {
+    text-align: left;
+    // width: 1200px;
     box-sizing: border-box;
-    border: 1px solid map-get($map: $theme-colors, $key: "primary");
+    // border: 1px solid map-get($map: $theme-colors, $key: "primary");
     cursor: text;
     // padding: 16px;
     // border-radius: 2px;
     // margin-bottom: 2em;
-    box-shadow: inset 0px 1px 8px -3px #ababab;
+    // box-shadow: inset 0px 1px 8px -3px #ababab;
     background: map-get($map: $theme-colors, $key: "primary");
 }
 
 .editor-readonly {
-    box-sizing: border-box;
-    border: 1px solid map-get($map: $theme-colors, $key: "primary");
+    // width: 1200px;
+    text-align: left;
+    // box-sizing: border-box;
+    // border: 1px solid map-get($map: $theme-colors, $key: "primary");
     // cursor: text;
     // padding: 16px;
-    border-radius: 2px;
+    // border-radius: 2px;
     // margin-bottom: 2em;
-    box-shadow: inset 0px 1px 8px -3px #ababab;
+    // box-shadow: inset 0px 1px 8px -3px #ababab;
     background: map-get($map: $theme-colors, $key: "primary");
 }
 
@@ -182,6 +186,11 @@ h2 {
 
 .options {
     margin-bottom: 20px;
+}
+
+.dark {
+    background-color: map-get($map: $theme-colors, $key: "primary-dark");
+
 }
 
 /* WYSWIG EDITOR STYLES */

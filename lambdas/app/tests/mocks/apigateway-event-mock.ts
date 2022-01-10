@@ -1,6 +1,6 @@
 import { ApiGatewayEvent } from '../../src/common/types';
 
-export const generateRequestMock = (path: string, body: any, method: string, pathTemplate?: string): ApiGatewayEvent => {
+export const generateRequestMock = (path: string, body: any, method: string, pathTemplate?: string, extra: any = {}): ApiGatewayEvent => {
     return {
         body: typeof body === 'string' ? body : JSON.stringify(body),
         resource: pathTemplate || path,
@@ -9,7 +9,6 @@ export const generateRequestMock = (path: string, body: any, method: string, pat
         headers: {
             'Content-Type': 'application/json'
         },
-        pathParameters: {},
         requestContext: {
             accountId: '123456789',
             resourceId: '123456789',
@@ -36,5 +35,6 @@ export const generateRequestMock = (path: string, body: any, method: string, pat
             }
 
         },
+        ...extra
     }
 }

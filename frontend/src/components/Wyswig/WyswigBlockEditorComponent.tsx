@@ -6,8 +6,8 @@ import React, {
     useMemo,
     useRef,
 } from 'react';
-import { convertToRaw, convertFromRaw, EditorState, RawDraftContentState, DefaultDraftBlockRenderMap } from 'draft-js';
-import Editor, { createEditorStateWithText, composeDecorators } from '@draft-js-plugins/editor';
+import { EditorState } from 'draft-js';
+import Editor, { composeDecorators } from '@draft-js-plugins/editor';
 
 import {
     ItalicButton,
@@ -34,10 +34,7 @@ import '@draft-js-plugins/anchor/lib/plugin.css';
 import '@draft-js-plugins/image/lib/plugin.css';
 import '@draft-js-plugins/focus/lib/plugin.css';
 import '@draft-js-plugins/alignment/lib/plugin.css';
-import { WyswigControlButtons } from './WyswigLanguageSelector';
-import { Language } from '../../i18n';
-import { useBilingual } from '../../utilities/hooks';
-import { Container, ListGroup } from 'react-bootstrap';
+import { ListGroup, Container } from 'react-bootstrap';
 import { ArticleDescription } from '../../utilities/types';
 
 const inlineStyles = {
@@ -53,17 +50,6 @@ const inlineStyles = {
 const blockStyles: Record<string, string> = {
     'header-one': "jumbotron-title",
     'header-two': "jumbotron-subtitle",
-}
-
-const DarkJumbotron = () => {
-    return <div className="jumbotron-dark" />;
-}
-
-const extraBlocks: Record<string, any> = {
-    'header-two': {
-        'element': 'header-one',
-        'wrapper': <DarkJumbotron />
-    }
 }
 
 const useEditorTools = () => {
@@ -118,7 +104,7 @@ type WyswigProps = {
     blockIndex: number,
     onChange?: (draft: EditorState, blockIndex: number) => void,
     readonly?: boolean,
-    content?: EditorState
+    content?: EditorState,
 
 };
 export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onChange, content, blockIndex }): ReactElement => {
@@ -138,25 +124,14 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
     };
 
     const change = useCallback((state: EditorState) => onChange ? onChange(state, blockIndex) : null, [blockIndex, onChange]);
-
-    // const handleSave = () => {
-    //     const contents = editorState.getCurrentContent();
-    //     const rawContents = convertToRaw(contents);
-    //     const title = "TODO";
-    //     if (onSave) {
-    //         onSave(rawContents, title, language);
-    //     }
-    // }
-
-    // const handleCancelInput = () => {
-    //     setEditorState(initializeState(language));
-    // }
-
+    const backgroundContainerPrefix = `jumbotron-${blockIndex % 2 === 0 ? 'light' : 'dark'}`;
     return (
-        <div>
-            <div className={`editor-${readonly ? 'readonly' : 'active'}`} onClick={focus}>
-                <Container fluid="lg">
+        <Container fluid bsPrefix={backgroundContainerPrefix}>
+            <Container fluid="lg">
+                <div className={`editor-${readonly ? 'readonly' : 'active'} ${blockIndex % 2 === 0 ? 'light' : 'dark'}`} onClick={focus}>
                     <Editor
+                        textAlignment="left"
+                        readOnly={readonly}
                         editorKey="SimpleInlineToolbarEditor"
                         editorState={content}
                         customStyleMap={inlineStyles}
@@ -167,24 +142,25 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
                             editor.current = element;
                         }}
                     />
-                </Container>
-                <pluginsObj.alignmentPlugin.AlignmentTool />
-                <pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                    {(externalProps) => <>
-                        <HeadlineOneButton {...externalProps} />
-                        <HeadlineTwoButton {...externalProps} />
-                        <BoldButton {...externalProps} />
-                        <ItalicButton {...externalProps} />
-                        <UnderlineButton {...externalProps} />
-                        <OrderedListButton {...externalProps} />
-                        <UnorderedListButton {...externalProps} />
-                        <pluginsObj.linkPlugin.LinkButton {...externalProps} />
-                    </>
-                    }
-                </pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                {readonly ? null : <pluginsObj.sidebarPlugin.SideToolbar />}
-            </div>
-        </div>
+                    <pluginsObj.alignmentPlugin.AlignmentTool />
+                    <pluginsObj.inlineToolbarPlugin.InlineToolbar>
+                        {(externalProps) => <>
+                            <HeadlineOneButton {...externalProps} />
+                            <HeadlineTwoButton {...externalProps} />
+                            <BoldButton {...externalProps} />
+                            <ItalicButton {...externalProps} />
+                            <UnderlineButton {...externalProps} />
+                            <OrderedListButton {...externalProps} />
+                            <UnorderedListButton {...externalProps} />
+                            <pluginsObj.linkPlugin.LinkButton {...externalProps} />
+                        </>
+                        }
+                    </pluginsObj.inlineToolbarPlugin.InlineToolbar>
+                    {readonly ? null : <pluginsObj.sidebarPlugin.SideToolbar />}
+                </div>
+            </Container>
+        </Container>
+
     );
 };
 
@@ -202,6 +178,7 @@ export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, r
         {
             state.blocks.map((block, bI) =>
                 <WyswigBlockEditor
+                    key={bI}
                     readonly={readOnly}
                     blockIndex={bI}
                     content={block.editorState}
@@ -209,7 +186,7 @@ export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, r
                 />
             )
         }
-        {Suffix ? Suffix: null}
+        {Suffix ? Suffix : null}
     </ListGroup>
 }
 

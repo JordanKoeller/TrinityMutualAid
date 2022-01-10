@@ -1,6 +1,5 @@
 import React from 'react';
 import { WyswigEditorComponent } from '../components/Wyswig/WyswigEditorComponent';
-
 import { Language } from '../i18n';
 const ResourcesPage: React.FC = () => {
     return <>

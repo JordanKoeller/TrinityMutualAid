@@ -1,7 +1,7 @@
 import { createEditorStateWithText } from '@draft-js-plugins/editor';
 import { EditorState } from 'draft-js';
 import React, { useReducer, useCallback, useContext, useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Toast } from 'react-bootstrap';
 import { EditorClientContext } from '../../context/context';
 import { Language } from '../../i18n';
 import { fetchArticle } from '../../utilities/hooks';
@@ -30,18 +30,29 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
     const client = useContext(EditorClientContext);
     const [editorState, blockChangeDispatch, dispatch, getDescriptions] = useEditorComponentState(language, articleId);
     const [isPreview, setIsPreview] = useState(false);
+    const [saveToast, setSaveToast] = useState<string | null>(null);
 
     const requestSave = async () => {
-        if (articleId) {
-            await client.uploadArticle(getDescriptions(), articleId as number);
-            if (onSave) onSave(articleId as number);
-        } else {
-            const aid = await client.uploadArticle(getDescriptions());
-            if (onSave) onSave(aid);
+        try {
+            if (articleId) {
+                await client.uploadArticle(getDescriptions(), articleId as number);
+                if (onSave) onSave(articleId as number);
+            } else {
+                const aid = await client.uploadArticle(getDescriptions());
+                if (onSave) onSave(aid);
+            }
+            setSaveToast("Article Saved!");
+        } catch {
+            setSaveToast("An unexpected error occurred. Please try again or report a bug");
         }
     }
 
     return <>
+        {
+            saveToast ? <Toast onClose={() => setSaveToast(null)} show={saveToast !== null}>
+                <Toast.Header >{saveToast}</Toast.Header>
+            </Toast> : null
+        }
         <WyswigControlButtons
             onTogglePreview={setIsPreview}
             defaultLanguage={language}
@@ -84,7 +95,7 @@ interface EditorReducerState {
 }
 
 type EditorStateReturnType =
-[ArticleDescription, (state: EditorState, index: number) => void, React.Dispatch<EditorComponentAction>, () => ArticleDescription[]];
+    [ArticleDescription, (state: EditorState, index: number) => void, React.Dispatch<EditorComponentAction>, () => ArticleDescription[]];
 
 const useEditorComponentState = (language: Language, articleId?: number): EditorStateReturnType => {
     const [state, dispatch] = useReducer(editorComponentStateReducer, initialState(language));

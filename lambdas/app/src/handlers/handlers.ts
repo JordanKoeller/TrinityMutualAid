@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import { LambdaApp } from '../common/lambda-app';
-import { PutArticleHandler , /*GetArticlesHandler*/} from './articles';
+import { PatchArticleHandler, PutArticleHandler , /*GetArticlesHandler*/} from './articles';
 
 
 import { FileUploadHandler } from './file-upload';
@@ -14,6 +14,7 @@ app.register(new FileUploadHandler());
 // app.register(new GetArticleHandler());
 // app.register(new GetArticlesHandler());
 app.register(new PutArticleHandler());
+app.register(new PatchArticleHandler());
 
 export const handler = app.asFunc();
 

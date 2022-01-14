@@ -62,15 +62,28 @@ export default class EditorClient {
         const body = {
             article: rawifiedDescriptions
         };
-        const url = articleId ? `${this.domain}/article/${articleId}` : `${this.domain}/article`;
-        const response = await this.client.put(
-            url,
-            body
-        );
-        if (response.status !== 200) {
-            alert(`Upload Failed!\n${response.data}`);
+        if (articleId) {
+            const url = `${this.domain}/article/${articleId}`;
+            const response = await this.client.patch(
+                url,
+                body
+            );
+            if (response.status !== 200) {
+                alert(`Upload Failed!\n${response.data}`);
+            }
+            return response.data.id as number;
+        } else {
+
+            const url = `${this.domain}/article`;
+            const response = await this.client.put(
+                url,
+                body
+            );
+            if (response.status !== 200) {
+                alert(`Upload Failed!\n${response.data}`);
+            }
+            return response.data.id as number;
         }
-        return JSON.parse(response.data).id as number;
     }
 
     private async uploadImage(img: File): Promise<{ data: { link: string } }> {

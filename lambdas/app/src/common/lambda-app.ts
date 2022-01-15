@@ -22,7 +22,7 @@ export abstract class Handler {
   abstract handle(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse>;
 
   isHandler(event: ApiGatewayEvent): boolean {
-    return event.resource === this.method.endpoint && event.httpMethod == this.method.method;
+    return event.requestContext.resourcePath === this.method.endpoint && event.httpMethod == this.method.method;
   }
 
   async getResponse(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
@@ -56,6 +56,7 @@ export class LambdaApp {
         return this.handlers[i].getResponse(event, context);
       }
     }
+    console.log("No valid handler", JSON.stringify(event));
     return {
       statusCode: 500,
       body: JSON.stringify({

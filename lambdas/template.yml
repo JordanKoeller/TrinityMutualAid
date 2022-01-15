@@ -76,6 +76,14 @@ Resources:
             RestApiId: !Ref TMAApi
             Path: /article
             Method: PUT
+        PatchArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /article/{articleId}
+            Auth:
+              Authorizer: NONE
+            Method: PATCH
         GetArticle:
           Type: Api
           Properties:

@@ -20,12 +20,15 @@ interface ArticleDbEntry {
 }
 
 interface ArticleUploadBody {
-    article: {
-    title: string, // The article's title in the specified language.
-    language: string, // What language is this upload in?
-    blocks: any[], // JSONified body
-    }[],
-    articleType: string,
+    serialized: {
+        article: {
+        title: string, // The article's title in the specified language.
+        language: string, // What language is this upload in?
+        blocks: any[], // JSONified body
+        }[],
+        articleType: string,
+    },
+    imageUploadUrls: string[],
 }
 
 interface ArticleVersion {
@@ -58,7 +61,7 @@ abstract class ArticleHandler extends Handler {
         const uploadPromises = article.map(async version => {
             const blockString = JSON.stringify(version.blocks);
             const checksum = crypto.createHash('sha256').update(blockString).digest('hex');
-            if (checksum === record.i18nVersions[version.language].checksum) return []; // If the checksums match, I don't need to reupload. Shortcut out.
+            if (checksum === record.i18nVersions[version.language].checksum) return; // If the checksums match, I don't need to reupload. Shortcut out.
             const documents = this.getDocumentName(record, version.language);
             if (!documents) throw Error("Failed to get document names for the specified language.");
             await Promise.all(documents.map(docname => this.s3.upload(docname, blockString)));
@@ -78,6 +81,16 @@ abstract class ArticleHandler extends Handler {
         console.warn("Tried to get document name for a language that was not in the DbEntry's i18nVersions");
         return null;
     }
+
+    getDocumentVersionFiles(record: ArticleDbEntry): string[] {
+        return Object.keys(record.i18nVersions).flatMap(lang => {
+            const fnames = [`${record.id}-${lang}-latest.json`];
+            for (let i=0; i < record.i18nVersions[lang].revisionNumber; i++) {
+                fnames.push(`${record.id}-${lang}-${i}.json`);
+            }
+            return fnames;
+        });
+    }
 }
 
 
@@ -93,7 +106,7 @@ export class PutArticleHandler extends ArticleHandler {
         // 3. Upload file contents to S3
         // 4. Add Article record to DynamoDB
         // Return Success
-        const {article, articleType} = (JSON.parse(event.body) as ArticleUploadBody);
+        const {serialized: {article, articleType}, imageUploadUrls} = (JSON.parse(event.body) as ArticleUploadBody);
         const id = Math.floor(Math.random() * 100000000);
         const uploadTime = Date.now();
         const record: ArticleDbEntry = {
@@ -106,7 +119,7 @@ export class PutArticleHandler extends ArticleHandler {
                 checksum: ""
             }])),
             type: articleType,
-            images: article.flatMap(body => this._grabImageStrings(body.blocks)),
+            images: imageUploadUrls,
         };
         const uploadSuccess = await this.uploadDocument(article, record);
         if (uploadSuccess) {
@@ -115,12 +128,6 @@ export class PutArticleHandler extends ArticleHandler {
         return this.err("Failed to upload.")
     }
 
-    private _grabImageStrings(content: any[]): string[] {
-        return content.flatMap(block => Object.values(block.entityMap)
-            .filter((ent: any) => ent.type === "IMAGE")
-            .map((ent: any) => ent.data.src as string)
-        );
-    }
 }
 
 export class PatchArticleHandler extends ArticleHandler {
@@ -134,11 +141,35 @@ export class PatchArticleHandler extends ArticleHandler {
         const articleId = parseInt(event.pathParameters!.articleId);
         const articleRecord = await this.db.getRecord(articleId);
         if (!articleRecord) return this.err(`Could not find article with id ${articleId}`);
-        const {article: updates} = (JSON.parse(event.body) as ArticleUploadBody);
+        const {serialized: {article: updates}, imageUploadUrls} = (JSON.parse(event.body) as ArticleUploadBody);
+        articleRecord.images = imageUploadUrls; // Update the array of image urls, in case it changed.
         const uploadSuccess = await this.uploadDocument(updates, articleRecord);
         if (uploadSuccess) {
             return this.success({message: "success", id: articleId});
         }
         return this.err("Failed to upload document.");
+    }
+}
+
+export class DeleteArticleHandler extends ArticleHandler {
+    constructor() {
+        super({endpoint: '/article/{articleId}', method: 'DELETE'});
+    }
+
+    async handle(event: ApiGatewayEvent): Promise<ApiGatewayResponse> {
+        if (!event.pathParameters) return this.err("No Article Id in parameters");
+        const articleId = parseInt(event.pathParameters!.articleId);
+        const articleRecord = await this.db.getRecord(articleId);
+        if (articleRecord) {
+            const s3Urls = [
+                ...(articleRecord?.images?.map(url => url.split('.com/')[1]) || []),
+                ...this.getDocumentVersionFiles(articleRecord),
+            ];
+            await this.s3.delete(s3Urls);
+            await this.db.deleteRecord(articleId, ['timestamp', articleRecord.timestamp]);
+            return this.success({message: "Delete success!"});
+        } else {
+            return this.err("Failed to delete. No ArticleRecord was present!")
+        }
     }
 }

@@ -1,22 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { CardDeck, InfoCard } from '../components/InfoCard';
-import { SplitPanel } from '../components/SplitPanel';
-import { TextBox } from '../components/Text';
 import { TopSpacer } from '../components/TopSpacer';
+import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
 const Home: React.FC = () => {
     const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
         <TopSpacer />
-        <SplitPanel src="content/resize-table.jpg" imageFraction={0.4} imageFirst variant="dark">
-            <TextBox i18nKey="pages.About.0" />
-        </SplitPanel>
-        <SplitPanel src="content/resize-sign.JPEG" imageFraction={0.4} variant="light">
-            <TextBox i18nKey="pages.About.1" />
-        </SplitPanel>
-        <SplitPanel src="content/resize-thumbs.JPEG" imageFraction={0.4} imageFirst variant="dark">
-            <TextBox i18nKey="pages.About.2" />
-        </SplitPanel>
+        <ArticleViewerOrEditor defaultArticleId={29932505}/>
+
         <h1 className="jumbotron-title">{t('tmaInNews')}</h1>
         <CardDeck fluid={true}>
             <InfoCard title={t('pages.News.0')} href="https://trinitonian.com/2021/09/23/trinity-mutual-aid-raises-3000-at-community-market/#">

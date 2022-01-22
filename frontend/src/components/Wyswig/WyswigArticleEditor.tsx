@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, } from 'react';
 import { EditorClientContext } from '../../context/context';
-import { WyswigBlockEditor } from './WyswigBlockEditorComponent';
 import { Language } from '../../i18n';
 import { RawDraftContentState } from 'draft-js';
 import { useArticleState } from '../../utilities/hooks';

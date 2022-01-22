@@ -4,6 +4,7 @@ import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { convertToRaw, RawDraftContentState } from 'draft-js';
 import { dataUrlToFile } from '../utilities/funcs';
 import { ArticleDescription } from '../utilities/types';
+import { getBlockEditor } from '../components/Wyswig/Blocks/EditorBlockRegistry';
 
 const handleError = (e: any) => console.error(JSON.stringify(e, null, 2));
 
@@ -54,14 +55,13 @@ export default class EditorClient {
     }
 
     async uploadArticle(article: ArticleDescription[], articleId?: number): Promise<number> {
-        const rawifiedDescriptions = article.map(descriptor => ({
-            ...descriptor,
-            blocks: descriptor.blocks.map(block => convertToRaw(block.editorState.getCurrentContent()))
-        }));
-        await Promise.all(rawifiedDescriptions.flatMap(descriptor => descriptor.blocks.map(block => this.extractAndUploadImages(block))));
+        const serial = await Promise.all(article.map(descriptor => this.serializeArticle(descriptor)));
+        const uploadUrls: string[] = Array.from(new Set([...serial[0].imageUploadUrls, ...serial[1].imageUploadUrls]));
         const body = {
-            article: rawifiedDescriptions
+            serialized: {article: serial.map(article => article.serialized), articleType: 'news'},
+            imageUploadUrls: uploadUrls
         };
+        console.log(body);
         if (articleId) {
             const url = `${this.domain}/article/${articleId}`;
             const response = await this.client.patch(
@@ -73,7 +73,6 @@ export default class EditorClient {
             }
             return response.data.id as number;
         } else {
-
             const url = `${this.domain}/article`;
             const response = await this.client.put(
                 url,
@@ -86,9 +85,9 @@ export default class EditorClient {
         }
     }
 
-    private async uploadImage(img: File): Promise<{ data: { link: string } }> {
+    private async uploadImageFile(img: File): Promise<{ data: { link: string } }> {
         const extension = img.name.split('.').pop();
-        const blobData = new Blob([new Uint8Array(await img.arrayBuffer())], { type: 'image/' + extension })
+        const blobData = new Blob([new Uint8Array(await img.arrayBuffer())], { type: 'image/' + extension });
         const response = await this.client.get(
             `${this.domain}/file-upload?extension=${extension}`);
         if (response.status === 200) {
@@ -99,12 +98,42 @@ export default class EditorClient {
         return { data: { link: 'image' } };
     }
 
-    private async extractAndUploadImages(state: RawDraftContentState): Promise<void> {
+    async uploadImageString(dataUrl: string): Promise<{ data: { link: string } }> {
+        const blob = await (await fetch(dataUrl)).blob();
+        const mimeString = dataUrl.split(',')[0].split(':')[1].split(';')[0];
+        const file = new File([blob], mimeString, {type:"image/jpeg", lastModified: Date.now()});
+        return await this.uploadImageFile(file);
+    }
+
+    private async serializeArticle(description: ArticleDescription): Promise<any> {
+        const imageUploadUrls: string[] = [];
+        // First I grab all the images from my custom block editors.
+        await Promise.all(description.blocks.map(async block => {
+            const blockEditor = getBlockEditor(block.blockType);
+            if (blockEditor.scrubAndReplaceImages) {
+                const imgs = await blockEditor.scrubAndReplaceImages(block, this);
+                imgs.forEach(imgString => imageUploadUrls.push(imgString));
+            }
+        }));
+        // Then I grab convert to raw data, and grab all the images from the draft-js RawEditorStates.
+        const rawified = {
+            ...description,
+            blocks: description.blocks.map(block => ({...block, editorState: convertToRaw(block.editorState.getCurrentContent())}))
+        };
+        await Promise.all(rawified.blocks.map(block => this.extractAndUploadImages(block.editorState, imageUploadUrls)));
+        return {
+            serialized: rawified,
+            imageUploadUrls,
+        }
+    }
+
+    private async extractAndUploadImages(state: RawDraftContentState, imageUrlsArray: string[]): Promise<void> {
         state.entityMap = Object.fromEntries(await Promise.all(
             Object.entries(state.entityMap).map(async ([k, v]) => {
                 if (v.type === 'IMAGE') {
-                    const dataLink = await this.uploadImage(dataUrlToFile(v.data.src));
+                    const dataLink = await this.uploadImageFile(dataUrlToFile(v.data.src));
                     v.data.src = dataLink.data.link;
+                    imageUrlsArray.push(dataLink.data.link);
                 }
                 return [k, v];
             })

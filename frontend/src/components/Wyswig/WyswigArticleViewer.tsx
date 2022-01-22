@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { EditorClientContext } from '../../context/context';
 import { Language } from '../../i18n';
 import { useArticleState, useCurrentLanguage } from '../../utilities/hooks';
-import { WyswigArticle } from './WyswigBlockEditorComponent';
+import { WyswigArticle } from './WyswigBlockEditor';
 import { WyswigEditorComponent } from './WyswigEditorComponent';
 interface ArticleViewerProps {
     articleId: number,

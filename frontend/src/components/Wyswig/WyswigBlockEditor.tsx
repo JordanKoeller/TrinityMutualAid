@@ -27,15 +27,14 @@ import createFocusPlugin from '@draft-js-plugins/focus';
 import createResizeablePlugin from '@draft-js-plugins/resizeable';
 import createBlockDndPlugin from '@draft-js-plugins/drag-n-drop';
 import createDragNDropUploadPlugin from '@draft-js-plugins/drag-n-drop-upload';
-import createSidebarToolPlugin from '@draft-js-plugins/side-toolbar';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
-import '@draft-js-plugins/side-toolbar/lib/plugin.css';
 import '@draft-js-plugins/anchor/lib/plugin.css';
 import '@draft-js-plugins/image/lib/plugin.css';
 import '@draft-js-plugins/focus/lib/plugin.css';
 import '@draft-js-plugins/alignment/lib/plugin.css';
 import { ListGroup, Container } from 'react-bootstrap';
-import { ArticleDescription } from '../../utilities/types';
+import { ArticleDescription, EditorBlock } from '../../utilities/types';
+import { getBlockEditorComponent } from './Blocks/EditorBlockRegistry';
 
 const inlineStyles = {
 
@@ -58,7 +57,6 @@ const useEditorTools = () => {
         const resizeablePlugin = createResizeablePlugin();
         const blockDndPlugin = createBlockDndPlugin();
         const alignmentPlugin = createAlignmentPlugin();
-        const sidebarPlugin = createSidebarToolPlugin();
         const handleAddImage = (editorState: EditorState, placeholderSrc: string | ArrayBuffer | null) => {
             return (imagePlugin as any).addImage(editorState, placeholderSrc) as EditorState
         }
@@ -88,7 +86,6 @@ const useEditorTools = () => {
             imagePlugin,
             inlineToolbarPlugin,
             linkPlugin,
-            sidebarPlugin
         };
         return {
             pluginsObj: plugins,
@@ -124,10 +121,7 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
     };
 
     const change = useCallback((state: EditorState) => onChange ? onChange(state, blockIndex) : null, [blockIndex, onChange]);
-    const backgroundContainerPrefix = `jumbotron-${blockIndex % 2 === 0 ? 'light' : 'dark'}`;
     return (
-        <Container fluid bsPrefix={backgroundContainerPrefix}>
-            <Container fluid="lg">
                 <div className={`editor-${readonly ? 'readonly' : 'active'} ${blockIndex % 2 === 0 ? 'light' : 'dark'}`} onClick={focus}>
                     <Editor
                         textAlignment="left"
@@ -156,10 +150,7 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
                         </>
                         }
                     </pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                    {readonly ? null : <pluginsObj.sidebarPlugin.SideToolbar />}
                 </div>
-            </Container>
-        </Container>
 
     );
 };
@@ -168,7 +159,7 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
 interface WyswigArticleProps {
     state: ArticleDescription,
     readOnly: boolean,
-    onChange?: (state: EditorState, index: number) => void,
+    onChange?: (state: EditorBlock, index: number) => void,
     Prefix?: ReactElement,
     Suffix?: ReactElement
 }
@@ -176,14 +167,17 @@ export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, r
     return <ListGroup>
         {Prefix ? Prefix : null}
         {
-            state.blocks.map((block, bI) =>
-                <WyswigBlockEditor
-                    key={bI}
-                    readonly={readOnly}
-                    blockIndex={bI}
-                    content={block.editorState}
-                    onChange={onChange}
+            state.blocks.map((block, bI) => {
+                const Component = getBlockEditorComponent(block.blockType);
+                console.log("Getting Editor of type",block.blockType)
+                return <Component
+                  key={bI}
+                  blockIndex={bI}
+                  readOnly={readOnly}
+                  state={block}
+                  onChange={onChange}
                 />
+            }
             )
         }
         {Suffix ? Suffix : null}

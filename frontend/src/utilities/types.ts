@@ -1,9 +1,21 @@
-import { EditorState } from "draft-js";
+import { EditorState, RawDraftContentState } from "draft-js";
 import { Language } from "../i18n";
 
-export interface EditorBlock {
-    editorState: EditorState,
+export enum BlockType {
+    Paragraph,
+    SplitPanel,
+    NewsCard,
 }
+
+interface EditorBlockTemplate<T> {
+    editorState: T,
+    blockType: string,
+    data?: any,
+}
+
+export type EditorBlock = EditorBlockTemplate<EditorState>;
+export type RawEditorBlock = EditorBlockTemplate<RawDraftContentState>;
+
 
 
 

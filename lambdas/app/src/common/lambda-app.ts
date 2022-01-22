@@ -26,7 +26,11 @@ export abstract class Handler {
   }
 
   async getResponse(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
-    return await this.handle(event, context);
+      try {
+          return await this.handle(event, context);
+      } catch (err: any) {
+          return this.err(JSON.stringify({message: "Unexpected Error!", errLog: err}));
+      }
   }
 
   protected err(message: string): ApiGatewayResponse {

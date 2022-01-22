@@ -68,28 +68,19 @@ export class DynamoDbClient<V> {
         });
     }
 
-    getRecords(pageSize: number): Promise<V[]> {
+    deleteRecord(id: number, sortKeyTuple?: [string, number]): Promise<void> {
         return new Promise((resolve, reject) => {
-            const query: ScanInput = {
+            const params = {
                 TableName: this._tableName,
-            }
-            client?.scan(query, (err, data) => {
-            // client?.get(query, (err, data) => {
-                if (err) {
-                    console.warn(
-                        `Adding to DynamoDB Failed! Item=${JSON.stringify(query)}`,
-                        err,
-                        err.stack
-                    );
-                    reject(err)
-                } else {
-                    if (data.Items) {
-                        resolve(data.Items as V[])
-                    } else {
-                        resolve([])
-                    }
-                }
-            });
-        });
+                Key: {
+                    "id": id,
+                    ...(sortKeyTuple ? {[sortKeyTuple[0]]: sortKeyTuple[1]} : {})
+                },
+            };
+            client?.delete(params, (err, data) => {
+                if (err) reject(new Error("Had an error deleting record from dynamodb"));
+                else resolve();
+            })
+        })
     }
 }

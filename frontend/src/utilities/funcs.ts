@@ -32,3 +32,36 @@ export const getImageDataFromRawEditorState = (state: RawDraftContentState): Fil
         .filter(entity => entity.type === 'IMAGE')
         .map(entity => dataUrlToFile(entity.data.src))
 }
+
+export const resizeImage = (file: File, bbox: number): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        const img = document.createElement("img");
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        reader.onload = (e) => {
+            img.src = e.target?.result as string;
+            const maxHeight = bbox;
+            const maxWidth = bbox;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            ctx?.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL("image/png");
+            resolve(dataUrl);
+        }
+        reader.readAsDataURL(file);
+    });
+}

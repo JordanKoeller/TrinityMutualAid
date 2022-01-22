@@ -1,16 +1,17 @@
 
 import { Button, ButtonGroup } from 'react-bootstrap';
-import { EditorBlock } from '../../../utilities/types';
+import { Language } from '../../../i18n';
+import { BlockEditor, BlockEditorComponent, EditorBlock } from './EditorBlock';
 import { ParagraphBlockEditor } from './ParagraphEditor';
 import { SplitPanelEditor } from './SplitPanelEditor';
-import { BlockEditor, BlockEditorComponent, EditorActionType, EditorComponentAction } from './useEditorBlocks';
+import { EditorActionType, EditorComponentAction } from './useEditorBlocks';
 
 const blockRegistry: Record<string, BlockEditor> = {};
 
 
-export function createNewBlock(blockType: string): EditorBlock {
+export function createNewBlock(blockType: string, lang: Language): EditorBlock {
     if (blockType in blockRegistry) {
-        return blockRegistry[blockType].create();
+        return blockRegistry[blockType].create(lang);
     }
     throw new Error(`BlockType ${blockType} not registered in the BlockTypeRegistry.`);
 }

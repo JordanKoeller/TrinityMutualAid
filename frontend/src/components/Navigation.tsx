@@ -60,8 +60,6 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
 }
 
 export const TmaNavbar: React.FC = () => {
-  const ctx = useContext(EditorClientContext);
-
 
     const mq = useMediaQuery();
     const { t, i18n } = useTranslation(undefined, { useSuspense: false });

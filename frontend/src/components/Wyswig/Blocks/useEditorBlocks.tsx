@@ -1,44 +1,12 @@
 import React, { useReducer, useCallback, useEffect } from 'react';
-import { EditorState } from 'draft-js';
 import { Language } from '../../../i18n';
-import { ArticleDescription, EditorBlock } from '../../../utilities/types';
+import { ArticleDescription } from '../../../utilities/types';
 import { fetchArticle } from '../../../utilities/hooks';
 import { createNewBlock } from './EditorBlockRegistry';
-import EditorClient from '../../../context/client';
+import { mapEntries } from '../../../utilities/funcs';
+import { EditorBlock } from './EditorBlock';
 
-/**
- * 
- * I kind of hate Facebook's interfaces/apis for Draft.js. So I'm just going to wrap it in one that makes sense to me.
- * 
- * I get it's flexible and extensible, and maybe for extremely advanced editors that flexibility is good. But I don't need it.
- * 
- * To make a Block editor, you just make a subclass of the class below. A "Block" is a section of vertical space on the screen,
- * or an otherwise discrete section of a document. The ones that exist right now are for a paragraph, a Splitpanel with an image
- *   on one side and text on the other, and then finally, a news card.
- * 
- */
 
-export interface SerializedBlockEditor {
-    blockType: string,
-    content: EditorState,
-}
-
-interface BlockEditorComponentProps {
-    state: EditorBlock,
-    blockIndex: number,
-    readOnly?: boolean,
-    onChange?: (state: EditorBlock, index: number) => void,
-}
-
-export type BlockEditorComponent = React.FC<BlockEditorComponentProps>;
-
-export interface BlockEditor {
-    blockType: string,
-    Component: BlockEditorComponent,
-    create: () => EditorBlock,
-    // Grab any images, upload them, inject their URLs into the block, and return the urls in an array of strings.
-    scrubAndReplaceImages?: (block: EditorBlock, client: EditorClient) => Promise<string[]> 
-}
 
 export enum EditorActionType {
     MutateEditorState,
@@ -47,6 +15,7 @@ export enum EditorActionType {
     ChangeLanguage,
     ClearState,
     InjectArticle,
+    DoTemplateCopy
 }
 
 
@@ -100,21 +69,24 @@ const editorComponentStateReducer = (state: EditorReducerState, action: EditorCo
     switch (action.type) {
         case EditorActionType.AddBlock: return {
             ...state,
-            editorStates: {
-                ...state.editorStates,
-                [state.chosenLanguage]: [
-                    ...state.editorStates[state.chosenLanguage],
-                    createNewBlock(action.payload),
-                ]
-            }
+            editorStates: mapEntries(state.editorStates, ([lang, blocks]) => [lang, [...blocks, createNewBlock(action.payload as string, lang)]])
         }
-        case EditorActionType.MutateEditorState: {
-            const nextState = {
+        case EditorActionType.MutateEditorState: return {
                 ...state,
+                editorStates: mapEntries(
+                    state.editorStates,
+                    ([lang, blocks]) => {
+                        const newBlocks = [...blocks];
+                        if (lang === state.chosenLanguage) {
+                            newBlocks[action.payload.index] = action.payload.state;
+                        } else {
+                            newBlocks[action.payload.index].data = action.payload.state.data;
+                        }
+                        return [lang, newBlocks];
+                    }
+                )
             }
-            nextState.editorStates[state.chosenLanguage][action.payload.index] = action.payload.state;
-            return nextState;
-        }
+        
         case EditorActionType.ChangeLanguage: return {
             ...state,
             chosenLanguage: action.payload,
@@ -138,8 +110,8 @@ const initialState = (language: Language): EditorReducerState => {
     return {
         chosenLanguage: language,
         editorStates: {
-            [Language.English]: [createNewBlock('Paragraph')],
-            [Language.Spanish]: [createNewBlock('Paragraph')],
+            [Language.English]: [createNewBlock('Paragraph', Language.English)],
+            [Language.Spanish]: [createNewBlock('Paragraph', Language.Spanish)],
         }
     }
 }

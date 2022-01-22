@@ -21,12 +21,6 @@ export const WyswigArticleViewer: React.FC<ArticleViewerProps> = ({ articleId, l
                 <h1>Loading</h1>
         }
     </>
-
-    // return <>{article ? <WyswigBlockEditor
-    //   defaultLanguage={language}
-    //   content={article?.content}
-    //   readonly
-    // /> : <h1>Loading</h1>}</>
 }
 
 export const ArticleViewerOrEditor: React.FC<{ defaultArticleId?: number }> = ({ defaultArticleId }) => {
@@ -35,7 +29,6 @@ export const ArticleViewerOrEditor: React.FC<{ defaultArticleId?: number }> = ({
     const [editing, setIsEditing] = useState(false);
     const [articleId, setArticleId ] = useState(defaultArticleId);
     const handleClickedEditButton = () => {
-        console.log("Clicked the button!");
         setIsEditing(!editing);
     }
 

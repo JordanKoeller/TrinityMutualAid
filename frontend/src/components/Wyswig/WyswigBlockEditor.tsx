@@ -25,16 +25,15 @@ import createImagePlugin from '@draft-js-plugins/image';
 import createAlignmentPlugin from '@draft-js-plugins/alignment';
 import createFocusPlugin from '@draft-js-plugins/focus';
 import createResizeablePlugin from '@draft-js-plugins/resizeable';
-import createBlockDndPlugin from '@draft-js-plugins/drag-n-drop';
-import createDragNDropUploadPlugin from '@draft-js-plugins/drag-n-drop-upload';
 import '@draft-js-plugins/inline-toolbar/lib/plugin.css';
 import '@draft-js-plugins/anchor/lib/plugin.css';
 import '@draft-js-plugins/image/lib/plugin.css';
 import '@draft-js-plugins/focus/lib/plugin.css';
 import '@draft-js-plugins/alignment/lib/plugin.css';
-import { ListGroup, Container } from 'react-bootstrap';
-import { ArticleDescription, EditorBlock } from '../../utilities/types';
+import { ListGroup } from 'react-bootstrap';
+import { ArticleDescription } from '../../utilities/types';
 import { getBlockEditorComponent } from './Blocks/EditorBlockRegistry';
+import { EditorBlock } from './Blocks/EditorBlock';
 
 const inlineStyles = {
 
@@ -55,21 +54,12 @@ const useEditorTools = () => {
     return useMemo(() => {
         const focusPlugin = createFocusPlugin();
         const resizeablePlugin = createResizeablePlugin();
-        const blockDndPlugin = createBlockDndPlugin();
         const alignmentPlugin = createAlignmentPlugin();
-        const handleAddImage = (editorState: EditorState, placeholderSrc: string | ArrayBuffer | null) => {
-            return (imagePlugin as any).addImage(editorState, placeholderSrc) as EditorState
-        }
 
-        const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
-            handleUpload: () => { },
-            addImage: handleAddImage,
-        });
         const decorator = composeDecorators(
             resizeablePlugin.decorator,
             alignmentPlugin.decorator,
             focusPlugin.decorator,
-            blockDndPlugin.decorator
         );
         const imagePlugin = createImagePlugin({ decorator });
         const linkPlugin = createLinkPlugin({
@@ -78,14 +68,11 @@ const useEditorTools = () => {
         const inlineToolbarPlugin = createInlineToolbarPlugin();
 
         const plugins = {
-            dragNDropFileUploadPlugin,
-            blockDndPlugin,
             focusPlugin,
-            alignmentPlugin,
-            resizeablePlugin,
             imagePlugin,
             inlineToolbarPlugin,
             linkPlugin,
+            alignmentPlugin,
         };
         return {
             pluginsObj: plugins,

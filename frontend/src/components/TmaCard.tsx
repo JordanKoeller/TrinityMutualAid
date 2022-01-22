@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardGroup, Card, Container } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 type TmaCardProps = {
   image: string,

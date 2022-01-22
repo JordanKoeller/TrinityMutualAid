@@ -1,20 +1,18 @@
 import React, { useCallback } from "react";
 import { createEditorStateWithText } from "@draft-js-plugins/editor";
-import { BlockEditor } from "./useEditorBlocks";
 import { EmptySplitPanel } from "../../SplitPanel";
-import { ParagraphBlockEditor } from "./ParagraphEditor";
 import { EditorState } from "draft-js";
 import { WyswigBlockEditor } from "../WyswigBlockEditor";
+import { BlockEditor, TEMPLATE_EDITOR_BLOCK_TEXT } from "./EditorBlock";
 
 export const SplitPanelEditor: BlockEditor = {
     blockType: 'SplitPanel',
-    create: () => ({
+    create: (language) => ({
         blockType: 'SplitPanel',
-        editorState: createEditorStateWithText("Enter Text Here"),
+        editorState: createEditorStateWithText(TEMPLATE_EDITOR_BLOCK_TEXT[language]),
         data: "insertImage.jpg",
     }),
     Component: ({ state, readOnly, blockIndex, onChange }) => {
-        console.log("Rendering SplitPanelEditor");
         const handleUploadChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
             if (onChange) {
                 const file = evt.target.files?.[0]!;

@@ -1,8 +1,9 @@
-import { convertFromRaw, EditorState, RawDraftContentState } from "draft-js";
+import { convertFromRaw, EditorState } from "draft-js";
 import { useEffect, useState, useCallback, useReducer } from "react";
 import { useTranslation } from "react-i18next";
+import { EditorBlock, RawEditorBlock } from "../components/Wyswig/Blocks/EditorBlock";
 import { Language } from "../i18n";
-import { ArticleDescription, EditorBlock, RawEditorBlock } from "./types";
+import { ArticleDescription, } from "./types";
 
 
 export enum MediaQuery {

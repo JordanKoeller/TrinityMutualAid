@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { convertToRaw, RawDraftContentState } from 'draft-js';
-import { dataUrlToFile } from '../utilities/funcs';
+import { dataUrlToFile, resizeImage } from '../utilities/funcs';
 import { ArticleDescription } from '../utilities/types';
 import { getBlockEditor } from '../components/Wyswig/Blocks/EditorBlockRegistry';
 
@@ -85,7 +85,8 @@ export default class EditorClient {
         }
     }
 
-    private async uploadImageFile(img: File): Promise<{ data: { link: string } }> {
+    private async uploadImageFile(rawImg: File): Promise<{ data: { link: string } }> {
+        const img = await resizeImage(rawImg, 800);
         const extension = img.name.split('.').pop();
         const blobData = new Blob([new Uint8Array(await img.arrayBuffer())], { type: 'image/' + extension });
         const response = await this.client.get(

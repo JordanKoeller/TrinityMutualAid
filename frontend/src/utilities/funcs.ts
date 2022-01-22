@@ -1,5 +1,5 @@
 import { RawDraftContentState } from "draft-js";
-
+import Resizer from 'react-image-file-resizer';
 
 export const groupBy = <T>(array: T[], groupSize: number): T[][] => {
     return array.reduce((agg, elem) => {
@@ -33,35 +33,21 @@ export const getImageDataFromRawEditorState = (state: RawDraftContentState): Fil
         .map(entity => dataUrlToFile(entity.data.src))
 }
 
-export const resizeImage = (file: File, bbox: number): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        const img = document.createElement("img");
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        reader.onload = (e) => {
-            img.src = e.target?.result as string;
-            const maxHeight = bbox;
-            const maxWidth = bbox;
-            let width = img.width;
-            let height = img.height;
-            if (width > height) {
-                if (width > maxWidth) {
-                    height *= maxWidth / width;
-                    width = maxWidth;
-                }
-            } else {
-                if (height > maxHeight) {
-                    width *= maxHeight / height;
-                    height = maxHeight;
-                }
-            }
-            canvas.width = width;
-            canvas.height = height;
-            ctx?.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL("image/png");
-            resolve(dataUrl);
-        }
-        reader.readAsDataURL(file);
+export const resizeImage = (file: File, bbox: number): Promise<File> => {
+    return new Promise((resolve) => {
+        Resizer.imageFileResizer(
+            file,
+            bbox,
+            bbox,
+            'PNG',
+            80,
+            0,
+            (value) => resolve(value as File),
+            'file'
+        )
     });
+}
+
+export function mapEntries<K extends string | number | symbol, V, U>(obj: Record<K, V>, func: (entry: [K, V]) => [K, U]): Record<K, U> {
+    return Object.fromEntries(Object.keys(obj).map(k => func([k as K, obj[k as K]]))) as Record<K, U>;
 }

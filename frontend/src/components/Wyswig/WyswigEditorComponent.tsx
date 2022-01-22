@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, ButtonGroup, Toast } from 'react-bootstrap';
+import { Toast } from 'react-bootstrap';
 import { EditorClientContext } from '../../context/context';
 import { Language } from '../../i18n';
 import { AddBlockButtons } from './Blocks/EditorBlockRegistry';

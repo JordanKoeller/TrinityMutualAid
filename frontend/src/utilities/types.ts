@@ -1,4 +1,4 @@
-import { EditorState, RawDraftContentState } from "draft-js";
+import { EditorBlock } from "../components/Wyswig/Blocks/EditorBlock";
 import { Language } from "../i18n";
 
 export enum BlockType {
@@ -6,15 +6,6 @@ export enum BlockType {
     SplitPanel,
     NewsCard,
 }
-
-interface EditorBlockTemplate<T> {
-    editorState: T,
-    blockType: string,
-    data?: any,
-}
-
-export type EditorBlock = EditorBlockTemplate<EditorState>;
-export type RawEditorBlock = EditorBlockTemplate<RawDraftContentState>;
 
 
 

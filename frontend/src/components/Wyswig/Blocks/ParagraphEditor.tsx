@@ -2,15 +2,15 @@ import React, { useCallback } from "react";
 import { createEditorStateWithText } from "@draft-js-plugins/editor";
 import { EditorState } from "draft-js";
 import { WyswigBlockEditor } from "../WyswigBlockEditor";
-import { BlockEditor } from "./useEditorBlocks";
 import { Container } from "react-bootstrap";
+import { BlockEditor, TEMPLATE_EDITOR_BLOCK_TEXT } from "./EditorBlock";
 
 
 export const ParagraphBlockEditor: BlockEditor = {
     blockType: 'Paragraph',
-    create: () => ({
+    create: (language) => ({
         blockType: 'Paragraph',
-        editorState: createEditorStateWithText("Enter text here."),
+        editorState: createEditorStateWithText(TEMPLATE_EDITOR_BLOCK_TEXT[language]),
     }),
     Component: ({ state, readOnly, blockIndex, onChange }) => {
         const editorOnChange = useCallback((draft: EditorState, blockIndex: number) => {

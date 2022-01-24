@@ -4,13 +4,18 @@ import { EmptySplitPanel } from "../../SplitPanel";
 import { EditorState } from "draft-js";
 import { WyswigBlockEditor } from "../WyswigBlockEditor";
 import { BlockEditor, TEMPLATE_EDITOR_BLOCK_TEXT } from "./EditorBlock";
+import { dataUrlToFile } from "../../../utilities/funcs";
 
 export const SplitPanelEditor: BlockEditor = {
     blockType: 'SplitPanel',
     create: (language) => ({
         blockType: 'SplitPanel',
         editorState: createEditorStateWithText(TEMPLATE_EDITOR_BLOCK_TEXT[language]),
-        data: "insertImage.jpg",
+        data: {
+            filename: "insertImage.jpg",
+            dataUrl: "insertImage.jpg",
+            file: null,
+        },
     }),
     Component: ({ state, readOnly, blockIndex, onChange }) => {
         const handleUploadChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +26,11 @@ export const SplitPanelEditor: BlockEditor = {
                 reader.onloadend = () => {
                     onChange({
                         ...state,
-                        data: reader.result as string,
+                        data: {
+                            dataUrl: reader.result as string,
+                            filename: file.name,
+                            file: file,
+                        }
                     }, blockIndex);
                 }
             }
@@ -35,11 +44,12 @@ export const SplitPanelEditor: BlockEditor = {
         }, [onChange, state]);
         return <EmptySplitPanel
             variant={blockIndex % 2 === 0 ? 'light' : 'dark'}
-            Left={            <div>
+            swapPanels={blockIndex % 2 === 0 ? true : false}
+            Left={<div>
                 {readOnly ? null : <>
-                  <input type="file" onChange={handleUploadChange} />
+                    <input type="file" onChange={handleUploadChange} />
                 </>}
-                <img src={state.data as string} alt="" style={{
+                <img src={state.data.dataUrl as string} alt="" style={{
                     width: '90%',
                     height: '90%',
                     objectFit: 'contain',
@@ -51,13 +61,12 @@ export const SplitPanelEditor: BlockEditor = {
                 blockIndex={blockIndex}
                 content={state.editorState}
             />}
-        />  
+        />
     },
-    scrubAndReplaceImages: async (block, client) => {
-        const link = (await client.uploadImageString(block.data as string)).data.link;
-        block.data = link;
-        return [
-            link,
-        ];
+    scrubImages: (block, imageRecord) => {
+        imageRecord[block.data.filename] = block.data.file;
+    },
+    replaceImages: (block, imagesToUrl) => {
+        block.data.dataUrl = imagesToUrl[block.data.filename];
     }
 };

@@ -14,19 +14,20 @@ export class FileUploadHandler extends Handler {
     async handle(event: ApiGatewayEvent): Promise<ApiGatewayResponse> {
       const s3 = new AWS.S3();
       const URL_EXPIRATION_SECONDS = 300
-      const randomID = Math.round(Math.random() * 10000000);
-      const Key = `${randomID}.${event.multiValueQueryStringParameters?.extension[0]}`
+      const filename = event.multiValueQueryStringParameters!.filename[0];
+      const filenameParts = filename.split(".");
+      const extension = filenameParts[filenameParts.length - 1];
       const s3Params = {
         Bucket: process.env.RESOURCES_BUCKET,
-        Key,
+        Key: filename,
         Expires: URL_EXPIRATION_SECONDS,
-        ContentType: `image/${event.multiValueQueryStringParameters?.extension[0]}`,
+        ContentType: `image/${extension}`,
       }
       const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
-      const imagePath = `https://${process.env.RESOURCES_BUCKET}.s3.amazonaws.com/${Key}`;
+      const imagePath = `https://${process.env.RESOURCES_BUCKET}.s3.amazonaws.com/${filename}`;
       return {
         statusCode: 200,
-        body: JSON.stringify({uploadURL: uploadURL, key: Key, imagePath})
+        body: JSON.stringify({uploadURL: uploadURL, key: filename, imagePath})
       };
     }
   }

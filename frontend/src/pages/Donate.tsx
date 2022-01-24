@@ -3,11 +3,13 @@ import { SquareSingleDonoButton, SquareRecurringDonoButton, PaypalDonoButton } f
 import { CardDeck, InfoCard } from '../components/InfoCard';
 import { TextJumbotron } from '../components/Jumbotron';
 import { TopSpacer } from '../components/TopSpacer';
+import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
+import { pageIds } from './PageIds';
 
 const DonatePage: React.FC = () => {
     return <div>
         <TopSpacer />
-        <TextJumbotron variant="light" i18nKey="pages.Donate.0" />
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Donate}/>
         <br />
         <CardDeck>
             <InfoCard title="Set up Recurring Square Donations" imageUrl="square-recurring-qr.png">

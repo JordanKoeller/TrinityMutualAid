@@ -3,7 +3,6 @@ import { DeleteArticleHandler, PatchArticleHandler, PutArticleHandler } from "..
 import { generateRequestMock } from "../mocks/apigateway-event-mock";
 import AWS from 'aws-sdk';
 import { S3Bucket } from "../../src/services/s3";
-import { assert } from "console";
 
 
 describe("Test Hello world", () => {

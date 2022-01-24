@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { CardDeck, InfoCard } from '../components/InfoCard';
 import { TopSpacer } from '../components/TopSpacer';
 import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
+import { pageIds } from './PageIds';
 const Home: React.FC = () => {
     const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
         <TopSpacer />
-        <ArticleViewerOrEditor defaultArticleId={29932505}/>
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Home}/>
 
         <h1 className="jumbotron-title">{t('tmaInNews')}</h1>
         <CardDeck fluid={true}>

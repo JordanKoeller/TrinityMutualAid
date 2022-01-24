@@ -54,6 +54,6 @@ Bank account info -> once we have a credit card can take off. So I'll wait on th
 Wed > Money situation and writing content.
 
 # Todo List:
-1. Image upload resizing
-2. Image autopopulation between english/spanish
+1. Image upload resizing -- Done
+2. Image autopopulation between english/spanish -- Done
 3. Article IDs for the Home Page/FAQs/Anything else to migrate.

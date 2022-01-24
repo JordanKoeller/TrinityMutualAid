@@ -50,5 +50,6 @@ export interface BlockEditor {
     Component: BlockEditorComponent,
     create: (lang: Language) => EditorBlock,
     // Grab any images, upload them, inject their URLs into the block, and return the urls in an array of strings.
-    scrubAndReplaceImages?: (block: EditorBlock, client: EditorClient) => Promise<string[]> 
+    scrubImages?: (block: EditorBlock, imageRecord: Record<string, File>) => void,
+    replaceImages?: (block: EditorBlock, imagesToUrl: Record<string, string>) => void,
 }

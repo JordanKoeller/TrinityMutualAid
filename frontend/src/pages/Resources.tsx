@@ -1,12 +1,11 @@
 import React from 'react';
-import { WyswigEditorComponent } from '../components/Wyswig/WyswigEditorComponent';
-import { Language } from '../i18n';
+import { TopSpacer } from '../components/TopSpacer';
+import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
+import { pageIds } from './PageIds';
 const ResourcesPage: React.FC = () => {
     return <>
-        <h1>
-            This is the Resources page.
-        </h1>
-        <WyswigEditorComponent language={Language.English} />
+        <TopSpacer />
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Resources} />
     </>
 }
 

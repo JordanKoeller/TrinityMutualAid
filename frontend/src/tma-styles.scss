@@ -30,8 +30,24 @@ p {
     font-size: calc(14px + 0.4vw);
 }
 
+span {
+    font-size: calc(14px + 0.4vw);
+}
+
+h2 span {
+    font-size: calc(18px + 0.8vw);
+}
+
+h1 span {
+    font-size: calc(22px + 0.8vw);
+}
+
 h2 {
-    font-size: calc(14px + 0.8vw);
+    font-size: calc(18px + 0.8vw);
+}
+
+h1 {
+    font-size: calc(22px + 0.8vw);
 }
 
 .App-header {

@@ -30,7 +30,10 @@
             "0": {
                 "title": "Donar!",
                 "body": "Haga una contribución financiera a Trinity Mutual Aid para continuar apoyando a la comunidad de San Antonio! Ayude para mantener las despensas de comida y los refrigeradores y proveer ayuda a las personas que necesitan fondos para gastos médicos, la vivienda, y los gastos de luz y gas. Esté al corriente con nuestra página de noticias para ver cómo las contribuciones han ayudado a redistribuir ayuda por toda el área! Podemos procesar donaciones por medio de nuestras plataformas en línea, cheques y giros postales. Haga una contribución única o hágase un donante recurrente!"
-            }
+            },
+            "SquareRecurring": "Configure donaciones recurrentes con Square",
+            "SquareSingle": "Haga una donación única con Square",
+            "Donate": "Donar"
         },
         "FAQs": {
             "0": {
@@ -65,9 +68,8 @@
                 "body": "Pantry runs consisten en voluntarios que individualmente compran comida y otras necesidades (pilas, pañales, productos menstruales, etc. ) para llenar las despensas y los refrigeradores. Estos despensas y refrigeradores funcionan independientemente por San Antonio y sirven a sus vecinos en forma de “toma lo que necesitas y dona lo que puedas”. Cuando los voluntarios compran la comida, TMA les reembolsa el total de lo que pagaron con tal que tengan el recibo. Si Ud. tiene interés en más información en cuanto a pantry runs, o si necesita que se le reembolse por lo que compró, favor de comunicarse con nosotros por medio de nuestra página."
             },
             "6": {
-                "title": "What is Mutual Aid?",
+                "title": "¿Qué es ayuda mutua?",
                 "body1": "\"When people band together to meet immediate survival needs, usually because of a shared understanding that the systems in place aren't coming to meet them, or certainly not fast enough.\"",
-                "body2": "An important note is that non-profit work and mutual aid work ARE DIFFERENT."
             }
         },
         "News": {
@@ -77,11 +79,17 @@
             "3": "Trinity Magazine: A través de las tormentas",
             "4": "Trinitonian: Trinity Mutual Aid recauda más de $100,000 en cuatro días",
             "5": "Rolling Stone: Dónde donar para ayudar a las personas necesitadas durante la crisis del apagón en Texas"
+        },
+        "Contact": {
+            "0": {
+                "title": "Contacto",
+                "body": "Si necesita contactarnos con respecto a solicitar ayuda, voluntariado, donaciones o cualquier otra cosa, comuníquese con nosotros a través de correo electrónico o redes sociales."
+            }
         }
     },
     "tmaInNews": "TMA en las noticias",
     "footer": {
-        "affiliation": "No está afiliada con la Universidad de Trinity",
+        "affiliation": "Trinity Mutual Aid no está afiliado con la Universidad de Trinity",
         "sponsor": "Patrocinado fiscalmente por Community Housing Resource Partners",
         "mutualhub": "Recursos adicionales de ayuda mutua"
     }

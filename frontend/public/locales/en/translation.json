@@ -30,7 +30,10 @@
             "0": {
                 "title": "Donate!",
                 "body": "Make a financial contribution to Trinity Mutual Aid to continue supporting the San Antonio community! Help keep food pantries and fridges stocked and provide assistance for folks who need funds with medical expenses, housing, and utility expenses. Keep up with our news page to check out how contributions have helped us redistribute aid throughout the area! We are able to process donations through online platforms. Make a one-time contribution or become a recurring donor!"
-            }
+            },
+            "SquareRecurring": "Set up recurring donations with Square!",
+            "SquareSingle": "Make a single donation using Square!",
+            "Donate": "Donate"
         },
         "FAQs": {
             "0": {
@@ -77,6 +80,12 @@
             "3": "Through the Storms and Beyond",
             "4": "Trinity Mutual Aid raises over $100,000 in four days",
             "5": "Rolling Stone: Where to Donate to Help People in Need During Texas' Blackout Crisis "
+        },
+        "Contact": {
+            "0": {
+                "title": "Contact Us",
+                "body": "If you need to contact us in regards to requesting aid, volunteering, donations, or anything else, reach us through email or social media:"
+            }
         }
     },
     "tmaInNews": "TMA in the News",

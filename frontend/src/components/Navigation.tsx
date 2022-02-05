@@ -36,7 +36,7 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
         <Nav style={{ margin: 'auto' }}>
             <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={closeAll}>{t('navbar.News')}</Link>
             <Link className="nav-link" activeClassName="nav-link-active" to="/RequestAid" onClick={closeAll}>{t('navbar.Request Aid')}</Link>
-            <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={closeAll}>{t('navbar.Resources')}</Link>
+            {/* <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={closeAll}>{t('navbar.Resources')}</Link> */}
             <NavDropdown title={t('navbar.About')} menuVariant="dark">
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/About" onClick={closeAll} >{t('navbar.About')}</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={closeAll}>{t('navbar.FAQs')}</Link></NavDropdown.Item>

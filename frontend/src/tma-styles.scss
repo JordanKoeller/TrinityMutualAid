@@ -1,5 +1,6 @@
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+
 $theme-colors: (
     "primary": rgb(75, 111, 86),
     "secondary": rgb(253, 167, 124),
@@ -135,16 +136,23 @@ h2 {
     background-color: map-get($map: $theme-colors, $key: "primary-dark");
     padding-top: 3em;
     padding-bottom: 3em;
+    width: 100vw;
 }
 
 .jumbotron-light-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-light");
     padding-top: 3em;
     padding-bottom: 3em;
+    width: 100vw;
 }
 
 .jumbotron-title {
     color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+.contact-link {
+    display: flex;
+    flex-direction: column;
 }
 
 @media only screen and (max-width: 1200px) {

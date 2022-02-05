@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import "./Donobuttons.css";
 
 export const SquareSingleDonoButton: React.FC = () => {
+    const { t } = useTranslation(undefined, { useSuspense: false });
 
     useEffect(() => {
         function showCheckoutWindow(e: Event) {
@@ -45,9 +47,9 @@ export const SquareSingleDonoButton: React.FC = () => {
             <div >
                 <div id="renderedCheckoutButtonHTML" >
                     <div style={{ padding: '20px' }}>
-                        <p style={{ fontSize: '18px', lineHeight: '20px' }}>
-                            Donate to Trinity Mutual Aid today!
-                        </p>
+                        {/* <p style={{ fontSize: '18px', lineHeight: '20px' }}>
+                            {t('pages.Donate.SquareSingle')}
+                        </p> */}
                         <a
                             id="embedded-checkout-modal-checkout-button"
                             target="_blank"
@@ -67,7 +69,7 @@ export const SquareSingleDonoButton: React.FC = () => {
                                 borderRadius: '50px'
                             }}
                         >
-                            Donate
+                            {t('pages.Donate.Donate')}
                         </a>
                     </div>
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Domine" />
@@ -78,6 +80,7 @@ export const SquareSingleDonoButton: React.FC = () => {
 }
 
 export const SquareRecurringDonoButton: React.FC = () => {
+    const { t } = useTranslation(undefined, { useSuspense: false });
 
     useEffect(() => {
         function showCheckoutWindow(e: Event) {
@@ -119,9 +122,9 @@ export const SquareRecurringDonoButton: React.FC = () => {
         <div style={{ margin: 'auto' }}>
             <div ><div id="renderedCheckoutButtonHTML">
                 <div style={{ padding: '20px' }}>
-                    <p style={{ fontSize: '18px', lineHeight: '20px' }}>
-                        Become a Reccurring Donor Today!
-                    </p>
+                    {/* <p style={{ fontSize: '18px', lineHeight: '20px' }}>
+                        {t('pages.Donate.SquareRecurring')}
+                    </p> */}
                     <a id="embedded-checkout-modal-checkout-button" rel="noreferrer" target="_blank" data-url="https://square.link/u/rOj4d4oI?src=embd" href="https://square.link/u/rOj4d4oI?src=embed"
                         style={{
                             display: 'inline-block',
@@ -135,7 +138,10 @@ export const SquareRecurringDonoButton: React.FC = () => {
                             boxShadow: '0 0 0 1px rgba(0,0,0,.1) inset',
                             borderRadius: '50px'
                         }}
-                    >Donate</a>
+
+                    >
+                        {t('pages.Donate.Donate')}
+                    </a>
                 </div>
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Domine" />
 

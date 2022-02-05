@@ -47,9 +47,9 @@ export const SquareSingleDonoButton: React.FC = () => {
             <div >
                 <div id="renderedCheckoutButtonHTML" >
                     <div style={{ padding: '20px' }}>
-                        <p style={{ fontSize: '18px', lineHeight: '20px' }}>
+                        {/* <p style={{ fontSize: '18px', lineHeight: '20px' }}>
                             {t('pages.Donate.SquareSingle')}
-                        </p>
+                        </p> */}
                         <a
                             id="embedded-checkout-modal-checkout-button"
                             target="_blank"
@@ -122,9 +122,9 @@ export const SquareRecurringDonoButton: React.FC = () => {
         <div style={{ margin: 'auto' }}>
             <div ><div id="renderedCheckoutButtonHTML">
                 <div style={{ padding: '20px' }}>
-                    <p style={{ fontSize: '18px', lineHeight: '20px' }}>
+                    {/* <p style={{ fontSize: '18px', lineHeight: '20px' }}>
                         {t('pages.Donate.SquareRecurring')}
-                    </p>
+                    </p> */}
                     <a id="embedded-checkout-modal-checkout-button" rel="noreferrer" target="_blank" data-url="https://square.link/u/rOj4d4oI?src=embd" href="https://square.link/u/rOj4d4oI?src=embed"
                         style={{
                             display: 'inline-block',
@@ -153,7 +153,6 @@ export const SquareRecurringDonoButton: React.FC = () => {
 }
 
 export const PaypalDonoButton: React.FC = () => {
-    const { t } = useTranslation(undefined, { useSuspense: false });
     return (
         <form action="https://www.paypal.com/donate" method="post" target="_top">
             <input type="hidden" name="business" value="P5Y4NKNV99F6C" />

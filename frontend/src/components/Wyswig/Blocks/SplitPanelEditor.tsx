@@ -63,9 +63,13 @@ export const SplitPanelEditor: BlockEditor = {
         />
     },
     scrubImages: (block, imageRecord) => {
-        imageRecord[block.data.filename] = block.data.file;
+        if (Object.keys(block.data?.file || {}).length > 0) {
+            imageRecord[block.data.filename] = block.data.file;
+        } else {}
     },
     replaceImages: (block, imagesToUrl) => {
-        block.data.dataUrl = imagesToUrl[block.data.filename];
+        if (block.data.filename in imagesToUrl) {
+            block.data.dataUrl = imagesToUrl[block.data.filename];
+        }
     }
 };

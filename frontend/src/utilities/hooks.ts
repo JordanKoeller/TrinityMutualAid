@@ -160,8 +160,8 @@ export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Lang
 }
 
 export const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
-     const domain = process.env.REACT_APP_S3_BUCKET as string
-     const url = `${domain}/${articleId}-${language}-latest.json`
+     const domain = process.env.REACT_APP_S3_BUCKET_URL as string;
+     const url = `${domain}/${articleId}-${language}-latest.json`;
      const s3Fetch = await fetch(url, {method: 'GET'});
      const content: RawEditorBlock[] = await s3Fetch.json();
      const editorBlocks: EditorBlock[] = content.map(block => ({...block, editorState: EditorState.createWithContent(convertFromRaw(block.editorState))}));

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
-import { convertToRaw, RawDraftContentState } from 'draft-js';
-import { dataUrlToFile, getHashFromBlob, resizeImage } from '../utilities/funcs';
+import { convertToRaw, } from 'draft-js';
+import { getHashFromBlob, resizeImage } from '../utilities/funcs';
 import { ArticleDescription } from '../utilities/types';
 import { getBlockEditor } from '../components/Wyswig/Blocks/EditorBlockRegistry';
 
@@ -18,7 +18,6 @@ const editorAuthenticationInterceptor = async (config: AxiosRequestConfig) => {
             newConfig.headers.Authorization = token;
         }
     } catch (e) {
-        console.log('EditorAuthenticationInterceptor: Not logged in', e);
     }
 
     return newConfig;
@@ -61,7 +60,6 @@ export default class EditorClient {
             serialized: {article: serial.map(article => article.serialized), articleType: 'news'},
             imageUploadUrls: uploadUrls
         };
-        console.log(body);
         if (articleId) {
             const url = `${this.domain}/article/${articleId}`;
             const response = await this.client.patch(
@@ -176,10 +174,8 @@ export const useEditorClient = () => {
         })
         Auth.currentSession().then(session => {
             const token = session.getIdToken().getJwtToken();
-            console.log("Setting token", token);
             setClient(new EditorClient(process.env.REACT_APP_REST_API as string, token));
         }).catch(err => {
-            console.log("Unauthenticated");
             setClient(new EditorClient(process.env.REACT_APP_REST_API as string, ''));
         })
     }, []);

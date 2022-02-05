@@ -31,8 +31,9 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
                 if (onSave) onSave(aid);
             }
             setSaveToast("Article Saved!");
-        } catch {
+        } catch (e: any) {
             setSaveToast("An unexpected error occurred. Please try again or report a bug");
+            if (process.env.NODE_ENV === 'development') throw e;
         }
     }
 

@@ -156,7 +156,6 @@ export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, r
         {
             state.blocks.map((block, bI) => {
                 const Component = getBlockEditorComponent(block.blockType);
-                console.log("Getting Editor of type",block.blockType)
                 return <Component
                   key={bI}
                   blockIndex={bI}

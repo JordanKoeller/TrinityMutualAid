@@ -1,6 +1,5 @@
 
 import { EditorState, RawDraftContentState } from 'draft-js';
-import EditorClient from '../../../context/client';
 import { Language } from '../../../i18n';
 
 /**

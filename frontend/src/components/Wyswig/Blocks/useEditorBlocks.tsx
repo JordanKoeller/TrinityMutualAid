@@ -12,6 +12,8 @@ export enum EditorActionType {
     MutateEditorState,
     AddBlock,
     RemoveBlock,
+    InsertBlockAfter,
+    MutateBlockType,
     ChangeLanguage,
     ClearState,
     InjectArticle,
@@ -99,6 +101,50 @@ const editorComponentStateReducer = (state: EditorReducerState, action: EditorCo
                     descriptor.language,
                     descriptor.blocks
                 ])) as Record<Language, EditorBlock[]>
+            }
+        };
+        case EditorActionType.InsertBlockAfter: {
+            const {blockType, index}: {blockType: string, index: number} = action.payload;
+            return {
+                ...state,
+                editorStates: mapEntries(
+                    state.editorStates,
+                    ([lang, blocks]) => {
+                        const newBlocks = [...blocks];
+                        newBlocks.splice(index+1, 0, createNewBlock(blockType, lang));
+                        return [lang, newBlocks]
+                    }
+                )
+            }
+        }
+        case EditorActionType.RemoveBlock: {
+            const index: number = action.payload;
+            return {
+                ...state,
+                editorStates: mapEntries(
+                    state.editorStates,
+                    ([lang, blocks]) => {
+                        const newBlocks = [...blocks];
+                        newBlocks.splice(index, 1);
+                        return [lang, newBlocks]
+                    }
+                )
+            }
+        }
+        case EditorActionType.MutateBlockType: {
+            const {blockType, index}: {blockType: string, index: number} = action.payload;
+            return {
+                ...state,
+                editorStates: mapEntries(
+                    state.editorStates,
+                    ([lang, blocks]) => {
+                        const newBlocks = [...blocks];
+                        const editorState = newBlocks[index].editorState;
+                        newBlocks[index] = createNewBlock(blockType, lang);
+                        newBlocks[index].editorState = editorState;
+                        return [lang, newBlocks];
+                    }
+                )
             }
         }
         default:

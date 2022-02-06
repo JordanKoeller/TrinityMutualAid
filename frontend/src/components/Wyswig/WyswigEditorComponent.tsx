@@ -51,6 +51,7 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
             onCancel={() => dispatch({ type: EditorActionType.ClearState })}
         />
         <WyswigArticle
+            dispatch={dispatch}
             state={editorState}
             readOnly={isPreview}
             onChange={blockChangeDispatch}

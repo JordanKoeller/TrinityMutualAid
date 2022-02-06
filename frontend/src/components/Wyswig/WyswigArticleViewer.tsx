@@ -27,7 +27,7 @@ export const ArticleViewerOrEditor: React.FC<{ defaultArticleId?: number }> = ({
     const editorClient = useContext(EditorClientContext);
     const language = useCurrentLanguage();
     const [editing, setIsEditing] = useState(false);
-    const [articleId, setArticleId ] = useState(defaultArticleId);
+    const [articleId, setArticleId] = useState(defaultArticleId);
     const handleClickedEditButton = () => {
         setIsEditing(!editing);
     }
@@ -35,7 +35,7 @@ export const ArticleViewerOrEditor: React.FC<{ defaultArticleId?: number }> = ({
     if (editorClient.loggedIn()) {
         return <>
             {editing ?
-                <WyswigEditorComponent language={language} articleId={articleId} onSave={setArticleId}/>
+                <WyswigEditorComponent language={language} articleId={articleId} onSave={setArticleId} />
                 :
                 <>
                     <Button onClick={handleClickedEditButton}>Edit</Button>

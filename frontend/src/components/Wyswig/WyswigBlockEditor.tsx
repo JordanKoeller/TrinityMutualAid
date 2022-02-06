@@ -34,6 +34,8 @@ import { ListGroup } from 'react-bootstrap';
 import { ArticleDescription } from '../../utilities/types';
 import { getBlockEditorComponent } from './Blocks/EditorBlockRegistry';
 import { EditorBlock } from './Blocks/EditorBlock';
+import { WyswigBlockSidebar } from './WyswigBlockSidebar';
+import { EditorComponentAction } from './Blocks/useEditorBlocks';
 
 const inlineStyles = {
 
@@ -89,9 +91,10 @@ type WyswigProps = {
     onChange?: (draft: EditorState, blockIndex: number) => void,
     readonly?: boolean,
     content?: EditorState,
+    justify?: 'left' | 'center' | 'right'
 
 };
-export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onChange, content, blockIndex }): ReactElement => {
+export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onChange, content, blockIndex, justify = "left" }): ReactElement => {
 
 
     const { pluginsObj, pluginsArray } = useEditorTools();
@@ -109,35 +112,36 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
 
     const change = useCallback((state: EditorState) => onChange ? onChange(state, blockIndex) : null, [blockIndex, onChange]);
     return (
-                <div className={`editor-${readonly ? 'readonly' : 'active'} ${blockIndex % 2 === 0 ? 'light' : 'dark'}`} onClick={focus}>
-                    <Editor
-                        textAlignment="left"
-                        readOnly={readonly}
-                        editorKey="SimpleInlineToolbarEditor"
-                        editorState={content}
-                        customStyleMap={inlineStyles}
-                        blockStyleFn={contentBlock => blockStyles[contentBlock.getType()]}
-                        onChange={change}
-                        plugins={pluginsArray}
-                        ref={(element) => {
-                            editor.current = element;
-                        }}
-                    />
-                    <pluginsObj.alignmentPlugin.AlignmentTool />
-                    <pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                        {(externalProps) => <>
-                            <HeadlineOneButton {...externalProps} />
-                            <HeadlineTwoButton {...externalProps} />
-                            <BoldButton {...externalProps} />
-                            <ItalicButton {...externalProps} />
-                            <UnderlineButton {...externalProps} />
-                            <OrderedListButton {...externalProps} />
-                            <UnorderedListButton {...externalProps} />
-                            <pluginsObj.linkPlugin.LinkButton {...externalProps} />
-                        </>
-                        }
-                    </pluginsObj.inlineToolbarPlugin.InlineToolbar>
-                </div>
+        <div
+            className={`editor-${readonly ? 'readonly' : 'active'} ${blockIndex % 2 === 0 ? 'light' : 'dark'} ${justify}-justify`} onClick={focus}>
+            <Editor
+                textAlignment={justify}
+                readOnly={readonly}
+                editorKey="SimpleInlineToolbarEditor"
+                editorState={content}
+                customStyleMap={inlineStyles}
+                blockStyleFn={contentBlock => blockStyles[contentBlock.getType()]}
+                onChange={change}
+                plugins={pluginsArray}
+                ref={(element) => {
+                    editor.current = element;
+                }}
+            />
+            <pluginsObj.alignmentPlugin.AlignmentTool />
+            <pluginsObj.inlineToolbarPlugin.InlineToolbar>
+                {(externalProps) => <>
+                    <HeadlineOneButton {...externalProps} />
+                    <HeadlineTwoButton {...externalProps} />
+                    <BoldButton {...externalProps} />
+                    <ItalicButton {...externalProps} />
+                    <UnderlineButton {...externalProps} />
+                    <OrderedListButton {...externalProps} />
+                    <UnorderedListButton {...externalProps} />
+                    <pluginsObj.linkPlugin.LinkButton {...externalProps} />
+                </>
+                }
+            </pluginsObj.inlineToolbarPlugin.InlineToolbar>
+        </div>
 
     );
 };
@@ -148,20 +152,22 @@ interface WyswigArticleProps {
     readOnly: boolean,
     onChange?: (state: EditorBlock, index: number) => void,
     Prefix?: ReactElement,
-    Suffix?: ReactElement
+    Suffix?: ReactElement,
+    dispatch?: React.Dispatch<EditorComponentAction>
 }
-export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, readOnly, Prefix, Suffix }) => {
+export const WyswigArticle: React.FC<WyswigArticleProps> = ({ state, onChange, readOnly, Prefix, Suffix, dispatch }) => {
     return <ListGroup>
         {Prefix ? Prefix : null}
         {
             state.blocks.map((block, bI) => {
                 const Component = getBlockEditorComponent(block.blockType);
                 return <Component
-                  key={bI}
-                  blockIndex={bI}
-                  readOnly={readOnly}
-                  state={block}
-                  onChange={onChange}
+                    Sidebar={dispatch && !readOnly ? <WyswigBlockSidebar dispatch={dispatch} blockIndex={bI} /> : null}
+                    key={bI}
+                    blockIndex={bI}
+                    readOnly={readOnly}
+                    state={block}
+                    onChange={onChange}
                 />
             }
             )

@@ -6,7 +6,7 @@ import { pageIds } from './PageIds';
 const RequestAidPage: React.FC = () => {
     return <>
     <TopSpacer />
-        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Home}/>
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.RequestAid}/>
     </>
 }
 

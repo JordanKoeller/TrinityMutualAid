@@ -2,7 +2,7 @@
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { Language } from '../../../i18n';
 import { BlockEditor, BlockEditorComponent, EditorBlock } from './EditorBlock';
-import { ParagraphBlockEditor } from './ParagraphEditor';
+import { CenteredParagraphBlockEditor, ParagraphBlockEditor } from './ParagraphEditor';
 import { SplitPanelEditor } from './SplitPanelEditor';
 import { EditorActionType, EditorComponentAction } from './useEditorBlocks';
 
@@ -35,12 +35,27 @@ export const AddBlockButtons: React.FC<{ dispatch: (action: EditorComponentActio
     return <ButtonGroup>
         {
             Object.values(blockRegistry).map(blockEditor => <Button
-                variant="primary-outlined"
+                variant="primary"
                 size="lg"
                 onClick={() => dispatch({ type: EditorActionType.AddBlock, payload: blockEditor.blockType })}
             >Add {blockEditor.blockType}</Button>)
         }
     </ButtonGroup>
+}
+
+interface BlockButtonProps {
+    ButtonComponent: React.FC<{label: string, onClick: () => void}>;
+    onSelect: (name: string) => void;
+}
+
+export const BlockButtons: React.FC<BlockButtonProps> = ({ButtonComponent, onSelect}) => {
+    return <>
+        {
+            Object.keys(blockRegistry).map(label => 
+                <ButtonComponent key={label} label={label} onClick={() => onSelect(label)} />
+            )
+        }
+    </>
 }
 
 function registerBlockEditor(editor: BlockEditor) {
@@ -49,3 +64,4 @@ function registerBlockEditor(editor: BlockEditor) {
 
 registerBlockEditor(ParagraphBlockEditor);
 registerBlockEditor(SplitPanelEditor);
+registerBlockEditor(CenteredParagraphBlockEditor)

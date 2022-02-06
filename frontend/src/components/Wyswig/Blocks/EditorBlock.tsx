@@ -36,6 +36,7 @@ export type RawEditorBlock = EditorBlockTemplate<RawDraftContentState>;
 }
 
 interface BlockEditorComponentProps {
+    Sidebar: React.ReactElement | null,
     state: EditorBlock,
     blockIndex: number,
     readOnly?: boolean,

@@ -1,8 +1,5 @@
-import React, { RefObject, useMemo, useState } from 'react';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Dropdown, ListGroup, OverlayTrigger, Popover } from 'react-bootstrap';
-import { ListItem } from 'react-bootstrap/lib/Media';
+import React, { useMemo, useState } from 'react';
+import { Dropdown, } from 'react-bootstrap';
 import { EditorActionType, EditorComponentAction } from './Blocks/useEditorBlocks';
 import { BlockButtons } from './Blocks/EditorBlockRegistry';
 

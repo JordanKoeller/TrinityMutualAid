@@ -1,93 +1,270 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   tma
-
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform:
 - AWS::Serverless-2016-10-31
 
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Parameters:
+  pStage:
+    Description: Environment stage
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+
+Mappings:
+  StageValueMap:
+    dev:
+      s3ResourcesBucket: dev-tma-files
+    prod:
+      s3ResourcesBucket: prod-tma-files
 Resources:
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
+  TMAApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowCredentials: true
+        AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT,PATCH'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'http://localhost:3000'"
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        DefaultAuthorizer: CognitoAuth
+        Authorizers:
+          CognitoAuth:
+            UserPoolArn: !GetAtt TMAUserPool.Arn
+  ArticlesCrudFunction:
     Type: AWS::Serverless::Function
     Metadata:
       BuildMethod: makefile
     Properties:
       CodeUri: app/
-      Handler: dist/src/handlers/get-by-id.handler
+      Handler: dist/src/handlers/handlers.handler
       Runtime: nodejs12.x
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+      Description: Lambda for CRUD operations on articles.
       Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref SampleTable
+            TableName: !Ref Editors
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Articles
+        - S3CrudPolicy:
+            BucketName: !Ref S3ResourcesBucket
       Environment:
         Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
+          EDITORS_TABLE: !Ref Editors
+          ARTICLES_TABLE: !Ref Articles
+          RESOURCES_BUCKET: !Ref S3ResourcesBucket
       Events:
-        Api:
+        Hello:
           Type: Api
           Properties:
-            Path: /{id}
+            RestApiId: !Ref TMAApi
+            Path: /hello
             Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      CodeUri: app/
-      Handler: dist/src/handlers/post.handler
-      Runtime: nodejs12.x
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          # Make table name accessible as environment variable from function code during execution
-          SAMPLE_TABLE: !Ref SampleTable
-      Events:
-        Api:
+        S3UploadUrl:
           Type: Api
           Properties:
-            Path: /
-            Method: POST
-  # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
-
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  SampleTable:
+            RestApiId: !Ref TMAApi
+            Path: /file-upload
+            Method: GET
+        PutArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /article
+            Method: PUT
+        PatchArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /article/{articleId}
+            Auth:
+              Authorizer: NONE
+            Method: PATCH
+        GetArticle:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /{language}/article/{articleId}
+            Auth:
+              Authorizer: NONE
+            Method: GET
+  Editors:
     Type: AWS::Serverless::SimpleTable
     Properties:
+      TableName: !Sub tma-editors-${pStage}
       PrimaryKey:
-        Name: id
+        Name: CognitoUsername
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  Articles:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub tma-articles-${pStage}
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: N
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
         WriteCapacityUnits: 2
+  # Articles:
+  #   Type: AWS::Serverless::SimpleTable
+  #   Properties:
+  #     TableName: !Sub tma-articles-${pStage}
+  #     PrimaryKey:
+  #       Name: id
+  #       Type: Number
+  #     ProvisionedThroughput:
+  #       ReadCapacityUnits: 5
+  #       WriteCapacityUnits: 5
+  S3ResourcesBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !FindInMap [StageValueMap, !Ref pStage, s3ResourcesBucket]
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: ['GET', 'PUT', 'HEAD']
+            AllowedOrigins:
+              # - !Sub 'http://trinitymutualaid.com'
+              # - !Sub 'http://www.trinitymutualaid.com'
+              - 'http://localhost:3000'
+            MaxAge: 3000
+  BucketReadPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref S3ResourcesBucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${S3ResourcesBucket}/*'
+            Principal: '*'
+  TMAUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub TMAUserPool-${pStage}
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: false
+  TMAMobileWebClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref TMAUserPool
+      ClientName: !Sub TMAMobileWebClient-${pStage}
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+  TMAIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      IdentityPoolName: !Sub TMAIdentityPool-${pStage}
+      AllowClassicFlow: true
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders:
+        - ClientId: !Ref TMAMobileWebClient
+          ProviderName: !GetAtt TMAUserPool.ProviderName
+  CognitoUnAuthorizedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref TMAIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": unauthenticated
+      Policies:
+        - PolicyName: !Sub CognitoUnauthorizedPolicy-${pStage}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  # - "mobileanalytics:PutEvents"
+                  - "cognito-sync:*"
+                Resource: "*"
+  CognitoAuthorizedRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Federated: "cognito-identity.amazonaws.com"
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref TMAIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
+      Policies:
+        - PolicyName: !Sub CognitoAuthorizedPolicy-${pStage}
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "mobileanalytics:PutEvents"
+                  - "cognito-sync:*"
+                  - "cognito-identity:*"
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: "*"
+
+  IdentityPoolRoleMapping:
+    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+    Properties:
+      IdentityPoolId: !Ref TMAIdentityPool
+      Roles:
+        authenticated: !GetAtt CognitoAuthorizedRole.Arn
+        unauthenticated: !GetAtt CognitoUnAuthorizedRole.Arn
 
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${TMAApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  TMAUserPoolId:
+    Value: !Ref TMAUserPool
+    Export:
+      Name: !Sub "TMAUserPool-${pStage}::Id"
+  TMAIdentityPoolId:
+    Value: !Ref TMAIdentityPool
+    Export:
+      Name: !Sub "TMAIdentityPool-${pStage}::Id"
+  TMAMobileWebClientId:
+    Value: !Ref TMAMobileWebClient
+    Export:
+      Name: !Sub "TMAMobileWebClient-${pStage}::Id"
+  S3UploadBucketName:
+    Description: "S3 bucket for application uploads"
+    Value: !Ref S3ResourcesBucket

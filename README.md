@@ -52,3 +52,8 @@ Transactions -> Venmo (Megan contact for more info.)
 Bank account info -> once we have a credit card can take off. So I'll wait on that before setting up anything permanent.
 
 Wed > Money situation and writing content.
+
+# Todo List:
+1. Image upload resizing -- Done
+2. Image autopopulation between english/spanish -- Done
+3. Article IDs for the Home Page/FAQs/Anything else to migrate.

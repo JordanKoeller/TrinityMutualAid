@@ -1,14 +1,13 @@
 import React from 'react';
-import { TextJumbotron } from '../components/Jumbotron';
 import { TopSpacer } from '../components/TopSpacer';
+import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
+import { pageIds } from './PageIds';
 
 const AboutPage: React.FC = () => {
 
     return <div>
         <TopSpacer />
-        <TextJumbotron variant="light" i18nKey="pages.About.0" />
-        <TextJumbotron variant="dark" i18nKey="pages.About.1" />
-        <TextJumbotron variant="light" i18nKey="pages.About.2" />
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.About}/>
     </div>
 }
 

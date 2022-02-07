@@ -1,0 +1,56 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Production CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+      name: Checkout Project
+
+    - name: chdir
+      run: cd ./lambdas
+
+    - name: Get Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Npm install
+      run: |
+        cd ./app
+        npm install
+        cd ..
+
+    - name: sam build
+      uses: TractorZoom/sam-cli-action@master
+      with:
+        sam_command: "build"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: sam deploy
+      uses: falnyr/aws-sam-deploy-action@v1.0.0
+      env:
+        TEMPLATE: template.yaml
+        AWS_STACK_NAME: tma-app-prod
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_DEPLOY_BUCKET: "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
+        AWS_REGION: us-east-1
+        PARAMETER_OVERRIDES: |
+          pStage=prod

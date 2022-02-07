@@ -42,3 +42,36 @@ export const SplitPanel: React.FC<SplitPanelProps> = ({ src, imgSize = {}, child
         </Container>
     </Container>
 }
+
+type PanelProps = {
+    variant: JumboVariant,
+    swapPanels?: boolean,
+    splitPercent?: number,
+    Left: React.ReactElement,
+    Right: React.ReactElement
+}
+
+export const EmptySplitPanel: React.FC<PanelProps> = ({ variant, swapPanels, splitPercent, Left, Right }) => {
+    const screenSize = useMediaQuery();
+    const vertical = screenSize <= MediaQuery.SM;
+    const orders = swapPanels ? [2, 1] : [1, 2];
+    const leftPanelPercent = `${splitPercent || 50}%`;
+    const righPanelPercent = `${100 - (splitPercent || 50)}%`;
+    return <Container fluid bsPrefix={`jumbotron-${variant}`}>
+        <Container fluid="lg" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            textAlign: 'left',
+            justifyItems: 'center',
+            gap: '2em',
+            flexDirection: vertical ? 'column' : 'row'
+        }}>
+            <div style={{ order: orders[0], width: vertical ? undefined : leftPanelPercent }}>
+                {Left}
+            </div>
+            <div style={{ order: orders[1], maxWidth: vertical ? undefined : righPanelPercent }}>
+                {Right}
+            </div>
+        </Container>
+    </Container>
+}

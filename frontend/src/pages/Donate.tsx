@@ -1,15 +1,16 @@
 import React from 'react';
 import { SquareSingleDonoButton, SquareRecurringDonoButton, PaypalDonoButton } from '../components/DonoButtons';
 import { CardDeck, InfoCard } from '../components/InfoCard';
-import { TextJumbotron } from '../components/Jumbotron';
 import { TopSpacer } from '../components/TopSpacer';
+import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
+import { pageIds } from './PageIds';
 import { useTranslation } from 'react-i18next';
 
 const DonatePage: React.FC = () => {
     const { t } = useTranslation(undefined, { useSuspense: false });
     return <div>
         <TopSpacer />
-        <TextJumbotron variant="light" i18nKey="pages.Donate.0" />
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Donate}/>
         <br />
         <CardDeck>
             <InfoCard title={t('pages.Donate.SquareRecurring')} imageUrl="square-recurring-qr.png">

@@ -85,6 +85,17 @@
                 "title": "Contacto",
                 "body": "Si necesita contactarnos con respecto a solicitar ayuda, voluntariado, donaciones o cualquier otra cosa, comuníquese con nosotros a través de correo electrónico o redes sociales."
             }
+        },
+        "RequestAid": {
+            "0": {
+                "title": "Solicitud de Asistencia",
+                "body": "Gracias por llegar a Trinity Ayuda Mutua. Este formulario está diseñado como una vía para solicitar asistencia financiera para la inseguridad alimentaria, alivio de facturas médicas, alivio de alquiler y asistencia con los servicios públicos. Entendemos y apreciamos la energía y los esfuerzos para completar este formulario y divulgar información personal. Su información permanecerá protegida y anónima con nuestro equipo de TMA. Se requieren comprobantes de facturas, recibos y reembolsos para brindar asistencia. Se requiere legalmente una identificación oficial y fotografía."
+            },
+            "1": {
+                "title": "",
+                "body": "Una vez que se complete el formulario, nos comunicaremos con usted sobre su estado dentro de los cinco días hábiles. Le deseamos amor, luz y solidaridad."
+            },
+            "linkLabel": "enlace al formulario:"
         }
     },
     "tmaInNews": "TMA en las noticias",

@@ -86,6 +86,17 @@
                 "title": "Contact Us",
                 "body": "If you need to contact us in regards to requesting aid, volunteering, donations, or anything else, reach us through email or social media:"
             }
+        },
+        "RequestAid": {
+            "0": {
+                "title": "Application for Assistance",
+                "body": "Thank you for reaching out to Trinity Mutual Aid. This form is designed as an avenue to request financial assistance for food insecurity, medical bill relief, rent relief, and assistance with utilities. We understand and appreciate the energy and efforts to fill out this form and disclose personal information. Your information will stay protected and anonymous with our team at TMA. Proof of bills, receipts, and reimbursements are required in order to provide assistance. Government and photo ID are legally required. "
+            },
+            "1": {
+                "title": "",
+                "body": "Once the form is completed, we will get back to you on your status within five business days. We wish you love, light and solidarity. "
+            },
+            "linkLabel": "Link to form:"
         }
     },
     "tmaInNews": "TMA in the News",

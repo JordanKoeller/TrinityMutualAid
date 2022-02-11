@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import { ScanInput } from 'aws-sdk/clients/dynamodb';
 
 
 

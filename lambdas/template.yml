@@ -100,8 +100,8 @@ Resources:
         Name: CognitoUsername
         Type: String
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
   Articles:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -117,7 +117,7 @@ Resources:
         - AttributeName: timestamp
           KeyType: RANGE
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
+        ReadCapacityUnits: 2
         WriteCapacityUnits: 2
   # Articles:
   #   Type: AWS::Serverless::SimpleTable

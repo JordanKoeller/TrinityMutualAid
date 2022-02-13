@@ -28,6 +28,7 @@ jobs:
           echo "REACT_APP_S3_BUCKET=${{secrets.REACT_APP_S3_BUCKET}}" >> .env
           echo "REACT_APP_S3_BUCKET_URL=${{secrets.REACT_APP_S3_BUCKET_URL}}" >> .env
           npm run-script build
+          cat .env
       - name: Set env to staging
         if: endsWith(github.ref, '/develop')
         run: |

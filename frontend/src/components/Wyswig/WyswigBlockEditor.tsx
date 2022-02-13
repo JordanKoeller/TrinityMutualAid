@@ -3,10 +3,9 @@
 import React, {
     ReactElement,
     useCallback,
-    useMemo,
     useRef,
 } from 'react';
-import { EditorState } from 'draft-js';
+import { CompositeDecorator, EditorState } from 'draft-js';
 import Editor, { composeDecorators } from '@draft-js-plugins/editor';
 
 import {
@@ -36,6 +35,7 @@ import { getBlockEditorComponent } from './Blocks/EditorBlockRegistry';
 import { EditorBlock } from './Blocks/EditorBlock';
 import { WyswigBlockSidebar } from './WyswigBlockSidebar';
 import { EditorComponentAction } from './Blocks/useEditorBlocks';
+import { ExtLink } from '../ExtLink';
 
 const inlineStyles = {
 
@@ -52,36 +52,44 @@ const blockStyles: Record<string, string> = {
     'header-two': "jumbotron-subtitle",
 }
 
-const useEditorTools = () => {
-    return useMemo(() => {
-        const focusPlugin = createFocusPlugin();
-        const resizeablePlugin = createResizeablePlugin();
-        const alignmentPlugin = createAlignmentPlugin();
+const focusPlugin = createFocusPlugin();
+const resizeablePlugin = createResizeablePlugin();
+const alignmentPlugin = createAlignmentPlugin();
 
-        const decorator = composeDecorators(
-            resizeablePlugin.decorator,
-            alignmentPlugin.decorator,
-            focusPlugin.decorator,
-        );
-        const imagePlugin = createImagePlugin({ decorator });
-        const linkPlugin = createLinkPlugin({
-            Link: (props) => <a className="link" {...props}>{props.children}</a>
-        });
-        const inlineToolbarPlugin = createInlineToolbarPlugin();
+const decorator = composeDecorators(
+    resizeablePlugin.decorator,
+    alignmentPlugin.decorator,
+    focusPlugin.decorator,
+);
+const imagePlugin = createImagePlugin({ decorator });
+const linkPlugin = createLinkPlugin({
+    Link: (props) => {
+        const data = (props as any).contentState.getEntity((props as any).entityKey).getData();
+        return <ExtLink href={data.url}>{props.children}</ExtLink>
+    }
+});
+const inlineToolbarPlugin = createInlineToolbarPlugin();
 
-        const plugins = {
-            focusPlugin,
-            imagePlugin,
-            inlineToolbarPlugin,
-            linkPlugin,
-            alignmentPlugin,
-        };
-        return {
-            pluginsObj: plugins,
-            pluginsArray: Object.values(plugins)
-        };
-    }, []);
+const plugins = {
+    focusPlugin,
+    imagePlugin,
+    inlineToolbarPlugin,
+    linkPlugin,
+    alignmentPlugin,
+};
+
+const editorTools = () => {
+    return {
+        pluginsObj: plugins,
+        pluginsArray: Object.values(plugins)
+    };
 }
+
+export const getAllDecorators = () => {
+    return new CompositeDecorator(linkPlugin.decorators as any);
+}
+
+export const blockEditorDecorator = getAllDecorators();
 
 
 
@@ -97,7 +105,7 @@ type WyswigProps = {
 export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onChange, content, blockIndex, justify = "left" }): ReactElement => {
 
 
-    const { pluginsObj, pluginsArray } = useEditorTools();
+    const { pluginsObj, pluginsArray } = editorTools();
 
     // useEffect(() => {
     //     // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306

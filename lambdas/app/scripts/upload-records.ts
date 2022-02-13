@@ -10,7 +10,7 @@ AWS.config.update({ region: process.env.AWS_REGION });
 
 const CSV_NAME = "/home/jkoeller/Documents/tma-db-records.csv";
 
-const func = async () => {
+const copyOverDynamoDb = async () => {
 
 
     const ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
@@ -46,4 +46,29 @@ const func = async () => {
     //   await db.addRecord(records[0]);
 }
 
-func();
+const copyOverS3Bucket = async () => {
+    const s3 = new AWS.S3();
+
+    const OLD_BUCKET = "dev-tma-files";
+    const NEW_BUCKET = "prod-tma-files";
+
+    // First grab list of filenames from the old bucket
+    s3.listObjects({Bucket: OLD_BUCKET,}, (_err, data) => 
+        data.Contents?.forEach(({Key}) => 
+            s3.getObject({Bucket: OLD_BUCKET, Key: Key as string}, (_err2, obj) =>
+                s3.upload({
+                    Bucket: NEW_BUCKET,
+                    ACL: 'public-read',
+                    Key: Key as string,
+                    Body: obj.Body
+                }, (err3) => 
+                    err3 ? console.log(`Failed to upload ${Key}`) : console.log(`Uploaded ${Key}`)
+                )
+            )
+        )
+    );
+}
+
+// copyOverDynamoDb();
+
+copyOverS3Bucket();

@@ -5,8 +5,8 @@ import {
 } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { faInstagram, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
+
 import { MediaQuery, useMediaQuery } from '../utilities/hooks';
 import { useTranslation } from 'react-i18next';
 
@@ -17,17 +17,17 @@ export const Footer: React.FC = () => {
         <div id="socials-bar">
             <span>
                 <a href="https://www.instagram.com/trinitymutualaid" target="_blank" rel="noreferrer">
-                    <FontAwesomeIcon icon={faInstagram} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
+                    <FontAwesomeIcon icon={faInstagram as any} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
                 </a>
             </span>
             <span>
                 <a href="https://twitter.com/trinmutualaid" target="_blank" rel="noreferrer">
-                    <FontAwesomeIcon icon={faFacebook} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
+                    <FontAwesomeIcon icon={faTwitter as any} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
                 </a>
             </span>
             <span>
                 <a href="https://www.facebook.com/trinity.mutualaid" target="_blank" rel="noreferrer">
-                    <FontAwesomeIcon icon={faTwitter} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
+                    <FontAwesomeIcon icon={faFacebook as any} size={mq > MediaQuery.MD ? "3x" : "2x"} className="socials-link" />
                 </a>
             </span>
         </div>

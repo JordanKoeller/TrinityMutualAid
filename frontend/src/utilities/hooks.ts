@@ -2,6 +2,7 @@ import { convertFromRaw, EditorState } from "draft-js";
 import { useEffect, useState, useCallback, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import { EditorBlock, RawEditorBlock } from "../components/Wyswig/Blocks/EditorBlock";
+import { blockEditorDecorator } from "../components/Wyswig/WyswigBlockEditor";
 import { Language } from "../i18n";
 import { ArticleDescription, } from "./types";
 
@@ -164,7 +165,7 @@ export const fetchArticle = async (articleId: number, language: Language): Promi
      const url = `${domain}/${articleId}-${language}-latest.json`;
      const s3Fetch = await fetch(url, {method: 'GET'});
      const content: RawEditorBlock[] = await s3Fetch.json();
-     const editorBlocks: EditorBlock[] = content.map(block => ({...block, editorState: EditorState.createWithContent(convertFromRaw(block.editorState))}));
+     const editorBlocks: EditorBlock[] = content.map(block => ({...block, editorState: EditorState.createWithContent(convertFromRaw(block.editorState), blockEditorDecorator as any)}));
      return { blocks: editorBlocks, language, articleId, author: '', publicationDate: new Date()} // TODO: 
  }
 export const useArticleState = (articleId: number, language: Language): ArticleDescription | null => {

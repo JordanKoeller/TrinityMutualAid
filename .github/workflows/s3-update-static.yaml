@@ -28,15 +28,17 @@ jobs:
         run: |
           cd ./frontend
           npm install
-          echo "REACT_APP_AWS_REGION=$REACT_APP_AWS_REGION" > .env
-          echo "REACT_APP_IDENTITY_POOL_ID=$REACT_APP_IDENTITY_POOL_ID" >> .env
-          echo "REACT_APP_USER_POOL_ID=$REACT_APP_USER_POOL_ID" >> .env
-          echo "REACT_APP_USER_POOL_WEB_CLIENT_ID=$REACT_APP_USER_POOL_WEB_CLIENT_ID" >> .env
-          echo "REACT_APP_REST_API=$REACT_APP_REST_API" >> .env
-          echo "REACT_APP_S3_BUCKET=$REACT_APP_S3_BUCKET" >> .env
-          echo 'REACT_APP_S3_BUCKET_URL=https://${REACT_APP_S3_BUCKET}.s3.amazonaws.com' >> .env
-          npm run-script build
+          cat << EOF > .env
+          REACT_APP_AWS_REGION=${{ secrets.REACT_APP_AWS_REGION }}
+          REACT_APP_IDENTITY_POOL_ID=${{ secrets.REACT_APP_IDENTITY_POOL_ID }}
+          REACT_APP_USER_POOL_ID=${{ secrets.REACT_APP_USER_POOL_ID }}
+          REACT_APP_USER_POOL_WEB_CLIENT_ID=${{ secrets.REACT_APP_USER_POOL_WEB_CLIENT_ID }}
+          REACT_APP_REST_API=${{ secrets.REACT_APP_REST_API }}
+          REACT_APP_S3_BUCKET=${{ secrets.REACT_APP_S3_BUCKET }}
+          REACT_APP_S3_BUCKET_URL=https://${{ secrets.REACT_APP_S3_BUCKET }}.s3.amazonaws.com
+          EOF
           cat .env
+          npm run-script build
       - name: Set env to staging
         if: endsWith(github.ref, '/develop')
         run: |

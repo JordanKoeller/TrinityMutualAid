@@ -16,9 +16,17 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-      - run: |
-          echo Running npm commands
+      - name: Create .env file
+        run: |
           cd ./frontend
+          echo "REACT_APP_AWS_REGION=${{secrets.REACT_APP_AWS_REGION}}" > .env
+          echo "REACT_APP_IDENTITY_POOL_ID=${{secrets.REACT_APP_IDENTITY_POOL_ID}}" >> .env
+          echo "REACT_APP_USER_POOL_ID=${{secrets.REACT_APP_USER_POOL_ID}}" >> .env
+          echo "REACT_APP_USER_POOL_WEB_CLIENT_ID=${{secrets.REACT_APP_USER_POOL_WEB_CLIENT_ID}}" >> .env
+          echo "REACT_APP_REST_API=${{secrets.REACT_APP_REST_API}}" >> .env
+          echo "REACT_APP_S3_BUCKET=${{secrets.REACT_APP_S3_BUCKET}}" >> .env
+          echo "REACT_APP_S3_BUCKET_URL=${{secrets.REACT_APP_S3_BUCKET_URL}}" >> .env
+      - run: |
           npm install
           npm run-script build
           echo Finished running npm commands

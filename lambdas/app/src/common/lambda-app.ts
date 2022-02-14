@@ -9,7 +9,16 @@ export interface RequestMethod {
   method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'PATCH',
 }
 
-export type ApiHandler = (event: ApiGatewayEvent, context: AuthenticatedRequestContext) =>Promise<ApiGatewayResponse>;
+export type ApiHandler = (event: ApiGatewayEvent, context: AuthenticatedRequestContext) => Promise<ApiGatewayResponse>;
+
+const VALID_ORIGINS = [
+  "http://trinitymutualaid.com",
+  "https://trinitymutualaid.com",
+  "http://dev.trinitymutualaid.com",
+  "https://dev.trinitymutualaid.com",
+  "http://www.trinitymutualaid.com",
+  "https://www.trinitymutualaid.com",
+]
 
 export abstract class Handler {
 
@@ -26,25 +35,25 @@ export abstract class Handler {
   }
 
   async getResponse(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
-      try {
-          return await this.handle(event, context);
-      } catch (err: any) {
-          return this.err(JSON.stringify({message: "Unexpected Error!", errLog: err}));
-      }
+    try {
+      return await this.handle(event, context);
+    } catch (err: any) {
+      return this.err(JSON.stringify({ message: "Unexpected Error!", errLog: err }));
+    }
   }
 
   protected err(message: string): ApiGatewayResponse {
-      return {
-          statusCode: 500,
-          body: JSON.stringify({message}),
-      }
-  } 
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message }),
+    }
+  }
   protected success(message: Record<string, unknown>): ApiGatewayResponse {
     return {
-        statusCode: 200,
-        body: JSON.stringify(message),
+      statusCode: 200,
+      body: JSON.stringify(message),
     }
-} 
+  }
 }
 
 export class LambdaApp {
@@ -55,7 +64,7 @@ export class LambdaApp {
   }
 
   async run(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
-    for (let i=0; i < this.handlers.length; i++) {
+    for (let i = 0; i < this.handlers.length; i++) {
       if (this.handlers[i].isHandler(event)) {
         return this.handlers[i].getResponse(event, context);
       }
@@ -74,20 +83,31 @@ export class LambdaApp {
     this.handlers.push(handler);
   }
 
+  asFunc(): (event: ApiGatewayEvent, context: AuthenticatedRequestContext) => Promise<any> {
+    return (evt, ctx) => this.run(evt, ctx).then(resp => this.packageResponse(resp, evt));
+  }
 
-  _packageResponse(response: ApiGatewayResponse): Record<string, any> {
+  private packageResponse(response: ApiGatewayResponse, evt: ApiGatewayEvent): Record<string, any> {
     return {
       ...response,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": 'http://localhost:3000',
-        "Access-Control-Allow-Credentials": true
+        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Origin": this.getAllowOrigin(evt),
       }
     }
   }
 
-  asFunc(): (event: ApiGatewayEvent, context: AuthenticatedRequestContext) =>Promise<any> {
-    return (evt, ctx) => this.run(evt, ctx).then(resp => this._packageResponse(resp));
+
+  private getAllowOrigin(evt: ApiGatewayEvent): string {
+    if (VALID_ORIGINS.includes(evt.headers.origin)) {
+      return evt.headers.origin;
+    }
+    if (evt.requestContext.stage === 'Dev') {
+      return "http://localhost:3000";
+    }
+    console.log("COULD NOT FIND ORIGIN", evt.headers.origin);
+    return "";
   }
 
 }

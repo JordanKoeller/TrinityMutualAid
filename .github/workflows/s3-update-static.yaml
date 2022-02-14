@@ -16,23 +16,27 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-      - name: Create .env file and build
-        env:
-          ENV_FILE_PRODUCTION: ${{  secrets.ENV_FILE  }}
-        run: |
-          cd ./frontend
-          echo "$ENV_FILE_PRODUCTION" | base64 -d > .env
-          wc -m .env
-          npm install
-          npm run-script build
-      - name: Set env to staging
+      - name: Activate Staging Build
         if: endsWith(github.ref, '/develop')
+        env:
+          ENV_FILE_STAGING: ${{  secrets.ENV_FILE_STAGING  }}
         run: |
           echo "AWS_S3_BUCKET=dev.trinitymutualaid.com" >> $GITHUB_ENV
-      - name: Set env to production
+          echo "$ENV_FILE_STAGING" | base64 -d > ./frontend/.env
+      - name: ActivateProduction Build
+        env:
+          ENV_FILE_PRODUCTION: ${{  secrets.ENV_FILE_PRODUCTION }}
         if: endsWith(github.ref, '/main')
         run: |
           echo "AWS_S3_BUCKET=trinitymutualaid.com" >> $GITHUB_ENV
+          echo "$ENV_FILE_PRODUCTION" | base64 -d > ./frontend/.env
+
+      - name: Install and Build
+        run: |
+          cd ./frontend
+          wc -m .env
+          npm install
+          npm run-script build
       - uses: awact/s3-action@master
         env:
           SOURCE_DIR: './frontend/build'

@@ -19,7 +19,7 @@ Mappings:
       siteOrigin: "'http://localhost:3000'"
     prod:
       s3ResourcesBucket: prod-tma-files
-      siteOrigin: "'http://dev.trinitymutualaid.com'"
+      siteOrigin: "'http://trinitymutualaid.com'"
   
 Resources:
   TMAApi:

@@ -20,7 +20,7 @@ $theme-colors: (
 
 a {
     color: map-get($map: $theme-colors, $key: "secondary");
-    text-decoration: none;
+    text-decoration: underline;
 }
 a:hover {
     color: map-get($map: $theme-colors, $key: "secondary");
@@ -196,7 +196,7 @@ h1 {
 
 .link {
     color: map-get($map: $theme-colors, $key: "secondary");
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 .options {

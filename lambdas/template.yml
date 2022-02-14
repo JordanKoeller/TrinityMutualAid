@@ -16,8 +16,11 @@ Mappings:
   StageValueMap:
     dev:
       s3ResourcesBucket: dev-tma-files
+      siteOrigin: "'http://localhost:3000'"
     prod:
       s3ResourcesBucket: prod-tma-files
+      siteOrigin: "'http://dev.trinitymutualaid.com'"
+  
 Resources:
   TMAApi:
     Type: AWS::Serverless::Api
@@ -27,7 +30,7 @@ Resources:
         AllowCredentials: true
         AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT,PATCH'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: "'http://localhost:3000'"
+        AllowOrigin: !FindInMap [StageValueMap, !Ref pStage, siteOrigin]
       Auth:
         AddDefaultAuthorizerToCorsPreflight: false
         DefaultAuthorizer: CognitoAuth
@@ -139,8 +142,9 @@ Resources:
           - AllowedHeaders: ['*']
             AllowedMethods: ['GET', 'PUT', 'HEAD']
             AllowedOrigins:
-              # - !Sub 'http://trinitymutualaid.com'
-              # - !Sub 'http://www.trinitymutualaid.com'
+              - 'http://trinitymutualaid.com'
+              - 'http://www.trinitymutualaid.com'
+              - 'http://dev.trinitymutualaid.com'
               - 'http://localhost:3000'
             MaxAge: 3000
   BucketReadPolicy:

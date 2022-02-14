@@ -10,11 +10,9 @@ confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "pStage=\"dev\""
 image_repositories = []
-
-
-[prod]
-[prod.deploy]
-[prod.deploy.parameters]
+[production]
+[production.deploy]
+[production.deploy.parameters]
 stack_name = "tma-app-prod"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
 s3_prefix = "tma-app-prod"

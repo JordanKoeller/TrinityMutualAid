@@ -21,3 +21,14 @@ confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "pStage=\"prod\""
 image_repositories = []
+[staging]
+[staging.deploy]
+[staging.deploy.parameters]
+stack_name = "tma-app-staging"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
+s3_prefix = "tma-app-staging"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "pStage=\"staging\""
+image_repositories = []

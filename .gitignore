@@ -3,6 +3,7 @@ node_modules
 
 .env*
 **/.env
+**/.env*
 **/.aws-sam
 .aws-sam
 

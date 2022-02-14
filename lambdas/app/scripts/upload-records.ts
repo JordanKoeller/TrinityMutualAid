@@ -35,7 +35,7 @@ const copyOverDynamoDb = async () => {
         // console.log(JSON.stringify(records[i]));
         //   await db.addRecord(records[i]);
         const item = {
-            TableName: 'tma-articles-prod',
+            TableName: 'tma-articles-staging',
             Item: records[i]
         };
         // console.log(JSON.stringify(item))
@@ -50,7 +50,7 @@ const copyOverS3Bucket = async () => {
     const s3 = new AWS.S3();
 
     const OLD_BUCKET = "dev-tma-files";
-    const NEW_BUCKET = "prod-tma-files";
+    const NEW_BUCKET = "staging-tma-files";
 
     // First grab list of filenames from the old bucket
     s3.listObjects({Bucket: OLD_BUCKET,}, (_err, data) => 

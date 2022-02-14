@@ -11,21 +11,28 @@ Parameters:
     AllowedValues:
       - dev
       - prod
+      - staging
 
 Mappings:
   StageValueMap:
     dev:
       s3ResourcesBucket: dev-tma-files
       siteOrigin: "'http://localhost:3000'"
+      apiStage: Dev
+    staging:
+      s3ResourcesBucket: staging-tma-files
+      siteOrigin: "'http://dev.trinitymutualaid.com'"
+      apiStage: Dev
     prod:
       s3ResourcesBucket: prod-tma-files
-      siteOrigin: "'http://dev.trinitymutualaid.com'"
+      siteOrigin: "'http://trinitymutualaid.com'"
+      apiStage: Prod
   
 Resources:
   TMAApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: !FindInMap [StageValueMap, !Ref pStage, apiStage]
       Cors:
         AllowCredentials: true
         AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT,PATCH'"
@@ -50,14 +57,11 @@ Resources:
       Description: Lambda for CRUD operations on articles.
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref Editors
-        - DynamoDBCrudPolicy:
             TableName: !Ref Articles
         - S3CrudPolicy:
             BucketName: !Ref S3ResourcesBucket
       Environment:
         Variables:
-          EDITORS_TABLE: !Ref Editors
           ARTICLES_TABLE: !Ref Articles
           RESOURCES_BUCKET: !Ref S3ResourcesBucket
       Events:
@@ -84,8 +88,6 @@ Resources:
           Properties:
             RestApiId: !Ref TMAApi
             Path: /article/{articleId}
-            Auth:
-              Authorizer: NONE
             Method: PATCH
         GetArticle:
           Type: Api
@@ -95,16 +97,6 @@ Resources:
             Auth:
               Authorizer: NONE
             Method: GET
-  Editors:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      TableName: !Sub tma-editors-${pStage}
-      PrimaryKey:
-        Name: CognitoUsername
-        Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
   Articles:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -122,16 +114,6 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
-  # Articles:
-  #   Type: AWS::Serverless::SimpleTable
-  #   Properties:
-  #     TableName: !Sub tma-articles-${pStage}
-  #     PrimaryKey:
-  #       Name: id
-  #       Type: Number
-  #     ProvisionedThroughput:
-  #       ReadCapacityUnits: 5
-  #       WriteCapacityUnits: 5
   S3ResourcesBucket:
     Type: 'AWS::S3::Bucket'
     Properties:

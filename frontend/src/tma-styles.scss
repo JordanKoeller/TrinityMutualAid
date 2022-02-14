@@ -290,6 +290,11 @@ h1 {
     flex-direction: column;
 }
 
+.contact-link {
+    display: flex;
+    flex-direction: column;
+}
+
 @media only screen and (max-width: 1200px) {
     #tma-logo {
         height: 36px;

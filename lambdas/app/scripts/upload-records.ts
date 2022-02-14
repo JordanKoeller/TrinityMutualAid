@@ -69,6 +69,6 @@ const copyOverS3Bucket = async () => {
     );
 }
 
-// copyOverDynamoDb();
+copyOverDynamoDb();
 
 copyOverS3Bucket();

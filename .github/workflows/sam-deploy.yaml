@@ -22,37 +22,40 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       name: Checkout Project
-
-    - name: chdir
-      run: cd ./lambdas
-
+    # Set up all my various tools (node, aws cli/aws sam)
     - name: Get Node
       uses: actions/setup-node@v1
       with:
         node-version: '12.x'
-    - name: Npm install
+    - name: Get Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+    - name: Get Sam
+      uses: aws-actions/setup-sam@v1
+    - name: Sign in to AWS-CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    # Activate the appropriate build environment
+    - name: Activate Staging Build
+      if: endsWith(github.ref, '/develop')
       run: |
-        cd ./app
+        echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
+    - name: Activate Production Build
+      if: endsWith(github.ref, '/main')
+      run: |
+        echo "DEPLOY_ENV=production" >> $GITHUB_ENV
+    # Build and deploy
+    - name: Build Payload
+      run: |
+        cd ./lambdas/app
         npm install
         cd ..
-
-    - name: sam build
-      uses: TractorZoom/sam-cli-action@master
-      with:
-        sam_command: "build"
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-
-    - name: sam deploy
-      uses: falnyr/aws-sam-deploy-action@v1.0.0
-      env:
-        TEMPLATE: template.yaml
-        AWS_STACK_NAME: tma-app-prod
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_DEPLOY_BUCKET: "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
-        AWS_REGION: us-east-1
-        PARAMETER_OVERRIDES: |
-          pStage=prod
+        sam build
+    - name: Deploy to Cloudformation
+      run: |
+        cd ./lambdas
+        sam deploy --config-env $DEPLOY_ENV --no-confirm-changeset --no-fail-on-empty-changeset

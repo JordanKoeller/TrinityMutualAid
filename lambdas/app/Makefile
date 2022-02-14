@@ -1,7 +1,6 @@
 build-ArticlesCrudFunction:
-	npm install
+	npm ci
 # workaround https://github.com/aws/aws-sam-cli/issues/2565
-	npm rebuild
 	npm run lint
 	npm run fast-compile
 	npm run fast-test

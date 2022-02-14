@@ -51,9 +51,7 @@ jobs:
     # Build and deploy
     - name: Build Payload
       run: |
-        cd ./lambdas/app
-        npm install
-        cd ..
+        cd lambdas
         sam build
     - name: Deploy to Cloudformation
       run: |

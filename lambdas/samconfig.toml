@@ -1,0 +1,23 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "tma-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
+s3_prefix = "tma-app"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "pStage=\"dev\""
+image_repositories = []
+[production]
+[production.deploy]
+[production.deploy.parameters]
+stack_name = "tma-app-prod"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-11a0rrkhlg0aw"
+s3_prefix = "tma-app-prod"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "pStage=\"prod\""
+image_repositories = []

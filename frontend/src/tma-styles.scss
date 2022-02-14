@@ -20,7 +20,7 @@ $theme-colors: (
 
 a {
     color: map-get($map: $theme-colors, $key: "secondary");
-    text-decoration: none;
+    text-decoration: underline;
 }
 a:hover {
     color: map-get($map: $theme-colors, $key: "secondary");
@@ -31,8 +31,24 @@ p {
     font-size: calc(14px + 0.4vw);
 }
 
+span {
+    font-size: calc(14px + 0.4vw);
+}
+
+h2 span {
+    font-size: calc(18px + 0.8vw);
+}
+
+h1 span {
+    font-size: calc(22px + 0.8vw);
+}
+
 h2 {
-    font-size: calc(14px + 0.8vw);
+    font-size: calc(18px + 0.8vw);
+}
+
+h1 {
+    font-size: calc(22px + 0.8vw);
 }
 
 .App-header {
@@ -83,6 +99,25 @@ h2 {
 }
 
 #tma-logo {
+    justify-content: space-around;
+  }
+
+  .tma-card-group {
+    display: flex;
+    row-gap: 3em;
+    flex-wrap: wrap;
+    // column-gap: 6em;
+    justify-content: space-around;
+  }
+
+  .tma-card {
+    min-width: 20%;
+    max-width: 12em;
+    background-color: map-get($map: $theme-colors, $key: "secondary");
+    justify-content: space-around;
+  }
+  
+  #tma-logo {
     padding: 0 0 0 0;
     margin-left: auto;
     margin-right: auto;
@@ -102,6 +137,96 @@ h2 {
 .language-dropdown {
     color: map-get($map: $theme-colors, $key: "secondary");
 }
+
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+.editor-active {
+    box-sizing: border-box;
+    cursor: text;
+    background: map-get($map: $theme-colors, $key: "primary");
+}
+
+.wyswig-block-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2em;
+}
+.wyswig-block-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2em;
+}
+
+
+.editor-readonly {
+    background: map-get($map: $theme-colors, $key: "primary");
+}
+
+.editor :global(.public-DraftEditor-content) {
+    min-height: 140px;
+}
+.input {
+    height: 34px;
+    width: 220px;
+    padding: 0 12px;
+    font-size: 15px;
+    font-family: inherit;
+    background-color: transparent;
+    border: none;
+    color: #ddd;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.input::placeholder {
+    color: #aaa;
+}
+
+.inputInvalid {
+    color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+.link {
+    color: map-get($map: $theme-colors, $key: "secondary");
+    text-decoration: underline;
+}
+
+.options {
+    margin-bottom: 20px;
+}
+
+.dark {
+    background-color: map-get($map: $theme-colors, $key: "primary-dark");
+
+}
+
+.left-justify {
+    text-align: left;
+}
+
+.right-justify {
+    text-align: right;
+}
+
+.center-justify {
+    text-align: center;
+}
+
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+/* WYSWIG EDITOR STYLES */
+
 
 #language-dropdown {
     color: map-get($map: $theme-colors, $key: "secondary");
@@ -134,6 +259,7 @@ h2 {
 
 .jumbotron-dark-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-dark");
+    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
     width: 100vw;
@@ -141,6 +267,7 @@ h2 {
 
 .jumbotron-light-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-light");
+    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
     width: 100vw;
@@ -148,6 +275,19 @@ h2 {
 
 .jumbotron-title {
     color: map-get($map: $theme-colors, $key: "secondary");
+}
+.jumbotron-subtitle {
+    color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+.contact-link {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-link {
+    display: flex;
+    flex-direction: column;
 }
 
 .contact-link {

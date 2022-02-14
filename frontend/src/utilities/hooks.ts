@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import { convertFromRaw, EditorState } from "draft-js";
+import { useEffect, useState, useCallback, useReducer } from "react";
+import { useTranslation } from "react-i18next";
+import { EditorBlock, RawEditorBlock } from "../components/Wyswig/Blocks/EditorBlock";
+import { blockEditorDecorator } from "../components/Wyswig/WyswigBlockEditor";
+import { Language } from "../i18n";
+import { ArticleDescription, } from "./types";
 
 
 export enum MediaQuery {
@@ -85,4 +91,90 @@ export const useWindowBreakpoint = (initialBreakpoint: number | null): [Breakpoi
         return () => window.removeEventListener('resize', listener);
     }, [breakpoint, setBreakState]);
     return [breakState, setBreakpoint];
+}
+
+export const useCurrentLanguage = (): Language => {
+    const {i18n} = useTranslation(undefined, {useSuspense: false});
+    return (i18n.language ? i18n.language.slice(0, 2) : 'en') as Language;
+}
+
+
+
+type BilingualOutput<T> = [
+    T,
+    Language,
+    (value: T) => void,
+    (lang: Language) => void,
+    (lang: Language, value: T) => void,
+];
+
+type BilingualState<T> = {selectedLanguage: Language, values: Record<Language, T>};
+type ReducerAction<T> = {
+    type: 'Language' | 'State' | 'LangAndState',
+    payload: Language | T | {language: Language, value: T}
+}
+type ReducerType<T> = (state: BilingualState<T>, action: ReducerAction<T>) => BilingualState<T>;
+const bilingualReducer = <T>(state: BilingualState<T>, action: ReducerAction<T>): BilingualState<T> => {
+    switch (action.type) {
+        case 'Language': return {
+            selectedLanguage: action.payload as Language,
+            values: {
+                ...state.values,
+            }
+        };
+        case 'State': return {
+            selectedLanguage: state.selectedLanguage,
+            values: {
+                ...state.values,
+                [state.selectedLanguage]: action.payload as T
+            }
+        }
+        case 'LangAndState': return {
+            selectedLanguage: (action.payload as {language: Language, value: T}).language,
+            values: {
+                ...state.values,
+                [(action.payload as {language: Language, value: T}).language]: (action.payload as {language: Language, value: T}).value
+            }
+        }
+        default: return state;
+    }
+}
+
+/**
+ * 
+ * @param initialLanguage - Initial language to use for rendering.
+ * @param defaults - Default value
+ * @returns 
+ */
+export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Language, T>): BilingualOutput<T> => {
+    const initialState: BilingualState<T> = {
+        selectedLanguage: initialLanguage,
+        values: defaults,
+    }
+    const [state, dispatch] = useReducer(bilingualReducer as ReducerType<T>, initialState);
+
+    const setLanguage = useCallback((lang: Language) => dispatch({type: 'Language', payload: lang}), [dispatch]);
+    const setValue = useCallback((value: T) => dispatch({type: 'State', payload: value}), [dispatch]);
+    const setBoth = useCallback((lang: Language, value: T) => dispatch({type: 'LangAndState', payload: value}), [dispatch]);
+
+    return [state.values[state.selectedLanguage], state.selectedLanguage, setValue, setLanguage, setBoth];
+}
+
+export const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
+     const domain = process.env.REACT_APP_S3_BUCKET_URL as string;
+     const url = `${domain}/${articleId}-${language}-latest.json`;
+     const s3Fetch = await fetch(url, {method: 'GET'});
+     const content: RawEditorBlock[] = await s3Fetch.json();
+     const editorBlocks: EditorBlock[] = content.map(block => ({...block, editorState: EditorState.createWithContent(convertFromRaw(block.editorState), blockEditorDecorator as any)}));
+     return { blocks: editorBlocks, language, articleId, author: '', publicationDate: new Date()} // TODO: 
+ }
+export const useArticleState = (articleId: number, language: Language): ArticleDescription | null => {
+
+    const [state, setState] = useState<ArticleDescription | null>(null);
+
+    useEffect(() => {
+        fetchArticle(articleId, language).then(description => setState(description));
+    }, [articleId, language]);
+
+    return state;
 }

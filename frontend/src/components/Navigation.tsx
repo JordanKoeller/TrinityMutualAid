@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useContext } from 'react';
 
 import {
     Navbar,
@@ -7,6 +7,7 @@ import {
     Image,
     NavDropdown,
 } from 'react-bootstrap';
+
 
 import {
     BrowserRouter as Router,
@@ -27,8 +28,16 @@ import FAQsPage from '../pages/Faqs';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGE_MAP } from '../i18n';
 
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { EditorClientContext } from '../context/context';
+
+const AuthPage = withAuthenticator(() => {
+    return <HomePage />
+});
+
 
 const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) => void, }> = ({ i18n, setOpen, t }) => {
+    const ctx = useContext(EditorClientContext);
     const closeAll = () => {
         setOpen(false);
     }
@@ -42,13 +51,15 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={closeAll}>{t('navbar.FAQs')}</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link className="nav-link" activeClassName="nav-link-active" to="/Contact" onClick={closeAll}>{t('navbar.Contact')}</Link></NavDropdown.Item>
             </NavDropdown>
+            {ctx?.loggedIn() ?
+                <Nav.Link as={AmplifySignOut} >Sign out</Nav.Link> : null
+            }
         </Nav>
         <LanguageButton i18n={i18n} onSelect={closeAll} />
     </Navbar.Collapse>
 }
 
 export const TmaNavbar: React.FC = () => {
-
 
     const mq = useMediaQuery();
     const { t, i18n } = useTranslation(undefined, { useSuspense: false });
@@ -104,6 +115,9 @@ export const TmaRouter: React.FC = () => {
                     </Route>
                     <Route path="/Contact">
                         <ContactPage />
+                    </Route>
+                    <Route path="/Admin">
+                        <AuthPage />
                     </Route>
                     <Route path="">
                         <HomePage />

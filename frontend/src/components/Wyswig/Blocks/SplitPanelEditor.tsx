@@ -4,7 +4,6 @@ import { EmptySplitPanel } from "../../SplitPanel";
 import { EditorState } from "draft-js";
 import { WyswigBlockEditor } from "../WyswigBlockEditor";
 import { BlockEditor, TEMPLATE_EDITOR_BLOCK_TEXT } from "./EditorBlock";
-import { dataUrlToFile } from "../../../utilities/funcs";
 
 export const SplitPanelEditor: BlockEditor = {
     blockType: 'SplitPanel',

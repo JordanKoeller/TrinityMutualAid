@@ -37,6 +37,7 @@ export const AddBlockButtons: React.FC<{ dispatch: (action: EditorComponentActio
             Object.values(blockRegistry).map(blockEditor => <Button
                 variant="primary"
                 size="lg"
+                key={blockEditor.blockType}
                 onClick={() => dispatch({ type: EditorActionType.AddBlock, payload: blockEditor.blockType })}
             >Add {blockEditor.blockType}</Button>)
         }

@@ -4,6 +4,7 @@ import { EmptySplitPanel } from "../../SplitPanel";
 import { EditorState } from "draft-js";
 import { WyswigBlockEditor } from "../WyswigBlockEditor";
 import { BlockEditor, TEMPLATE_EDITOR_BLOCK_TEXT } from "./EditorBlock";
+import { dataUrlToFile } from "../../../utilities/funcs";
 
 export const SplitPanelEditor: BlockEditor = {
     blockType: 'SplitPanel',
@@ -70,12 +71,12 @@ export const SplitPanelEditor: BlockEditor = {
         />
     },
     scrubImages: (block, imageRecord) => {
-        if (Object.keys(block.data?.file || {}).length > 0) {
+        if (block.data?.file?.size) {
             imageRecord[block.data.filename] = block.data.file;
-        } else { }
+        }
     },
     replaceImages: (block, imagesToUrl) => {
-        if (block.data.filename in imagesToUrl) {
+        if (block.data.filename in imagesToUrl && block.data?.file?.size) {
             block.data.dataUrl = imagesToUrl[block.data.filename];
         }
     }

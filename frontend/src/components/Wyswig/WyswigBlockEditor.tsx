@@ -3,6 +3,7 @@
 import React, {
     ReactElement,
     useCallback,
+    useMemo,
     useRef,
 } from 'react';
 import { CompositeDecorator, EditorState } from 'draft-js';
@@ -52,44 +53,53 @@ const blockStyles: Record<string, string> = {
     'header-two': "jumbotron-subtitle",
 }
 
-const focusPlugin = createFocusPlugin();
-const resizeablePlugin = createResizeablePlugin();
-const alignmentPlugin = createAlignmentPlugin();
+const useEditorPlugins = () => useMemo(() => {
 
-const decorator = composeDecorators(
-    resizeablePlugin.decorator,
-    alignmentPlugin.decorator,
-    focusPlugin.decorator,
-);
-const imagePlugin = createImagePlugin({ decorator });
-const linkPlugin = createLinkPlugin({
-    Link: (props) => {
-        const data = (props as any).contentState.getEntity((props as any).entityKey).getData();
-        return <ExtLink href={data.url}>{props.children}</ExtLink>
-    }
-});
-const inlineToolbarPlugin = createInlineToolbarPlugin();
+    const focusPlugin = createFocusPlugin();
+    const resizeablePlugin = createResizeablePlugin();
+    const alignmentPlugin = createAlignmentPlugin();
+    
+    const decorator = composeDecorators(
+        resizeablePlugin.decorator,
+        alignmentPlugin.decorator,
+        focusPlugin.decorator,
+    );
+    const imagePlugin = createImagePlugin({ decorator });
+    const linkPlugin = createLinkPlugin({
+        Link: (props) => {
+            const data = (props as any).contentState.getEntity((props as any).entityKey).getData();
+            return <ExtLink href={data.url}>{props.children}</ExtLink>
+        }
+    });
+    const inlineToolbarPlugin = createInlineToolbarPlugin();
+    
+    const plugins = {
+        focusPlugin,
+        imagePlugin,
+        inlineToolbarPlugin,
+        linkPlugin,
+        alignmentPlugin,
+    };
 
-const plugins = {
-    focusPlugin,
-    imagePlugin,
-    inlineToolbarPlugin,
-    linkPlugin,
-    alignmentPlugin,
-};
-
-const editorTools = () => {
     return {
         pluginsObj: plugins,
         pluginsArray: Object.values(plugins)
     };
-}
+    
+    // const editorTools = () => {
+    //     return {
+    //         pluginsObj: plugins,
+    //         pluginsArray: Object.values(plugins)
+    //     };
+    // }
+    
+    // export const getAllDecorators = () => {
+    //     return new CompositeDecorator(linkPlugin.decorators as any);
+    // }
+    
+    // export const blockEditorDecorator = getAllDecorators();
+}, []);
 
-export const getAllDecorators = () => {
-    return new CompositeDecorator(linkPlugin.decorators as any);
-}
-
-export const blockEditorDecorator = getAllDecorators();
 
 
 
@@ -105,7 +115,9 @@ type WyswigProps = {
 export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onChange, content, blockIndex, justify = "left" }): ReactElement => {
 
 
-    const { pluginsObj, pluginsArray } = editorTools();
+    const { pluginsObj, pluginsArray } = useEditorPlugins();
+
+    const decoratedState = readonly && content ? EditorState.set(content, {decorator: new CompositeDecorator(pluginsObj.linkPlugin.decorators as any)}) : content;
 
     // useEffect(() => {
     //     // fixing issue with SSR https://github.com/facebook/draft-js/issues/2332#issuecomment-761573306
@@ -126,7 +138,7 @@ export const WyswigBlockEditor: React.FC<WyswigProps> = ({ readonly = false, onC
                 textAlignment={justify}
                 readOnly={readonly}
                 editorKey="SimpleInlineToolbarEditor"
-                editorState={content}
+                editorState={decoratedState}
                 customStyleMap={inlineStyles}
                 blockStyleFn={contentBlock => blockStyles[contentBlock.getType()]}
                 onChange={change}

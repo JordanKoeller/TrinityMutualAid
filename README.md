@@ -54,6 +54,7 @@ Bank account info -> once we have a credit card can take off. So I'll wait on th
 Wed > Money situation and writing content.
 
 # Todo List:
-1. Image upload resizing -- Done
-2. Image autopopulation between english/spanish -- Done
-3. Article IDs for the Home Page/FAQs/Anything else to migrate.
+1. Make sure that JSON uploads properly scrape out the dataUrl on file upload. DONE
+2. Fix issue where adding a block stops from being able to change fonts on that block. DONE
+3. Create accounts for TMA people
+4. Clean up uploads in the s3 buckets, as well as tests so it doesn't make a bunch of dummy data for tests that aren't cleaned up.

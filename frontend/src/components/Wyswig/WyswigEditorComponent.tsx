@@ -11,11 +11,12 @@ interface EditorProps {
     language?: Language,
     articleId?: number,
     onSave?: (articleId: number) => void,
+    onCancel?: () => void,
 
 }
 
 
-export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Language.English, articleId, onSave }) => {
+export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Language.English, articleId, onSave, onCancel }) => {
     const client = useContext(EditorClientContext);
     const [editorState, blockChangeDispatch, dispatch, getDescriptions] = useEditorComponentState(language, articleId);
     const [isPreview, setIsPreview] = useState(false);
@@ -31,6 +32,7 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
                 if (onSave) onSave(aid);
             }
             setSaveToast("Article Saved!");
+            setTimeout(() => onCancel?.(), 3000);
         } catch (e: any) {
             setSaveToast("An unexpected error occurred. Please try again or report a bug");
             if (process.env.NODE_ENV === 'development') throw e;
@@ -48,7 +50,10 @@ export const WyswigEditorComponent: React.FC<EditorProps> = ({ language = Langua
             defaultLanguage={language}
             onLanguageChange={(lang) => dispatch({ type: EditorActionType.ChangeLanguage, payload: lang })}
             onSave={requestSave}
-            onCancel={() => dispatch({ type: EditorActionType.ClearState })}
+            onCancel={() => {
+                dispatch({ type: EditorActionType.ClearState });
+                if (onCancel) onCancel();
+            }}
         />
         <WyswigArticle
             dispatch={dispatch}

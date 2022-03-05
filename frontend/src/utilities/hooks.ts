@@ -93,7 +93,7 @@ export const useWindowBreakpoint = (initialBreakpoint: number | null): [Breakpoi
 }
 
 export const useCurrentLanguage = (): Language => {
-    const {i18n} = useTranslation(undefined, {useSuspense: false});
+    const { i18n } = useTranslation(undefined, { useSuspense: false });
     return (i18n.language ? i18n.language.slice(0, 2) : 'en') as Language;
 }
 
@@ -107,10 +107,10 @@ type BilingualOutput<T> = [
     (lang: Language, value: T) => void,
 ];
 
-type BilingualState<T> = {selectedLanguage: Language, values: Record<Language, T>};
+type BilingualState<T> = { selectedLanguage: Language, values: Record<Language, T> };
 type ReducerAction<T> = {
     type: 'Language' | 'State' | 'LangAndState',
-    payload: Language | T | {language: Language, value: T}
+    payload: Language | T | { language: Language, value: T }
 }
 type ReducerType<T> = (state: BilingualState<T>, action: ReducerAction<T>) => BilingualState<T>;
 const bilingualReducer = <T>(state: BilingualState<T>, action: ReducerAction<T>): BilingualState<T> => {
@@ -129,10 +129,10 @@ const bilingualReducer = <T>(state: BilingualState<T>, action: ReducerAction<T>)
             }
         }
         case 'LangAndState': return {
-            selectedLanguage: (action.payload as {language: Language, value: T}).language,
+            selectedLanguage: (action.payload as { language: Language, value: T }).language,
             values: {
                 ...state.values,
-                [(action.payload as {language: Language, value: T}).language]: (action.payload as {language: Language, value: T}).value
+                [(action.payload as { language: Language, value: T }).language]: (action.payload as { language: Language, value: T }).value
             }
         }
         default: return state;
@@ -152,25 +152,30 @@ export const useBilingual = <T>(initialLanguage: Language, defaults: Record<Lang
     }
     const [state, dispatch] = useReducer(bilingualReducer as ReducerType<T>, initialState);
 
-    const setLanguage = useCallback((lang: Language) => dispatch({type: 'Language', payload: lang}), [dispatch]);
-    const setValue = useCallback((value: T) => dispatch({type: 'State', payload: value}), [dispatch]);
-    const setBoth = useCallback((lang: Language, value: T) => dispatch({type: 'LangAndState', payload: value}), [dispatch]);
+    const setLanguage = useCallback((lang: Language) => dispatch({ type: 'Language', payload: lang }), [dispatch]);
+    const setValue = useCallback((value: T) => dispatch({ type: 'State', payload: value }), [dispatch]);
+    const setBoth = useCallback((lang: Language, value: T) => dispatch({ type: 'LangAndState', payload: value }), [dispatch]);
 
     return [state.values[state.selectedLanguage], state.selectedLanguage, setValue, setLanguage, setBoth];
 }
 
 export const fetchArticle = async (articleId: number, language: Language): Promise<ArticleDescription> => {
-     const domain = process.env.REACT_APP_S3_BUCKET_URL as string;
-     const url = `${domain}/${articleId}-${language}-latest.json`;
-     const s3Fetch = await fetch(url, {method: 'GET'});
-     const content: RawEditorBlock[] = await s3Fetch.json();
-     const editorBlocks: EditorBlock[] = content.map(block => ({
-         ...block,
-         editorState: EditorState.createWithContent(
-             convertFromRaw(block.editorState),
-             )}));
-     return { blocks: editorBlocks, language, articleId, author: '', publicationDate: new Date()} // TODO: 
- }
+    const lambdaUrl = `${process.env.REACT_APP_REST_API}article/${articleId}/${language as string}`;
+    const lambdaResponse = await fetch(lambdaUrl, { method: 'GET' });
+    if (lambdaResponse.status !== 200) throw new Error("Could not get lambda response");
+    const { filename } = await lambdaResponse.json() as { filename: string };
+    const domain = process.env.REACT_APP_S3_BUCKET_URL as string;
+    const url = `${domain}/${filename}`;
+    const s3Fetch = await fetch(url, { method: 'GET' });
+    const content: RawEditorBlock[] = await s3Fetch.json();
+    const editorBlocks: EditorBlock[] = content.map(block => ({
+        ...block,
+        editorState: EditorState.createWithContent(
+            convertFromRaw(block.editorState),
+        )
+    }));
+    return { blocks: editorBlocks, language, articleId, author: '', publicationDate: new Date() } // TODO: 
+}
 export const useArticleState = (articleId: number, language: Language): ArticleDescription | null => {
 
     const [state, setState] = useState<ArticleDescription | null>(null);

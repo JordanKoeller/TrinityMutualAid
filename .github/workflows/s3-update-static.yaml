@@ -6,7 +6,44 @@ on:
       - main
       - develop
 
+env:
+  REGION: 'us-east-1'
+  APPLICATION_DOMAIN_NAME: 'trinitymutualaid.com'
+
 jobs:
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Configure AWS credentials for Prod
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Create change set in AWS CloudFormation
+        if: github.ref != 'refs/heads/master' || github.event_name != 'push'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: WebClientHostingInfra
+          template: template.yml
+          no-fail-on-empty-changeset: "1"
+          no-execute-changeset: "1"
+          parameter-overrides: >-
+            pApplicationDomainName=${{ env.APPLICATION_DOMAIN_NAME }},
+            pAcmCertificateArn=${{ secrets.ACM_TLS_CERTIFICATE_ARN }}
+      - name: Deploy to AWS CloudFormation
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: WebClientHostingInfra
+          template: template.yml
+          no-fail-on-empty-changeset: "1"
+          parameter-overrides: >-
+            pApplicationDomainName=${{ env.APPLICATION_DOMAIN_NAME }},
+            pAcmCertificateArn=${{ secrets.ACM_TLS_CERTIFICATE_ARN }}
   deploy:
     runs-on: ubuntu-latest
     steps:

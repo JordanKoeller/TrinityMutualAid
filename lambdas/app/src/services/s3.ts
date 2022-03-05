@@ -50,7 +50,7 @@ export class S3Bucket {
         return new Promise((resolve, reject) => {
             const params = {
                 Bucket: this.bucket,
-                Delete: {Objects: filenames.map(fname => ({Key: fname}))}
+                Delete: { Objects: filenames.map(fname => ({ Key: fname })) }
             };
             s3?.deleteObjects(params, (err, data) => {
                 if (err) {
@@ -60,12 +60,12 @@ export class S3Bucket {
                     resolve();
                 }
             })
-        });    
+        });
     }
 
     count(): Promise<number> {
         return new Promise((resolve, reject) => {
-            const params = {Bucket: this.bucket};
+            const params = { Bucket: this.bucket };
             s3?.listObjectsV2(params, (err, data) => {
                 if (err) reject("Failed to list objects, so could not count");
                 else {

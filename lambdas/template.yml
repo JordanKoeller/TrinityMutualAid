@@ -13,31 +13,43 @@ Parameters:
       - prod
       - staging
 
+Conditions:
+  IsProdDeployment: !Equals
+    - !Ref pStage
+    - 'prod'
+  IsStagingDeployment: !Equals
+    - !Ref pStage
+    - 'staging'
+  ProdOrStaging: !Or
+    - Condition: IsProdDeployment
+    - Condition: IsStagingDeployment
+
 Mappings:
   StageValueMap:
     dev:
       s3ResourcesBucket: dev-tma-files
+      CdnOrigin: "cdn-dev.trinitymutualaid.com"
       siteOrigin: "'http://localhost:3000'"
       apiStage: Dev
+      applicationDomainName: 'dev.trinitymutualaid.com'
     staging:
       s3ResourcesBucket: staging-tma-files
-      siteOrigin: "'http://dev.trinitymutualaid.com'"
-      apiStage: Dev
+      CdnOrigin: "cdn-staging.trinitymutualaid.com"
+      siteOrigin: "'https://staging.trinitymutualaid.com'"
+      apiStage: Staging
+      applicationDomainName: 'staging.trinitymutualaid.com'
     prod:
       s3ResourcesBucket: prod-tma-files
-      siteOrigin: "'http://trinitymutualaid.com'"
+      CdnOrigin: "cdn.trinitymutualaid.com"
+      siteOrigin: "'https://trinitymutualaid.com'"
       apiStage: Prod
+      applicationDomainName: 'trinitymutualaid.com'
   
 Resources:
   TMAApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !FindInMap [StageValueMap, !Ref pStage, apiStage]
-      Cors:
-        AllowCredentials: true
-        AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT,PATCH'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: !FindInMap [StageValueMap, !Ref pStage, siteOrigin]
       Auth:
         AddDefaultAuthorizerToCorsPreflight: false
         DefaultAuthorizer: CognitoAuth
@@ -53,7 +65,7 @@ Resources:
       Handler: dist/src/handlers/handlers.handler
       Runtime: nodejs12.x
       MemorySize: 128
-      Timeout: 100
+      Timeout: 60
       Description: Lambda for CRUD operations on articles.
       Policies:
         - DynamoDBCrudPolicy:
@@ -64,7 +76,16 @@ Resources:
         Variables:
           ARTICLES_TABLE: !Ref Articles
           RESOURCES_BUCKET: !Ref S3ResourcesBucket
+          CDN_ORIGIN: !FindInMap [StageValueMap, !Ref pStage, CdnOrigin]
       Events:
+        Cors:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: '/{proxy+}'
+            Auth:
+              Authorizer: NONE
+            Method: OPTIONS
         Hello:
           Type: Api
           Properties:
@@ -93,10 +114,18 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref TMAApi
-            Path: /{language}/article/{articleId}
+            Path: /article/{articleId}/{language}/
             Auth:
               Authorizer: NONE
             Method: GET
+        KeepAlive:
+          Type: Schedule
+          Condition: ProdOrStaging
+          Properties:
+            Name: !Sub KeepAlive${pStage}
+            Description: Event on timer to keep lambda alive so never cold-starts
+            Enabled: true
+            Schedule: 'rate(1 minute)'
   Articles:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -126,9 +155,13 @@ Resources:
             AllowedOrigins:
               - 'http://trinitymutualaid.com'
               - 'http://www.trinitymutualaid.com'
-              - 'http://dev.trinitymutualaid.com'
+              - 'http://staging.trinitymutualaid.com'
+              - 'https://trinitymutualaid.com'
+              - 'https://www.trinitymutualaid.com'
+              - 'https://staging.trinitymutualaid.com'
               - 'http://localhost:3000'
             MaxAge: 3000
+        
   BucketReadPolicy:
     Type: 'AWS::S3::BucketPolicy'
     Properties:
@@ -139,6 +172,9 @@ Resources:
             Effect: Allow
             Resource: !Sub 'arn:aws:s3:::${S3ResourcesBucket}/*'
             Principal: '*'
+# =====================================
+#    Cognito/User Pool Stuff
+# =====================================
   TMAUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -226,7 +262,6 @@ Resources:
                 Action:
                   - "lambda:InvokeFunction"
                 Resource: "*"
-
   IdentityPoolRoleMapping:
     Type: "AWS::Cognito::IdentityPoolRoleAttachment"
     Properties:
@@ -234,6 +269,64 @@ Resources:
       Roles:
         authenticated: !GetAtt CognitoAuthorizedRole.Arn
         unauthenticated: !GetAtt CognitoUnAuthorizedRole.Arn
+
+# =====================================
+#    CloudFront/DNS Stuff
+# =====================================
+  ResourcesCloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Condition: ProdOrStaging
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref S3ResourcesBucket
+  CloudFrontDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Condition: ProdOrStaging
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !FindInMap [StageValueMap, !Ref pStage, CdnOrigin]
+        Enabled: true
+        DefaultRootObject: '/index.html'
+        Origins:
+          - DomainName: !GetAtt S3ResourcesBucket.DomainName
+            Id: trinitymutualaid.com
+            S3OriginConfig:
+              OriginAccessIdentity: !Join ['', ['origin-access-identity/cloudfront/', !Ref ResourcesCloudFrontOriginAccessIdentity]]
+        DefaultCacheBehavior:
+          TargetOriginId: trinitymutualaid.com
+          AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
+          CachedMethods: ['GET', 'HEAD', 'OPTIONS']
+          Compress: true
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          MinTTL: 60 # seconds
+          DefaultTTL: 3600 # seconds
+          MaxTTL: 86400 # seconds
+          ViewerProtocolPolicy: 'redirect-to-https'
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+        HttpVersion: http2
+        # cheapest price class until we launch in Japan: https://aws.amazon.com/cloudfront/pricing/
+        PriceClass: 'PriceClass_100'
+        ViewerCertificate:
+          AcmCertificateArn: 'arn:aws:acm:us-east-1:779912378635:certificate/521fbdb4-4c8d-4fd8-a510-ac50aa962f78'
+          SslSupportMethod: 'sni-only'
+  Route53Record:
+    Type: "AWS::Route53::RecordSet"
+    Condition: ProdOrStaging
+    Properties:
+      HostedZoneId: 'Z086888927BY7SP6PB8LV'
+      Type: A
+      Name: !FindInMap [StageValueMap, !Ref pStage, CdnOrigin]
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+        
 
 Outputs:
   WebEndpoint:

@@ -16,13 +16,15 @@ const VALID_ORIGINS = [
   "https://trinitymutualaid.com",
   "http://dev.trinitymutualaid.com",
   "https://dev.trinitymutualaid.com",
+  "http://staging.trinitymutualaid.com",
+  "https://staging.trinitymutualaid.com",
   "http://www.trinitymutualaid.com",
   "https://www.trinitymutualaid.com",
 ]
 
 export abstract class Handler {
 
-  method: RequestMethod;
+  public method: RequestMethod;
 
   constructor(m: RequestMethod) {
     this.method = m;
@@ -66,6 +68,7 @@ export class LambdaApp {
   async run(event: ApiGatewayEvent, context: AuthenticatedRequestContext): Promise<ApiGatewayResponse> {
     for (let i = 0; i < this.handlers.length; i++) {
       if (this.handlers[i].isHandler(event)) {
+        console.log("Found valid handler", JSON.stringify(this.handlers[i].method));
         return this.handlers[i].getResponse(event, context);
       }
     }
@@ -84,7 +87,10 @@ export class LambdaApp {
   }
 
   asFunc(): (event: ApiGatewayEvent, context: AuthenticatedRequestContext) => Promise<any> {
-    return (evt, ctx) => this.run(evt, ctx).then(resp => this.packageResponse(resp, evt));
+    return (evt, ctx) => {
+        if (evt.httpMethod === 'OPTIONS') return this.handlePreflight(evt);
+        return this.run(evt, ctx).then(resp => this.packageResponse(resp, evt));
+    }
   }
 
   private packageResponse(response: ApiGatewayResponse, evt: ApiGatewayEvent): Record<string, any> {
@@ -96,6 +102,18 @@ export class LambdaApp {
         "Access-Control-Allow-Origin": this.getAllowOrigin(evt),
       }
     }
+  }
+
+  private async handlePreflight(event: ApiGatewayEvent): Promise<any> {
+      return {
+          headers: {
+              "Access-Control-Allow-Credentials": true,
+              "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+              "Access-Control-Allow-Origin": this.getAllowOrigin(event),
+              "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT,PATCH",
+              "Content-Type": "application/json",
+          }
+      }
   }
 
 

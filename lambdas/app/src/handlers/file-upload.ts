@@ -24,7 +24,7 @@ export class FileUploadHandler extends Handler {
         ContentType: `image/${extension}`,
       }
       const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
-      const imagePath = `https://${process.env.RESOURCES_BUCKET}.s3.amazonaws.com/${filename}`;
+      const imagePath = `https://${process.env.CDN_ORIGIN}/${filename}`;
       return {
         statusCode: 200,
         body: JSON.stringify({uploadURL: uploadURL, key: filename, imagePath})

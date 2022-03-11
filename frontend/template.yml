@@ -1,0 +1,132 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Static website hosting with S3 and CloudFront'
+
+Parameters:
+  pApplicationDomainName:
+    Type: String
+    Default: 'trinitymutualaid.com'
+  pAcmCertificateArn:
+    Type: String
+  pStage:
+    Description: Environment stage
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+      - staging
+
+Conditions:
+  IsProdDeployment: !Equals
+    - !Ref pStage
+    - 'prod'
+  IsStagingDeployment: !Equals
+    - !Ref pStage
+    - 'staging'
+  ProdOrStaging: !Or
+    - Condition: IsProdDeployment
+    - Condition: IsStagingDeployment
+
+
+Resources:
+  # ------------- S3 --------------
+
+  # bucket to contain the React build artifact
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Condition: ProdOrStaging
+    Properties:
+      BucketName: !Ref pApplicationDomainName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        ErrorDocument: 'index.html'
+        IndexDocument: 'index.html'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: ['GET', 'PUT']
+            AllowedOrigins:
+              - !Sub 'https://${pApplicationDomainName}'
+              - !Sub 'https://www.${pApplicationDomainName}'
+            MaxAge: 3000
+
+  # allow cloudfront to access this bucket
+  BucketReadPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Condition: ProdOrStaging
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${S3Bucket}/*'
+            Principal: '*'
+
+  # ----------- CloudFront -------------
+
+  CloudFrontOriginAccessIdentity:
+    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+    Condition: ProdOrStaging
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref S3Bucket
+
+  CloudFrontDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Condition: ProdOrStaging
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref pApplicationDomainName
+          - !Sub 'www.${pApplicationDomainName}'
+        Enabled: true
+        DefaultRootObject: '/index.html'
+        Origins:
+          - DomainName: !GetAtt S3Bucket.DomainName
+            Id: !Ref pApplicationDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Join ['', ['origin-access-identity/cloudfront/', !Ref CloudFrontOriginAccessIdentity]]
+        DefaultCacheBehavior:
+          TargetOriginId: !Ref pApplicationDomainName
+          AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
+          CachedMethods: ['GET', 'HEAD', 'OPTIONS']
+          Compress: true
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: false
+          MinTTL: 60 # seconds
+          DefaultTTL: 3600 # seconds
+          MaxTTL: 86400 # seconds
+          ViewerProtocolPolicy: 'redirect-to-https'
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+        HttpVersion: http2
+        # cheapest price class until we launch in Japan: https://aws.amazon.com/cloudfront/pricing/
+        PriceClass: 'PriceClass_100'
+        ViewerCertificate:
+          AcmCertificateArn: !Ref pAcmCertificateArn
+          SslSupportMethod: 'sni-only'
+  Route53BaseRecord:
+    Type: "AWS::Route53::RecordSet"
+    Condition: ProdOrStaging
+    Properties:
+      HostedZoneId: 'Z086888927BY7SP6PB8LV'
+      Type: A
+      Name: !Ref pApplicationDomainName
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2
+  Route53WWWRecord:
+    Type: "AWS::Route53::RecordSet"
+    Condition: ProdOrStaging
+    Properties:
+      HostedZoneId: 'Z086888927BY7SP6PB8LV'
+      Type: A
+      Name: !Sub 'www.${pApplicationDomainName}'
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2

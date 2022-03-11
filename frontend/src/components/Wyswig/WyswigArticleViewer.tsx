@@ -32,10 +32,11 @@ export const ArticleViewerOrEditor: React.FC<{ defaultArticleId?: number }> = ({
         setIsEditing(!editing);
     }
 
+
     if (editorClient.loggedIn()) {
         return <>
             {editing ?
-                <WyswigEditorComponent language={language} articleId={articleId} onSave={setArticleId} />
+                <WyswigEditorComponent language={language} articleId={articleId} onSave={setArticleId} onCancel={() => setIsEditing(false)} />
                 :
                 <>
                     <Button onClick={handleClickedEditButton}>Edit</Button>

@@ -72,9 +72,11 @@ abstract class ArticleHandler extends Handler {
         return await this.db.addRecord(record);
     }
 
-    getDocumentName(record: ArticleDbEntry, language: string): [string, string] | null {
+    // Pulls out the name of the next file version. To get the current most recent
+    // file version, pass a 1 into `offset`. Pass in N to see n-1 revisions ago.
+    getDocumentName(record: ArticleDbEntry, language: string, offset = 0): [string, string] | null {
         if (record && language in record.i18nVersions) {
-            const versionedName = `${record.id}-${language}-${record.i18nVersions[language].revisionNumber}.json`;
+            const versionedName = `${record.id}-${language}-${record.i18nVersions[language].revisionNumber - offset}.json`;
             const latestName = `${record.id}-${language}-latest.json`;
             return [versionedName, latestName];
         }
@@ -170,6 +172,26 @@ export class DeleteArticleHandler extends ArticleHandler {
             return this.success({message: "Delete success!"});
         } else {
             return this.err("Failed to delete. No ArticleRecord was present!")
+        }
+    }
+}
+
+export class GetArticleVersionHandler extends ArticleHandler {
+    constructor() {
+        super({endpoint: '/article/{articleId}/{language}', method: 'GET'});
+    }
+
+    async handle(event: ApiGatewayEvent): Promise<ApiGatewayResponse> {
+        if (!event.pathParameters) return this.err("No Article Id in parameters");
+        const articleId = parseInt(event.pathParameters!.articleId);
+        const language = event.pathParameters!.language;
+        const articleRecord = await this.db.getRecord(articleId);
+        if (!articleRecord) return this.err(`Failed to get article with ID ${articleId}`);
+        const fileTuple = this.getDocumentName(articleRecord, language, 1);
+        if (fileTuple) {
+            return this.success({filename: fileTuple[0]});
+        } else {
+            return this.err(`Language ${language} not found in article with ID ${articleId}`);
         }
     }
 }

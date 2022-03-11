@@ -1,6 +1,7 @@
 
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { Language } from '../../../i18n';
+import { CardEditor } from './CardEditor';
 import { BlockEditor, BlockEditorComponent, EditorBlock } from './EditorBlock';
 import { CenteredParagraphBlockEditor, ParagraphBlockEditor } from './ParagraphEditor';
 import { SplitPanelEditor } from './SplitPanelEditor';
@@ -65,4 +66,5 @@ function registerBlockEditor(editor: BlockEditor) {
 
 registerBlockEditor(ParagraphBlockEditor);
 registerBlockEditor(SplitPanelEditor);
-registerBlockEditor(CenteredParagraphBlockEditor)
+registerBlockEditor(CenteredParagraphBlockEditor);
+registerBlockEditor(CardEditor);

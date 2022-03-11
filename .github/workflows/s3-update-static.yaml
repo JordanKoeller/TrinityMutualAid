@@ -60,7 +60,7 @@ jobs:
         env:
           ENV_FILE_STAGING: ${{  secrets.ENV_FILE_STAGING  }}
         run: |
-          echo "AWS_S3_BUCKET=dev.trinitymutualaid.com" >> $GITHUB_ENV
+          echo "AWS_S3_BUCKET=staging.trinitymutualaid.com" >> $GITHUB_ENV
           echo "$ENV_FILE_STAGING" | base64 -d > ./frontend/.env
           echo "AWS_CLOUDFRONT_DISTRIBUTION_ID=${{secrets.STAGING_CLOUDFRONT_ID}}" >> $GITHUB_ENV
       - name: ActivateProduction Build

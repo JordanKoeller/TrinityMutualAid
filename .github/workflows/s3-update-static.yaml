@@ -42,9 +42,9 @@ jobs:
       - name: Deploy to AWS CloudFormation
         run: >
           aws cloudformation deploy --template-file ./frontend/template.yml --stack-name $STACK_NAME 
-            --s3-bucket $CFN_BUCKET_NAME --force-upload --no-fail-on-empty-changeset --no-disable-rollback
-            --parameter-overrides pApplicationDomainName=$APPLICATION_DOMAIN_NAME
-            pStage=$APPLICATION_STAGE pAcmCertificateArn="$ACM_CERTIFICATE_ARN"
+          --s3-bucket $CFN_BUCKET_NAME --force-upload --no-fail-on-empty-changeset --no-disable-rollback
+          --parameter-overrides pApplicationDomainName=$APPLICATION_DOMAIN_NAME
+          pStage=$APPLICATION_STAGE pAcmCertificateArn="$ACM_CERTIFICATE_ARN"
 
   deploy:
     runs-on: ubuntu-latest

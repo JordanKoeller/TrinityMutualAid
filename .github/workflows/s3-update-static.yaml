@@ -24,7 +24,7 @@ jobs:
 
       - name: Activate Staging Infra
         if: endsWith(github.ref, '/develop')
-        run:
+        run: |
           echo "APPLICATION_DOMAIN_NAME=staging.trinitymutualaid.com" >> $GITHUB_ENV
           echo "APPLICATION_STAGE=staging" >> $GITHUB_ENV
           echo "CFN_BUCKET_NAME=staging-tma-cfn" >> $GITHUB_ENV
@@ -32,7 +32,7 @@ jobs:
           echo "ACM_CERTIFICATE_ARN=${{ secrets.STAGING_CERTIFICATE_ARN }}" >> $GITHUB_ENV 
       - name: Activate Production Infra
         if: endsWith(github.ref, '/main')
-        run:
+        run: |
           echo "APPLICATION_DOMAIN_NAME=trinitymutualaid.com" >> $GITHUB_ENV
           echo "APPLICATION_STAGE=prod" >> $GITHUB_ENV
           echo "CFN_BUCKET_NAME=production-tma-cfn" >> $GITHUB_ENV

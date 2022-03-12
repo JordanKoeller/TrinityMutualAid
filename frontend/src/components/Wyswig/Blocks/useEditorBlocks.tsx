@@ -2,7 +2,7 @@ import React, { useReducer, useCallback, useEffect } from 'react';
 import { Language } from '../../../i18n';
 import { ArticleDescription } from '../../../utilities/types';
 import { fetchArticle } from '../../../utilities/hooks';
-import { createNewBlock } from './EditorBlockRegistry';
+import { copyBlockAcrossLanguage, createNewBlock } from './EditorBlockRegistry';
 import { mapEntries } from '../../../utilities/funcs';
 import { EditorBlock } from './EditorBlock';
 
@@ -36,8 +36,9 @@ type EditorStateReturnType =
 
 export const useEditorComponentState = (language: Language, articleId?: number): EditorStateReturnType => {
     const [state, dispatch] = useReducer(editorComponentStateReducer, initialState(language));
-    const blockChangeDispatch = useCallback((state: EditorBlock, index: number) =>
-        dispatch({ type: EditorActionType.MutateEditorState, payload: { index, state, } }),
+    const blockChangeDispatch = useCallback((state: EditorBlock, index: number) => {
+        dispatch({ type: EditorActionType.MutateEditorState, payload: { index, state, } });
+    },
         [dispatch]);
 
     useEffect(() => {
@@ -73,7 +74,8 @@ const editorComponentStateReducer = (state: EditorReducerState, action: EditorCo
             ...state,
             editorStates: mapEntries(state.editorStates, ([lang, blocks]) => [lang, [...blocks, createNewBlock(action.payload as string, lang)]])
         }
-        case EditorActionType.MutateEditorState: return {
+        case EditorActionType.MutateEditorState: {
+            return {
                 ...state,
                 editorStates: mapEntries(
                     state.editorStates,
@@ -82,12 +84,18 @@ const editorComponentStateReducer = (state: EditorReducerState, action: EditorCo
                         if (lang === state.chosenLanguage) {
                             newBlocks[action.payload.index] = action.payload.state;
                         } else {
-                            newBlocks[action.payload.index].data = action.payload.state.data;
+                            newBlocks[action.payload.index] = copyBlockAcrossLanguage(
+                                newBlocks[action.payload.index].blockType,
+                                action.payload.state,
+                                newBlocks[action.payload.index]
+                            );
+                            // newBlocks[action.payload.index].data = action.payload.state.data;
                         }
                         return [lang, newBlocks];
                     }
                 )
-            }
+            };
+        }
         
         case EditorActionType.ChangeLanguage: return {
             ...state,

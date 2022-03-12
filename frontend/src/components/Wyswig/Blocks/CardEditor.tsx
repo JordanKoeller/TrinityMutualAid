@@ -27,7 +27,7 @@ export const CardEditor: BlockEditor = {
         const cardChange = (cardState: CardState, cardIndex: number) => {
             const newState = { ...state };
             newState.data = [...newState.data];
-            newState.data[cardIndex] = cardState;
+            newState.data[cardIndex] = { ...cardState};
             onChange?.(newState, blockIndex);
         }
         const addCard = () => {
@@ -67,9 +67,23 @@ export const CardEditor: BlockEditor = {
     }),
     replaceImages: (block, imagesToUrl) => block.data.forEach((card: CardState) => {
         if (card.filename in imagesToUrl && card.file?.size) {
-            card.dataUrl = imagesToUrl[card.filename]
+            card.dataUrl = imagesToUrl[card.filename];
         }
-    })
+    }),
+    replicateAcrossLanguage: (changedBlock, destinationBlock) => {
+        // I want to copy over file uploads/block changes, but NOT the text.
+        const newBlocks = changedBlock.data as CardState[];
+        const destinationBlocks = destinationBlock.data as CardState[];
+        const ret = {
+            ...destinationBlock,
+            data: newBlocks.map((card, cardIndex) => ({
+                ...card,
+                title: destinationBlocks[cardIndex].title,
+                snippet: destinationBlocks[cardIndex].snippet
+            }))
+        };
+        return ret;
+    }
 }
 
 const ReadonlyCardBlock: React.FC<{ cardStates: CardState[] }> = ({ cardStates }) => {
@@ -102,7 +116,6 @@ const EditableCard: React.FC<EditableCardProps> = ({ state, cardIndex, onChange,
         marginBottom: '5mm'
     };
     const textChange = (key: string) => (evt: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(evt);
         onChange({
             ...state,
             [key]: evt.target.value

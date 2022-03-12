@@ -31,6 +31,16 @@ export function getBlockEditor(blockType: string): BlockEditor {
     throw new Error(`BlockType ${blockType} not registered in the BlockTypeRegistry.`);
 }
 
+export function copyBlockAcrossLanguage(blockType: string, changedBlock: EditorBlock, destinationBlock: EditorBlock): EditorBlock {
+    if (blockType in blockRegistry && blockRegistry[blockType].replicateAcrossLanguage) {
+        return blockRegistry[blockType].replicateAcrossLanguage!(changedBlock, destinationBlock);
+    }
+    return {
+        ...destinationBlock,
+        data: changedBlock.data,
+    };
+}
+
 
 export const AddBlockButtons: React.FC<{ dispatch: (action: EditorComponentAction) => void }> = ({ dispatch }) => {
     return <ButtonGroup>

@@ -4,15 +4,24 @@ import { BlockEditor, } from "./EditorBlock";
 import { CardDeck, InfoCard } from "../../InfoCard";
 import { Form, Card, ButtonGroup, Button, Row } from "react-bootstrap";
 import { Jumbotron } from "../../Jumbotron";
+import * as uuid from 'uuid';
 
 interface CardState {
-    file: File,
-    filename: string,
-    dataUrl: string,
+    file?: File,
+    filename?: string,
+    dataUrl?: string,
     title: string,
     snippet: string,
     href: string,
+    uuid: string,
 }
+
+const blankCard: () => CardState = () => ({
+    title: "",
+    snippet: "",
+    href: "",
+    uuid: uuid.v4()
+});
 
 
 export const CardEditor: BlockEditor = {
@@ -33,15 +42,14 @@ export const CardEditor: BlockEditor = {
         const addCard = () => {
             const newState = { ...state };
             newState.data = [...newState.data];
-            newState.data.push({
-            })
+            newState.data.push({...blankCard, uuid: uuid.v4()});
             onChange?.(newState, blockIndex);
         }
         const dispatch = (action: 'Before' | 'After' | 'Delete', ind: number) => {
             const newState = { ...state };
             newState.data = newState.data.map((elem: any) => ({ ...elem }));
-            if (action === 'Before') newState.data.splice(ind, 0, {});
-            if (action === 'After') newState.data.splice(ind + 1, 0, {});
+            if (action === 'Before') newState.data.splice(ind, 0, blankCard());
+            if (action === 'After') newState.data.splice(ind + 1, 0, blankCard());
             if (action === 'Delete') newState.data.splice(ind, 1);
             onChange?.(newState, blockIndex);
         }
@@ -49,7 +57,7 @@ export const CardEditor: BlockEditor = {
             <CardDeck fluid>
                 {
                     state.data.map((c: CardState, i: number) =>
-                        <EditableCard state={c} cardIndex={i} onChange={cardChange} dispatch={dispatch} />)
+                        <EditableCard key={c.uuid} state={c} cardIndex={i} onChange={cardChange} dispatch={dispatch} />)
                 }
             </CardDeck>
             <ButtonGroup>
@@ -61,28 +69,42 @@ export const CardEditor: BlockEditor = {
 
     },
     scrubImages: (block, imageRecord) => block.data.forEach((card: CardState) => {
-        if (card.file?.size) {
+        if (card.file?.size && card.filename) {
             imageRecord[card.filename] = card.file;
         }
     }),
     replaceImages: (block, imagesToUrl) => block.data.forEach((card: CardState) => {
-        if (card.filename in imagesToUrl && card.file?.size) {
+        if (card.filename && card.filename in imagesToUrl && card.file?.size) {
             card.dataUrl = imagesToUrl[card.filename];
         }
     }),
     replicateAcrossLanguage: (changedBlock, destinationBlock) => {
         // I want to copy over file uploads/block changes, but NOT the text.
-        const newBlocks = changedBlock.data as CardState[];
-        const destinationBlocks = destinationBlock.data as CardState[];
-        const ret = {
+        const blocksInChangedData = changedBlock.data as CardState[];
+        const blocksInDestData = destinationBlock.data as CardState[];
+        const destBlockLookup = Object.fromEntries(blocksInDestData.map((block) => [
+            block.uuid, block
+        ]));
+        const resultBlocks: CardState[] = [];
+        blocksInChangedData.forEach((block) => {
+            if (block.uuid in destBlockLookup) {
+                resultBlocks.push({
+                    ...block,
+                    title: destBlockLookup[block.uuid]?.title,
+                    snippet: destBlockLookup[block.uuid]?.snippet,
+                });
+            } else {
+                resultBlocks.push({
+                    ...block,
+                    title: "",
+                    snippet: "",
+                });
+            }
+        });
+        return {
             ...destinationBlock,
-            data: newBlocks.map((card, cardIndex) => ({
-                ...card,
-                title: destinationBlocks[cardIndex].title,
-                snippet: destinationBlocks[cardIndex].snippet
-            }))
+            data: resultBlocks
         };
-        return ret;
     }
 }
 

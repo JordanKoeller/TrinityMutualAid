@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Card, Container, Row } from 'react-bootstrap';
-import { groupBy } from '../utilities/funcs';
 import { MediaQuery, useMediaQuery } from '../utilities/hooks';
 import { ExtLink } from './ExtLink';
 

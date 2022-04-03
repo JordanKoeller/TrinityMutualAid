@@ -1,5 +1,5 @@
-# TrinityMutualAide
-Code for TrinityMutualAide's website
+# TrinityMutualAid
+Code for [TrinityMutualAid's website](http://trinitymutualaid.com)
 
 # Website Desires
 

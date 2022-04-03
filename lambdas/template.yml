@@ -124,7 +124,7 @@ Resources:
           Properties:
             Name: !Sub KeepAlive${pStage}
             Description: Event on timer to keep lambda alive so never cold-starts
-            Enabled: false
+            Enabled: true
             Schedule: 'rate(1 minute)'
   Articles:
     Type: AWS::DynamoDB::Table

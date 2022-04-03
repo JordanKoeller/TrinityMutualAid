@@ -19,11 +19,10 @@ export const TEMPLATE_EDITOR_BLOCK_TEXT: Record<Language, string> = {
     [Language.Spanish]: "Introducir texto aquí",
 }
 
-
- interface EditorBlockTemplate<T> {
-    editorState: T,
-    blockType: string,
-    data?: any,
+interface EditorBlockTemplate<T> {
+   editorState: T,
+   blockType: string,
+   data?: any,
 }
 
 export type EditorBlock = EditorBlockTemplate<EditorState>;
@@ -52,4 +51,5 @@ export interface BlockEditor {
     // Grab any images, upload them, inject their URLs into the block, and return the urls in an array of strings.
     scrubImages?: (block: EditorBlock, imageRecord: Record<string, File>) => void,
     replaceImages?: (block: EditorBlock, imagesToUrl: Record<string, string>) => void,
+    replicateAcrossLanguage?: (changedBlock: EditorBlock, destinationBlock: EditorBlock) => EditorBlock, 
 }

@@ -2,7 +2,7 @@
 export const pageIds: Record<string, Record<string, number | undefined>> = {
     'development': {
         'Home': 84896429,
-        'News': undefined,
+        'News': 9027696,
         'RequestAid': 90223560,
         'Resources': undefined,
         'About': 83081496,
@@ -12,7 +12,7 @@ export const pageIds: Record<string, Record<string, number | undefined>> = {
     },
     'production': {
         'Home': 84896429,
-        'News': undefined,
+        'News': 9027696,
         'RequestAid': 90223560,
         'Resources': undefined,
         'About': 83081496,

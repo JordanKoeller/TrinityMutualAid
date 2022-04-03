@@ -1,6 +1,7 @@
 
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { Language } from '../../../i18n';
+import { CardEditor } from './CardEditor';
 import { BlockEditor, BlockEditorComponent, EditorBlock } from './EditorBlock';
 import { CenteredParagraphBlockEditor, ParagraphBlockEditor } from './ParagraphEditor';
 import { SplitPanelEditor } from './SplitPanelEditor';
@@ -28,6 +29,16 @@ export function getBlockEditor(blockType: string): BlockEditor {
         return blockRegistry[blockType];
     }
     throw new Error(`BlockType ${blockType} not registered in the BlockTypeRegistry.`);
+}
+
+export function copyBlockAcrossLanguage(blockType: string, changedBlock: EditorBlock, destinationBlock: EditorBlock): EditorBlock {
+    if (blockType in blockRegistry && blockRegistry[blockType].replicateAcrossLanguage) {
+        return blockRegistry[blockType].replicateAcrossLanguage!(changedBlock, destinationBlock);
+    }
+    return {
+        ...destinationBlock,
+        data: changedBlock.data,
+    };
 }
 
 
@@ -65,4 +76,5 @@ function registerBlockEditor(editor: BlockEditor) {
 
 registerBlockEditor(ParagraphBlockEditor);
 registerBlockEditor(SplitPanelEditor);
-registerBlockEditor(CenteredParagraphBlockEditor)
+registerBlockEditor(CenteredParagraphBlockEditor);
+registerBlockEditor(CardEditor);

@@ -28,7 +28,7 @@ Mappings:
   StageValueMap:
     dev:
       s3ResourcesBucket: dev-tma-files
-      CdnOrigin: "cdn-dev.trinitymutualaid.com"
+      CdnOrigin: "dev-tma-files.s3.amazonaws.com"
       siteOrigin: "'http://localhost:3000'"
       apiStage: Dev
       applicationDomainName: 'dev.trinitymutualaid.com'

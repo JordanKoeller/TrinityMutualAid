@@ -8,7 +8,6 @@ on:
 
 env:
   REGION: 'us-east-1'
-  APPLICATION_DOMAIN_NAME: 'trinitymutualaid.com'
 
 jobs:
   infra:
@@ -16,34 +15,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Configure AWS credentials for Prod
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.REGION }}
 
-      - name: Create change set in AWS CloudFormation
-        if: github.ref != 'refs/heads/master' || github.event_name != 'push'
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: WebClientHostingInfra
-          template: template.yml
-          no-fail-on-empty-changeset: "1"
-          no-execute-changeset: "1"
-          parameter-overrides: >-
-            pApplicationDomainName=${{ env.APPLICATION_DOMAIN_NAME }},
-            pAcmCertificateArn=${{ secrets.ACM_TLS_CERTIFICATE_ARN }}
+      - name: Activate Staging Infra
+        if: endsWith(github.ref, '/develop')
+        run: |
+          echo "APPLICATION_DOMAIN_NAME=staging.trinitymutualaid.com" >> $GITHUB_ENV
+          echo "APPLICATION_STAGE=staging" >> $GITHUB_ENV
+          echo "CFN_BUCKET_NAME=staging-tma-cfn" >> $GITHUB_ENV
+          echo "STACK_NAME=staging-tma" >> $GITHUB_ENV
+          echo "ACM_CERTIFICATE_ARN=${{ secrets.STAGING_CERTIFICATE_ARN }}" >> $GITHUB_ENV 
+      - name: Activate Production Infra
+        if: endsWith(github.ref, '/main')
+        run: |
+          echo "APPLICATION_DOMAIN_NAME=trinitymutualaid.com" >> $GITHUB_ENV
+          echo "APPLICATION_STAGE=prod" >> $GITHUB_ENV
+          echo "CFN_BUCKET_NAME=production-tma-cfn" >> $GITHUB_ENV
+          echo "STACK_NAME=production-tma" >> $GITHUB_ENV
+          echo "ACM_CERTIFICATE_ARN=${{ secrets.PRODUCTION_CERTIFICATE_ARN }}" >> $GITHUB_ENV
+
       - name: Deploy to AWS CloudFormation
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: WebClientHostingInfra
-          template: template.yml
-          no-fail-on-empty-changeset: "1"
-          parameter-overrides: >-
-            pApplicationDomainName=${{ env.APPLICATION_DOMAIN_NAME }},
-            pAcmCertificateArn=${{ secrets.ACM_TLS_CERTIFICATE_ARN }}
+        run: >
+          aws cloudformation deploy --template-file ./frontend/template.yml --stack-name $STACK_NAME 
+          --s3-bucket $CFN_BUCKET_NAME --force-upload --no-fail-on-empty-changeset --no-disable-rollback
+          --parameter-overrides pApplicationDomainName=$APPLICATION_DOMAIN_NAME
+          pStage=$APPLICATION_STAGE pAcmCertificateArn="$ACM_CERTIFICATE_ARN"
+
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -58,8 +60,9 @@ jobs:
         env:
           ENV_FILE_STAGING: ${{  secrets.ENV_FILE_STAGING  }}
         run: |
-          echo "AWS_S3_BUCKET=dev.trinitymutualaid.com" >> $GITHUB_ENV
+          echo "AWS_S3_BUCKET=staging.trinitymutualaid.com" >> $GITHUB_ENV
           echo "$ENV_FILE_STAGING" | base64 -d > ./frontend/.env
+          echo "AWS_CLOUDFRONT_DISTRIBUTION_ID=${{secrets.STAGING_CLOUDFRONT_ID}}" >> $GITHUB_ENV
       - name: ActivateProduction Build
         env:
           ENV_FILE_PRODUCTION: ${{  secrets.ENV_FILE_PRODUCTION }}
@@ -67,18 +70,26 @@ jobs:
         run: |
           echo "AWS_S3_BUCKET=trinitymutualaid.com" >> $GITHUB_ENV
           echo "$ENV_FILE_PRODUCTION" | base64 -d > ./frontend/.env
-
-      - name: Install and Build
+          echo "AWS_CLOUDFRONT_DISTRIBUTION_ID=${{secrets.PRODUCTION_CLOUDFRONT_ID}}" >> $GITHUB_ENV
+      - name: Build Staticfiles
         run: |
           cd ./frontend
           wc -m .env
           npm install
           npm run-script build
-      - uses: awact/s3-action@master
-        env:
-          SOURCE_DIR: './frontend/build'
-          AWS_REGION: 'us-east-1'
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.REGION }}
+
+      - name: Upload to S3 Bucket
+        run: >
+          aws s3 sync ./frontend/build s3://$AWS_S3_BUCKET --delete --follow-symlinks --cache-control max-age=31536000,public
+  
+      - name: Invalidate Staticfiles Cloudfront
+        run: >
+          aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
   

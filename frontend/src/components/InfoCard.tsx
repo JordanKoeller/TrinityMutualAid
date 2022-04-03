@@ -7,9 +7,8 @@ import { ExtLink } from './ExtLink';
 export const InfoCard: React.FC<{
     title: string,
     imageUrl?: string,
-    link?: string,
     href?: string
-}> = ({ title, imageUrl, link, children, href }) => {
+}> = ({ title, imageUrl, children, href }) => {
     const sz = useMediaQuery();
     const w = sz <= MediaQuery.SM ? '100%' : sz <= MediaQuery.MD ? '48%' : '30%';
     const cardStyle = {
@@ -30,7 +29,6 @@ export const InfoCard: React.FC<{
                     <Card.Text>
                             {children}
                     </Card.Text>
-                    <Card.Link href="#">{link}</Card.Link>
                 </Card.Body>
             </ExtLink>
         </Card>

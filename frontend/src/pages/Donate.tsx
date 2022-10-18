@@ -1,5 +1,5 @@
 import React from 'react';
-import { SquareSingleDonoButton, SquareRecurringDonoButton, PaypalDonoButton } from '../components/DonoButtons';
+import { SquareSingleDonoButton, SquareRecurringDonoButton } from '../components/DonoButtons';
 import { CardDeck, InfoCard } from '../components/InfoCard';
 import { TopSpacer } from '../components/TopSpacer';
 import { ArticleViewerOrEditor } from '../components/Wyswig/WyswigArticleViewer';
@@ -18,9 +18,6 @@ const DonatePage: React.FC = () => {
             </InfoCard>
             <InfoCard title="Zelle" imageUrl="zell-qr-cropped.jpeg">
                 $TrinityMutualAid2021
-            </InfoCard>
-            <InfoCard title="PayPal" imageUrl="paypal-qr.jpg">
-                <PaypalDonoButton />
             </InfoCard>
             <InfoCard title={t('pages.Donate.SquareSingle')} imageUrl="square-onetime-qr.png">
                 <SquareSingleDonoButton />

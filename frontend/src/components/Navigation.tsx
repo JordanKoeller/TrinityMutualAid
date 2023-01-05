@@ -15,10 +15,8 @@ import {
     Switch,
     NavLink as Link,
 } from 'react-router-dom';
-import { useMediaQuery, MediaQuery } from '../utilities/hooks';
 import AboutPage from '../pages/About';
 import ContactPage from '../pages/Contact';
-import DonatePage from '../pages/Donate';
 import NewsPage from '../pages/News';
 import ReportPage from '../pages/Report';
 import RequestAidPage from '../pages/RequestAid';
@@ -61,7 +59,6 @@ const CollapsingNavigation: React.FC<{ t: any, i18n: any, setOpen: (v: boolean) 
 
 export const TmaNavbar: React.FC = () => {
 
-    const mq = useMediaQuery();
     const { t, i18n } = useTranslation(undefined, { useSuspense: false });
 
     const [open, setOpen] = useState(false);

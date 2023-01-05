@@ -66,14 +66,6 @@ export const TmaNavbar: React.FC = () => {
 
     const [open, setOpen] = useState(false);
 
-    const link = useMemo(() => <Link
-        className="donate-button"
-        style={{ borderRadius: 0, border: '0px solid #f00' }}
-        to="/Donate"
-        activeClassName="donate-button-active">
-        <b>{t('navbar.Donate')}</b>
-    </Link>, [t]);
-
     return <Navbar bg="navbar" expand="lg" sticky="top" expanded={open}>
         <Container fluid="xl">
             <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setOpen(!open)} />
@@ -81,7 +73,7 @@ export const TmaNavbar: React.FC = () => {
                 <Image src="tma-logo-banner.png" alt="" id="tma-logo" />
             </a>}>
             </Navbar.Brand>
-            {mq <= MediaQuery.MD ? <> {link} <CollapsingNavigation i18n={i18n} t={t} setOpen={setOpen} /></> : <><CollapsingNavigation i18n={i18n} t={t} setOpen={setOpen} /> {link}</>}
+            <CollapsingNavigation i18n={i18n} t={t} setOpen={setOpen} />
         </Container>
     </Navbar>
 }
@@ -98,9 +90,9 @@ export const TmaRouter: React.FC = () => {
                     <Route path="/RequestAid">
                         <RequestAidPage />
                     </Route>
-                    <Route path="/Donate">
+                    {/* <Route path="/Donate">
                         <DonatePage />
-                    </Route>
+                    </Route> */}
                     <Route path="/Report">
                         <ReportPage />
                     </Route>

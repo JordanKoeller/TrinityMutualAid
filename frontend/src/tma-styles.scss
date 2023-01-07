@@ -307,9 +307,15 @@ h1 {
     }
 }
 
-@media only screen and (max-width: 398px) {
+@media only screen and (max-width: 406px) {
+  #tma-logo {
+      height: 20px;
+  }
+}
+
+@media only screen and (max-width: 370px) {
     #tma-logo {
-        height: 15px;
+        height: 16px;
     }
 }
 

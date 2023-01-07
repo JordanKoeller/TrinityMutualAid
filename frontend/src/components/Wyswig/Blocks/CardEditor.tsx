@@ -111,7 +111,7 @@ export const CardEditor: BlockEditor = {
 const ReadonlyCardBlock: React.FC<{ cardStates: CardState[] }> = ({ cardStates }) => {
     return <CardDeck fluid>
         {
-            cardStates.map((c) => <InfoCard key={c.uuid} title={c.title} href={c.href}>
+            cardStates.map((c, i) => <InfoCard key={`${c.uuid}-${i}`} title={c.title} href={c.href}>
                 <img alt="" src={c.dataUrl} width="100%" />
                     {c.snippet}
             </InfoCard>

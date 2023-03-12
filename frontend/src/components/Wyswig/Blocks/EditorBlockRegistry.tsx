@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import { Language } from '../../../i18n';
 import { CardEditor } from './CardEditor';
 import { BlockEditor, BlockEditorComponent, EditorBlock } from './EditorBlock';
+import { IgCardPanel } from './InstagramList';
 import { CenteredParagraphBlockEditor, ParagraphBlockEditor } from './ParagraphEditor';
 import { SplitPanelEditor } from './SplitPanelEditor';
 import { EditorActionType, EditorComponentAction } from './useEditorBlocks';
@@ -78,3 +79,4 @@ registerBlockEditor(ParagraphBlockEditor);
 registerBlockEditor(SplitPanelEditor);
 registerBlockEditor(CenteredParagraphBlockEditor);
 registerBlockEditor(CardEditor);
+registerBlockEditor(IgCardPanel)

@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { convertToRaw, } from 'draft-js';
-import { getHashFromBlob, resizeImage } from '../utilities/funcs';
+import { getHashFromBlob, resizeImage, mapEntries } from '../utilities/funcs';
 import { ArticleDescription } from '../utilities/types';
 import { getBlockEditor } from '../components/Wyswig/Blocks/EditorBlockRegistry';
-
 const handleError = (e: any) => console.error(JSON.stringify(e, null, 2));
 
 const editorAuthenticationInterceptor = async (config: AxiosRequestConfig) => {
@@ -54,7 +53,8 @@ export default class EditorClient {
     }
 
     async uploadArticle(article: ArticleDescription[], articleId?: number): Promise<number> {
-        const serial = await Promise.all(article.map(descriptor => this.serializeArticle(descriptor)));
+        // const serial = await Promise.all(article.map(descriptor => this.serializeArticle(descriptor)));
+        const serial = [await this.serializeArticle(article[0])];
         const uploadUrls: string[] = Array.from(new Set([...serial[0].imageUploadUrls, ...serial[1].imageUploadUrls]));
         const body = {
             serialized: {article: serial.map(article => article.serialized), articleType: 'news'},
@@ -113,6 +113,16 @@ export default class EditorClient {
         return Object.fromEntries((await Promise.all(uploadPromises)));
     }
 
+    async uploadHandles(handles: string[]): Promise<Record<string, {asset: string}>> {
+      const response = await this.client.post(`${this.domain}/handles`, JSON.stringify(handles));
+      if (response.status === 200) {
+        const handleDetails: Record<string, {handle: string, asset: string}> = response.data;
+        return mapEntries(handleDetails, kv => [kv[0], {asset: kv[1].asset}]);
+      }
+      throw Error("Could not access Backend" + response.status);
+
+    }
+
     /*
     1. For-loop through, create record of filename -> File from the articles.
     2. Send them all off for upload, constructing a hashmap of filename -> url
@@ -120,6 +130,7 @@ export default class EditorClient {
     */
 
     private async serializeArticle(description: ArticleDescription): Promise<any> {
+      console.log("Callign serialize")
         const imageMap: Record<string, File> = {};
         // First I generate my imageMap
         description.blocks.forEach(block => {
@@ -135,6 +146,13 @@ export default class EditorClient {
                 blockEditor.replaceImages(block, filenameToUrls);
             }
         });
+        // Call preUpload on all blocks
+        for (let i=0; i < description.blocks.length; i++) {
+          const blockEditor = getBlockEditor(description.blocks[i].blockType);
+          if (blockEditor.preUpload) {
+            description.blocks[i] = await blockEditor.preUpload(description.blocks[i], this);
+          }
+        }
         const imageUploadUrls = [...Object.values(filenameToUrls)];
         // Then I grab convert to raw data, and grab all the images from the draft-js RawEditorStates.
         const rawified = {

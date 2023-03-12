@@ -23,12 +23,12 @@ export const InfoCard: React.FC<{
             <ExtLink href={href}>
                 <Card.Body>
                     <Card.Title><h2>{title}</h2></Card.Title>
-                    {
-                        imageUrl ? <Card.Img variant="top" src={imageUrl} width="100%" /> : null
-                    }
                     <Card.Text>
                             {children}
                     </Card.Text>
+                    {
+                        imageUrl ? <Card.Img variant="top" src={imageUrl} width="100%" /> : null
+                    }
                 </Card.Body>
             </ExtLink>
         </Card>

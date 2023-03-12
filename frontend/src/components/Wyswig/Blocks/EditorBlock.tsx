@@ -1,5 +1,6 @@
 
 import { EditorState, RawDraftContentState } from 'draft-js';
+import EditorClient from '../../../context/client';
 import { Language } from '../../../i18n';
 
 /**
@@ -51,5 +52,6 @@ export interface BlockEditor {
     // Grab any images, upload them, inject their URLs into the block, and return the urls in an array of strings.
     scrubImages?: (block: EditorBlock, imageRecord: Record<string, File>) => void,
     replaceImages?: (block: EditorBlock, imagesToUrl: Record<string, string>) => void,
+    preUpload?: (block: EditorBlock, client: EditorClient) => Promise<EditorBlock>,
     replicateAcrossLanguage?: (changedBlock: EditorBlock, destinationBlock: EditorBlock) => EditorBlock, 
 }

@@ -56,6 +56,42 @@ Resources:
         Authorizers:
           CognitoAuth:
             UserPoolArn: !GetAtt TMAUserPool.Arn
+
+  InstagramCachingService:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Service responsible for downloading instagram content to TMA CDN
+      CodeUri: py
+      Handler: main.api_handler
+      Runtime: python3.8
+      MemorySize: 128
+      Timeout: 60
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SocialHandles
+        - S3CrudPolicy:
+            BucketName: !Ref S3ResourcesBucket
+      Environment:
+        Variables:
+          SOCIAL_HANDLES_TABLE: !Ref SocialHandles
+          RESOURCES_BUCKET: !Ref S3ResourcesBucket
+          CDN_ORIGIN: !FindInMap [StageValueMap, !Ref pStage, CdnOrigin]
+      Events:
+        UploadHandles:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TMAApi
+            Path: /handles
+            Method: POST
+        RefreshCache:
+          Type: Schedule
+          Condition: ProdOrStaging
+          Properties:
+            Name: !Sub RefreshCache${pStage}
+            Description: Event on timer to auto-query Instagram and refresh any updated assets
+            Enabled: true
+            Schedule: 'rate(24 hours)'
+
   ArticlesCrudFunction:
     Type: AWS::Serverless::Function
     Metadata:
@@ -141,8 +177,21 @@ Resources:
         - AttributeName: timestamp
           KeyType: RANGE
       ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  SocialHandles:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub tma-socials-${pStage}
+      AttributeDefinitions:
+        - AttributeName: handle
+          AttributeType: S
+      KeySchema:
+        - AttributeName: handle
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
   S3ResourcesBucket:
     Type: 'AWS::S3::Bucket'
     Properties:

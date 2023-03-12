@@ -1,10 +1,11 @@
 import React from "react";
 import { createEditorStateWithText } from "@draft-js-plugins/editor";
 import { BlockEditor, } from "./EditorBlock";
-import { CardDeck, InfoCard } from "../../InfoCard";
+import { CardDeck, InfoCard } from "../../CardDeck";
 import { Form, Card, ButtonGroup, Button, Row } from "react-bootstrap";
 import { Jumbotron } from "../../Jumbotron";
 import * as uuid from 'uuid';
+import { GenericCardEditor } from "../GenericCardEditor";
 
 interface CardState {
     file?: File,
@@ -33,38 +34,14 @@ export const CardEditor: BlockEditor = {
     }),
     Component: ({ state, readOnly, blockIndex, onChange, Sidebar }) => {
         if (readOnly) return <ReadonlyCardBlock cardStates={state.data as CardState[]} />;
-        const cardChange = (cardState: CardState, cardIndex: number) => {
-            const newState = { ...state };
-            newState.data = [...newState.data];
-            newState.data[cardIndex] = { ...cardState};
-            onChange?.(newState, blockIndex);
-        }
-        const addCard = () => {
-            const newState = { ...state };
-            newState.data = [...newState.data];
-            newState.data.push({...blankCard, uuid: uuid.v4()});
-            onChange?.(newState, blockIndex);
-        }
-        const dispatch = (action: 'Before' | 'After' | 'Delete', ind: number) => {
-            const newState = { ...state };
-            newState.data = newState.data.map((elem: any) => ({ ...elem }));
-            if (action === 'Before') newState.data.splice(ind, 0, blankCard());
-            if (action === 'After') newState.data.splice(ind + 1, 0, blankCard());
-            if (action === 'Delete') newState.data.splice(ind, 1);
-            onChange?.(newState, blockIndex);
-        }
-        return <Jumbotron variant={blockIndex % 2 === 0 ? "light" : "dark"}>
-            <CardDeck fluid>
-                {
-                    state.data.map((c: CardState, i: number) =>
-                        <EditableCard key={c.uuid} state={c} cardIndex={i} onChange={cardChange} dispatch={dispatch} />)
-                }
-            </CardDeck>
-            <ButtonGroup>
-                {Sidebar}
-                <Button onClick={addCard}>Add Card</Button>
-            </ButtonGroup>
-        </Jumbotron>
+        return GenericCardEditor(
+          onChange!,
+          blockIndex,
+          state,
+          EditableCard,
+          Sidebar,
+          blankCard,
+          (s: CardState) => s.uuid);
 
 
     },

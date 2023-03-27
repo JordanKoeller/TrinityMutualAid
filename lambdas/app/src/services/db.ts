@@ -82,4 +82,20 @@ export class DynamoDbClient<V> {
             })
         })
     }
+
+    listRecords(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        client?.scan({TableName: this._tableName}, (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (data.Items) {
+              resolve(data.Items);
+            } else {
+              reject("Empty Items");
+            }
+          }
+        })
+      });
+    }
 }

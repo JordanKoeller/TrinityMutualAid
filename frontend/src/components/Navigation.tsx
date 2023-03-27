@@ -20,6 +20,7 @@ import ContactPage from '../pages/Contact';
 import NewsPage from '../pages/News';
 import HomePage from '../pages/Home';
 import FAQsPage from '../pages/Faqs';
+import ResourcesPage from '../pages/Resources';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGE_MAP } from '../i18n';
 
@@ -40,6 +41,7 @@ const CollapsingNavigation: React.FC<{ t: any, setOpen: (v: boolean) => void, }>
     <Nav style={{ margin: 'auto' }}>
       <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={closeAll}>{t('navbar.News')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/About" onClick={closeAll} >{t('navbar.About')}</Link>
+      <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={closeAll} >{t('navbar.Resources')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={closeAll}>{t('navbar.FAQs')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/Contact" onClick={closeAll}>{t('navbar.Contact')}</Link>
       {ctx?.loggedIn() ?
@@ -79,6 +81,9 @@ export const TmaRouter: React.FC = () => {
           </Route>
           <Route path="/News">
             <NewsPage />
+          </Route>
+          <Route path="/Resources">
+            <ResourcesPage />
           </Route>
           <Route path="/FAQs">
             <FAQsPage />

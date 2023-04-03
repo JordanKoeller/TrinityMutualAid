@@ -85,6 +85,9 @@
                 "title": "Contacto",
                 "body": "Si necesita contactarnos con respecto a solicitar ayuda, voluntariado, donaciones o cualquier otra cosa, comuníquese con nosotros a través de correo electrónico o redes sociales."
             }
+        },
+        "Resources": {
+          "CalendarTitle": "Próximos Eventos"
         }
     },
     "tmaInNews": "TMA en las noticias",

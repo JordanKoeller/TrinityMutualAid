@@ -86,6 +86,9 @@
                 "title": "Contact Us",
                 "body": "If you need to contact us in regards to requesting aid, volunteering, donations, or anything else, reach us through email or social media:"
             }
+        },
+        "Resources": {
+          "CalendarTitle": "Upcoming Events"
         }
     },
     "tmaInNews": "TMA in the News",

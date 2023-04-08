@@ -5,7 +5,7 @@
         "News": "Noticias",
         "FAQs": "Preguntas frecuentes",
         "Resources": "Recursos",
-        "Contact": "Contacto",
+        "Education": "Educación",
         "Donate": "Donar"
     },
     "pages": {
@@ -80,9 +80,9 @@
             "4": "Trinitonian: Trinity Mutual Aid recauda más de $100,000 en cuatro días",
             "5": "Rolling Stone: Dónde donar para ayudar a las personas necesitadas durante la crisis del apagón en Texas"
         },
-        "Contact": {
+        "Education": {
             "0": {
-                "title": "Contacto",
+                "title": "Educación",
                 "body": "Si necesita contactarnos con respecto a solicitar ayuda, voluntariado, donaciones o cualquier otra cosa, comuníquese con nosotros a través de correo electrónico o redes sociales."
             }
         },

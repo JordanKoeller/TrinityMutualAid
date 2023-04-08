@@ -6,7 +6,7 @@ import { pageIds } from './PageIds';
 const ContactPage: React.FC = () => {
     return <>
         <TopSpacer />
-        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Contact}/>
+        <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Education}/>
     </>
 }
 

@@ -5,7 +5,7 @@
         "News": "News",
         "FAQs": "FAQs",
         "Resources": "Resources",
-        "Contact": "Contact",
+        "Education": "Education",
         "Donate": "Donate"
     },
     "pages": {
@@ -81,9 +81,9 @@
             "4": "Trinity Mutual Aid raises over $100,000 in four days",
             "5": "Rolling Stone: Where to Donate to Help People in Need During Texas' Blackout Crisis "
         },
-        "Contact": {
+        "Education": {
             "0": {
-                "title": "Contact Us",
+                "title": "Education",
                 "body": "If you need to contact us in regards to requesting aid, volunteering, donations, or anything else, reach us through email or social media:"
             }
         },

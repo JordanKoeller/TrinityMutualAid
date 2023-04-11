@@ -42,7 +42,6 @@ const CollapsingNavigation: React.FC<{ t: any, setOpen: (v: boolean) => void, }>
       <Link className="nav-link" activeClassName="nav-link-active" to="/News" onClick={closeAll}>{t('navbar.News')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/Resources" onClick={closeAll} >{t('navbar.Resources')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/Education" onClick={closeAll}>{t('navbar.Education')}</Link>
-      <Link className="nav-link" activeClassName="nav-link-active" to="/FAQs" onClick={closeAll}>{t('navbar.FAQs')}</Link>
       <Link className="nav-link" activeClassName="nav-link-active" to="/About" onClick={closeAll} >{t('navbar.About')}</Link>
       {ctx?.loggedIn() ?
         <Nav.Link as={AmplifySignOut} >Sign out</Nav.Link> : null

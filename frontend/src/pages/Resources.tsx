@@ -14,18 +14,18 @@ const ResourcesPage: React.FC = () => {
   const language_code = i18n.language?.slice(0, 2)
   return <>
     <TopSpacer />
-    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-evenly" }}>
+    <div style={{ width: "100vw", display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "left", alignItems: "flex-start", columnGap: "4em" }}>
       <div style={{ maxWidth: 1200 }}>
         <h1 className="jumbotron-title">{t('navbar.Resources')}</h1>
 
         <ArticleViewerOrEditor defaultArticleId={pageIds[process.env.NODE_ENV]?.Resources} />
       </div>
-      <div>
+      <div className="calendar-stage">
         <h1 className="jumbotron-title">{t("pages.Resources.CalendarTitle")}</h1>
         <iframe
           title="GoogleCal"
           src={LEAN_CALENDAR_LINK + CALENDAR_ARGS + "&hl=" + language_code}
-          style={{ border: 0, minHeight: 600, maxHeight: "90%", width: 350}} frameBorder="0" scrolling="no"></iframe>
+          style={{ border: 0, minHeight: 600, maxHeight: 800, width: 350}} frameBorder="0" scrolling="no"></iframe>
       </div>
     </div>
   </>

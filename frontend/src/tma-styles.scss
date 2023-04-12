@@ -96,6 +96,7 @@ h1 {
     flex-direction: column;
     justify-content: space-evenly;
     color: map-get($map: $theme-colors, $key: "secondary-4");
+    margin-top: 4em;
 }
 
 #tma-logo {
@@ -259,7 +260,6 @@ h1 {
 
 .jumbotron-dark-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-dark");
-    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
     width: 100vw;
@@ -267,7 +267,6 @@ h1 {
 
 .jumbotron-light-fluid {
     background-color: map-get($map: $theme-colors, $key: "primary-light");
-    width: 100vw;
     padding-top: 3em;
     padding-bottom: 3em;
     width: 100vw;
@@ -278,6 +277,15 @@ h1 {
 }
 .jumbotron-subtitle {
     color: map-get($map: $theme-colors, $key: "secondary");
+}
+
+.calendar-stage {
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 2em;
+  margin-top: 2em;
+  padding: 1em;
+  background-color: map-get($map: $theme-colors, $key: "primary-dark");
 }
 
 .contact-link {

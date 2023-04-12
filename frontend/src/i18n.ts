@@ -14,6 +14,11 @@ i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
     debug: process.env.NODE_ENV === 'development',
     interpolation: {
         escapeValue: false
+    },
+    backend: {
+      requestOptions: {
+        cache: 'no-cache',
+      }
     }
 });
 

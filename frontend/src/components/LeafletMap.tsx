@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ReactDomServer from "react-dom/server";
 import { v4 } from 'uuid';
 
 declare var L: any;
@@ -18,7 +17,7 @@ export interface MapProps {
 
 export const Leafletmap: React.FC<MapProps> = ({ markers, }) => {
 
-  const [tag, _setTag] = useState<string>(v4());
+  const [tag, ] = useState<string>(v4());
   const [map, setMap] = useState<any>();
 
   // Initialize the map

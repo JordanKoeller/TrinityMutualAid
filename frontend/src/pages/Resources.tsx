@@ -25,7 +25,7 @@ const ResourcesPage: React.FC = () => {
         <iframe
           title="GoogleCal"
           src={LEAN_CALENDAR_LINK + CALENDAR_ARGS + "&hl=" + language_code}
-          style={{ border: 0, minHeight: 600, maxHeight: 800, width: 350}} frameBorder="0" scrolling="no"></iframe>
+          style={{ border: 0, minHeight: 600, maxHeight: 800, width: 350 }} frameBorder="0" scrolling="no"></iframe>
       </div>
     </div>
   </>

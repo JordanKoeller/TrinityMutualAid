@@ -303,6 +303,40 @@ h1 {
     flex-direction: column;
 }
 
+/*  MAP STYLING */
+/*  MAP STYLING */
+/*  MAP STYLING */
+/*  MAP STYLING */
+/*  MAP STYLING */
+/*  MAP STYLING */
+
+.map {
+  width: 80vw;
+  height: 40vh;
+}
+
+.map-popup {
+  max-width: 200px;
+}
+
+.map-popup-img {
+  max-width: 90%;
+  max-height: 70%;
+  color: map-get($map: $theme-colors, $key: "secondary");
+  text-decoration: underline;
+  object-fit: contain;
+}
+
+.map-popup-desc {
+  font-size: calc(10px + 0.4vw);
+}
+
+.map-popup-title {
+  color: map-get($map: $theme-colors, $key: "secondary");
+  text-decoration: underline;
+  font-size: calc(18px + 0.4vw);
+}
+
 @media only screen and (max-width: 1200px) {
     #tma-logo {
         height: 36px;

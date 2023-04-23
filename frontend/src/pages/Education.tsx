@@ -23,13 +23,6 @@ const MarkerPopup: React.FC<MarkerPopupProps> = ({ title, desc, image, addr, hre
   </div>
 };
 
-const getDesc = (desc: string, addr?: string) => {
-  if (addr) {
-    return desc + "\n\n" + addr;
-  }
-  return desc
-}
-
 
 const ContactPage: React.FC = () => {
 

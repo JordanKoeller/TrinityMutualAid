@@ -57,7 +57,7 @@ const ResourcesPage: React.FC = () => {
   const [data, setData] = useState();
 
   useEffect(() => {
-    const json = fetch("map-data.json", { method: 'GET', headers: {'Cache-Control': 'max-age=0'} }).then(r => r.json());
+    const json = fetch("map-data.json", { method: 'GET', headers: { 'Cache-Control': 'max-age=0' } }).then(r => r.json());
     const markers = json.then(d => d.map((e: any) => {
       const [titleEn, descEn, titleEs, descEs, address, serviceType, link, img, coordX, coordY] = e;
       return {
@@ -84,7 +84,7 @@ const ResourcesPage: React.FC = () => {
               return <ListGroup.Item className="map-legend-row"><span className="map-legend-row-span">
                 {t(`pages.Resources.MapLegend.${MARKER_TO_I18N_MAP[k]}`)}:
                 <img src={v} alt="Marker" className="map-marker-legend"></img>
-                </span></ListGroup.Item>
+              </span></ListGroup.Item>
             })
           }
         </ListGroup>

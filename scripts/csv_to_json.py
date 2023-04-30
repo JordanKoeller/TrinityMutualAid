@@ -10,14 +10,28 @@ def main(infile: str, outfile: str):
   with open(infile) as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
-      name, desc, link, img, coords = row
-      desc_addr = desc.split(":")
-      if len(desc_addr) == 2:
-        desc, addr = desc_addr
+      nameEn, descEn, nameEs, descEs, serviceType, link, img, coords = row
+      desc_addr_en = descEn.split(":")
+      if len(desc_addr_en) == 2:
+        descEn, addr = desc_addr_en
       else:
         addr = ""
+      desc_addr_es = descEs.split(":")
+      if len(desc_addr_es) == 2:
+        descEs, addr_es = desc_addr_es
       x, y = coords.split(",")
-      row = [name.strip(), desc.strip(), addr.strip(), link.strip(), img.strip().replace(DEV_PREFIX, PROD_PREFIX), float(x.strip()), float(y.strip())]
+      row = [
+        nameEn.strip(),
+        descEn.strip(),
+        nameEs.strip(),
+        descEs.strip(),
+        addr.strip(),
+        serviceType.upper(),
+        link.strip(),
+        img.strip().replace(DEV_PREFIX, PROD_PREFIX),
+        float(x.strip()),
+        float(y.strip())
+      ]
       js.append(row)
   
   with open(outfile, 'w+') as f:

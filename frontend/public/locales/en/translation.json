@@ -88,7 +88,16 @@
             }
         },
         "Resources": {
-          "CalendarTitle": "Upcoming Events"
+          "CalendarTitle": "Upcoming Events",
+          "MapLegend": {
+            "Pantry": "Pantry/Fridge",
+            "MutualAid": "Mutual Aid",
+            "NonProfit": "Non-Profit",
+            "HealthService": "Health Service",
+            "HousingAssistance": "Housing Assistance",
+            "LegalService": "Legal Service",
+            "Other": "Other"
+          }
         }
     },
     "tmaInNews": "TMA in the News",

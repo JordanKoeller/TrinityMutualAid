@@ -87,7 +87,16 @@
             }
         },
         "Resources": {
-          "CalendarTitle": "Próximos Eventos"
+          "CalendarTitle": "Próximos Eventos",
+          "MapLegend": {
+            "Pantry": "Despensa o Nevera",
+            "MutualAid": "Ayuda mutua",
+            "NonProfit": "Sin ánimo de lucro",
+            "HealthService": "Servicio de salud",
+            "HousingAssistance": "Asistencia para la vivienda",
+            "LegalService": "Servicio legal",
+            "Other": "Otra"
+          }
         }
     },
     "tmaInNews": "TMA en las noticias",
